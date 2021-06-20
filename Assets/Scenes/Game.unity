@@ -408,7 +408,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerStartPosition: {x: 0, y: -2, z: 0}
-  playerMovementSpeed: 4
+  playerMovementSpeed: 5
   levelBounds:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 8.1, y: 4.3, z: 0}
+    m_Extent: {x: 9.6, y: 4.4, z: 0}
