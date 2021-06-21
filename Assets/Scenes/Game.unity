@@ -352,17 +352,9 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 440130907862965031, guid: f73d06ff2292d0f43aa45eb50c4a01a1, type: 3}
-      propertyPath: moveSpeed
-      value: 4
-      objectReference: {fileID: 0}
     - target: {fileID: 7709881818554600201, guid: f73d06ff2292d0f43aa45eb50c4a01a1, type: 3}
       propertyPath: m_Name
       value: Enemy
-      objectReference: {fileID: 0}
-    - target: {fileID: 7709881818554600201, guid: f73d06ff2292d0f43aa45eb50c4a01a1, type: 3}
-      propertyPath: m_TagString
-      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 7709881818554600205, guid: f73d06ff2292d0f43aa45eb50c4a01a1, type: 3}
       propertyPath: m_RootOrder
