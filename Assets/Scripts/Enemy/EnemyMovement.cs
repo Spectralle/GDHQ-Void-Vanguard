@@ -11,4 +11,21 @@ public class EnemyMovement : MonoBehaviour
         if (transform.position.y < LevelBoundary.D(-2))
             transform.position = new Vector3(Random.Range(LevelBoundary.L(2), LevelBoundary.R(-2)), LevelBoundary.U(2), transform.position.z);
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.transform.CompareTag("Projectile"))
+        {
+            Destroy(other.gameObject);
+            Destroy(gameObject);
+        }
+
+        if (other.CompareTag("Player"))
+        {
+            // Damage player
+
+            // Destroy enemy
+            Destroy(gameObject);
+        }
+    }
 }
