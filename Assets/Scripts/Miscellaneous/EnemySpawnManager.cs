@@ -45,12 +45,15 @@ public class EnemySpawnManager : MonoBehaviour
 
     private void Spawn(GameObject enemy)
     {
-        Vector3 spawnPosition = new Vector3(
-            Random.Range(LevelBoundary.L(2), LevelBoundary.R(-2)),
-            LevelBoundary.U(2),
-            transform.position.z
-        );
-        Instantiate(enemy, spawnPosition, Quaternion.identity, _enemyContainer);
+        Instantiate(enemy, GetSpawnPosition(), Quaternion.identity, _enemyContainer);
         EnemiesAlive++;
+    }
+
+    public static Vector2 GetSpawnPosition()
+    {
+        return new Vector2(
+            Random.Range(LevelBoundary.L(0.5f), LevelBoundary.R(-0.5f)),
+            LevelBoundary.U(2)
+        );
     }
 }

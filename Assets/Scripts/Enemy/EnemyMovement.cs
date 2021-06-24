@@ -11,7 +11,7 @@ public class EnemyMovement : MonoBehaviour
         if (transform.position.y < LevelBoundary.D(-2))
         {
             if (EnemySpawnManager.CanSpawn)
-                transform.position = new Vector3(Random.Range(LevelBoundary.L(2), LevelBoundary.R(-2)), LevelBoundary.U(2), transform.position.z);
+                transform.position = EnemySpawnManager.GetSpawnPosition();
             else
                 Destroy(gameObject);
         }
