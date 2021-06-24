@@ -4,10 +4,10 @@ using UnityEngine;
 public class PlayerGun : MonoBehaviour
 {
     [Header("Variables")]
-    [SerializeField] private float shotCooldown = 0.4f;
+    [SerializeField] private float _shotCooldown = 0.4f;
     [Space]
     [Header("Weapons")]
-    [SerializeField] private GameObject laserPrefab;
+    [SerializeField] private GameObject _laserPrefab;
 
     private bool _canFire = true;
 
@@ -21,14 +21,14 @@ public class PlayerGun : MonoBehaviour
     public void ShootLaser()
     {
         Vector3 spawnPoint = transform.position + new Vector3(0, 0.8f, 0);
-        Instantiate(laserPrefab, spawnPoint, Quaternion.identity);
+        Instantiate(_laserPrefab, spawnPoint, Quaternion.identity);
         StartCoroutine(ShotCooldown());
     }
 
     private IEnumerator ShotCooldown()
     {
         _canFire = false;
-        yield return new WaitForSeconds(shotCooldown);
+        yield return new WaitForSeconds(_shotCooldown);
         _canFire = true;
     }
 }

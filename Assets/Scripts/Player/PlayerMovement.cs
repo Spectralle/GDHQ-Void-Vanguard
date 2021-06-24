@@ -2,19 +2,19 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] private Vector3 startPosition = new Vector3(0, -3, 0);
-    [SerializeField] private float movementSpeed = 3f;
+    [SerializeField] private Vector3 _startPosition = new Vector3(0, -3, 0);
+    [SerializeField] private float _movementSpeed = 3f;
 
     private Vector3 _keyboardInput;
 
 
-    private void Awake() => transform.position = startPosition;
+    private void Awake() => transform.position = _startPosition;
 
     private void Update()
     {
         #region Player Movement
         _keyboardInput = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0);
-        transform.Translate(_keyboardInput * movementSpeed * Time.deltaTime);
+        transform.Translate(_keyboardInput * _movementSpeed * Time.deltaTime);
         #endregion
 
         #region Restrict player to within level bounds

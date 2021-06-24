@@ -127,8 +127,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2ee954f2a8adc34494746bb132c4cf0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startPosition: {x: 0, y: -3, z: 0}
-  movementSpeed: 4
+  _startPosition: {x: 0, y: -3, z: 0}
+  _movementSpeed: 3
 --- !u!114 &6858344343892727150
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -141,8 +141,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3ccf701bbb1dfd4093665dacd696e6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shotCooldown: 0.4
-  laserPrefab: {fileID: 7759052408972298117, guid: d8075bcd27a1aa34e858512f59e12334, type: 3}
+  _shotCooldown: 0.4
+  _laserPrefab: {fileID: 7759052408972298117, guid: d8075bcd27a1aa34e858512f59e12334, type: 3}
 --- !u!114 &2207040055764492020
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -156,4 +156,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _currentLives: 3
-  _maxLives: 3
