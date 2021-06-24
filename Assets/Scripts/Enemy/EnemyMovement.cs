@@ -14,7 +14,7 @@ public class EnemyMovement : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.transform.CompareTag("Projectile"))
+        if (other.CompareTag("Projectile"))
         {
             Destroy(other.gameObject);
             Destroy(gameObject);
@@ -22,9 +22,8 @@ public class EnemyMovement : MonoBehaviour
 
         if (other.CompareTag("Player"))
         {
-            // Damage player
-
-            // Destroy enemy
+            other.TryGetComponent(out PlayerHealth playerHealth);
+            playerHealth?.Damage(1);
             Destroy(gameObject);
         }
     }
