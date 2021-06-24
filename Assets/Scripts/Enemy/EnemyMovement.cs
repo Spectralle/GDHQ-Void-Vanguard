@@ -19,7 +19,7 @@ public class EnemyMovement : MonoBehaviour
 
     private void OnDestroy() => EnemySpawnManager.EnemiesAlive--;
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Projectile"))
         {
