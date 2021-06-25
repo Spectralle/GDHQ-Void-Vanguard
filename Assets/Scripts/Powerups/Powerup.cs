@@ -6,7 +6,7 @@ public class Powerup : MonoBehaviour
 {
     [SerializeField] private PowerupType _type;
     [SerializeField] private int _fallSpeed = 3;
-    [SerializeField] private int _duration = 4;
+    [SerializeField] private int _duration = 5;
 
 
     private void Update()
@@ -21,7 +21,9 @@ public class Powerup : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            collision.GetComponent<PlayerGun>().ActivatePowerup(_type, _duration);
+            collision.gameObject.TryGetComponent(out PlayerPowerup plPu);
+            if (plPu)
+                plPu.ActivatePowerup(_type, _duration);
             Destroy(gameObject);
         }
     }

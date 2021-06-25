@@ -57,7 +57,12 @@ public class PlayerGun : MonoBehaviour
         _canFire = true;
     }
 
-    public void ActivatePowerup(PowerupType type, int duration) => StartCoroutine(ManagePowerup(type, duration));
+    public void ActivatePowerup(PowerupType type, int duration)
+    {
+        if (_isTripleShotActive)
+            StopAllCoroutines();
+        StartCoroutine(ManagePowerup(type, duration));
+    }
 
     private IEnumerator ManagePowerup(PowerupType type, int duration)
     {

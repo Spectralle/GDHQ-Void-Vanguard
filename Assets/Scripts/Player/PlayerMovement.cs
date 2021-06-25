@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -6,6 +7,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float _movementSpeed = 3f;
 
     private Vector3 _keyboardInput;
+    private bool _isSpeedBoosted;
 
 
     private void Awake() => transform.position = _startPosition;
@@ -32,5 +34,27 @@ public class PlayerMovement : MonoBehaviour
 
         transform.position = new Vector3(x, y, transform.position.z);
         #endregion
+    }
+
+    public void ActivatePowerup(PowerupType type, int duration)
+    {
+        if (_isSpeedBoosted)
+            StopAllCoroutines();
+        StartCoroutine(ManagePowerup(type, duration));
+    }
+
+    private IEnumerator ManagePowerup(PowerupType type, int duration)
+    {
+        switch (type)
+        {
+            case PowerupType.SpeedBoost:
+                _isSpeedBoosted = true;
+                float originalSpeed = _movementSpeed;
+                _movementSpeed *= 3;
+                yield return new WaitForSeconds(duration);
+                _movementSpeed = originalSpeed;
+                _isSpeedBoosted = false;
+                break;
+        }
     }
 }

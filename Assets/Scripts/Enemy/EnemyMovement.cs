@@ -10,14 +10,14 @@ public class EnemyMovement : MonoBehaviour
 
         if (transform.position.y < LevelBoundary.D(-2))
         {
-            if (EnemySpawnManager.CanSpawn)
-                transform.position = EnemySpawnManager.GetSpawnPosition();
+            if (SpawnManager.CanSpawn)
+                transform.position = SpawnManager.GetSpawnPosition();
             else
                 Destroy(gameObject);
         }
     }
 
-    private void OnDestroy() => EnemySpawnManager.EnemiesAlive--;
+    private void OnDestroy() => SpawnManager.EnemiesAlive--;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -30,8 +30,12 @@ public class EnemyMovement : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             other.TryGetComponent(out PlayerHealth playerHealth);
-            playerHealth?.Damage(1);
+            if (playerHealth)
+                playerHealth.Damage(1);
             Destroy(gameObject);
         }
+
+        if (other.CompareTag("Shield"))
+            Destroy(gameObject);
     }
 }
