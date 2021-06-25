@@ -2,13 +2,40 @@ using UnityEngine;
 
 public class EnemyMovement : MonoBehaviour
 {
-    [SerializeField] private float moveSpeed = 5;
+    [SerializeField] private float _moveSpeed = 5;
 
     private void Update()
     {
-        transform.Translate(-Vector3.up * moveSpeed * Time.deltaTime);
+        transform.Translate(Vector3.down * _moveSpeed * Time.deltaTime);
 
         if (transform.position.y < LevelBoundary.D(-2))
-            transform.position = new Vector3(Random.Range(LevelBoundary.L(2), LevelBoundary.R(-2)), LevelBoundary.U(2), transform.position.z);
+        {
+            if (SpawnManager.CanSpawn)
+                transform.position = SpawnManager.GetSpawnPosition();
+            else
+                Destroy(gameObject);
+        }
+    }
+
+    private void OnDestroy() => SpawnManager.EnemiesAlive--;
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Projectile"))
+        {
+            Destroy(other.gameObject);
+            Destroy(gameObject);
+        }
+
+        if (other.CompareTag("Player"))
+        {
+            other.TryGetComponent(out PlayerHealth playerHealth);
+            if (playerHealth)
+                playerHealth.Damage(1);
+            Destroy(gameObject);
+        }
+
+        if (other.CompareTag("Shield"))
+            Destroy(gameObject);
     }
 }
