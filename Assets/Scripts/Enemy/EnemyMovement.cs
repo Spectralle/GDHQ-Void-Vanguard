@@ -34,5 +34,8 @@ public class EnemyMovement : MonoBehaviour
                 playerHealth.Damage(1);
             Destroy(gameObject);
         }
+
+        if (other.CompareTag("Shield"))
+            Destroy(gameObject);
     }
 }

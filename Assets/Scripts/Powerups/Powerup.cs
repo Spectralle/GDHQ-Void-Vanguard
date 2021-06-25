@@ -21,9 +21,9 @@ public class Powerup : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            collision.TryGetComponent(out PlayerGun playerGun);
-            if (playerGun)
-                playerGun.ActivatePowerup(_type, _duration);
+            collision.gameObject.TryGetComponent(out PlayerPowerup plPu);
+            if (plPu)
+                plPu.ActivatePowerup(_type, _duration);
             Destroy(gameObject);
         }
     }
