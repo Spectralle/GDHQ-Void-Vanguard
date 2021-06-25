@@ -6,7 +6,7 @@ public class EnemyMovement : MonoBehaviour
 
     private void Update()
     {
-        transform.Translate(-Vector3.up * _moveSpeed * Time.deltaTime);
+        transform.Translate(Vector3.down * _moveSpeed * Time.deltaTime);
 
         if (transform.position.y < LevelBoundary.D(-2))
         {
