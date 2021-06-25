@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] private Vector3 _startPosition = new Vector3(0, -3, 0);
+    [SerializeField] private Vector3 _startPosition = new Vector3(0, -3.5f, 0);
     [SerializeField] private float _movementSpeed = 3f;
 
     private Vector3 _keyboardInput;
