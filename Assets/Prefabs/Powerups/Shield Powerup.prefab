@@ -115,7 +115,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _type: 2
   _fallSpeed: 3
-  _duration: 5
+  _duration: 6
 --- !u!95 &4431738150215853662
 Animator:
   serializedVersion: 3

@@ -12,6 +12,8 @@ public class PlayerGun : MonoBehaviour
     [Space]
     [Header("Weapons")]
     [SerializeField] private GameObject _pfLaser;
+    [Space]
+    [SerializeField] private Transform _projectileContainer;
 
     private bool _canFire = true;
     private bool _isTripleShotActive;
@@ -21,9 +23,6 @@ public class PlayerGun : MonoBehaviour
     {
         if (Input.GetButtonDown("Fire1") && _canFire)
             ShootLaser();
-
-        if (Input.GetKeyDown(KeyCode.E))
-            _isTripleShotActive = !_isTripleShotActive;
     }
 
     private Vector3 GetShotSpawnPoint(int pointIndex)
@@ -40,12 +39,12 @@ public class PlayerGun : MonoBehaviour
     public void ShootLaser()
     {
         if (!_isTripleShotActive)
-            Instantiate(_pfLaser, GetShotSpawnPoint(1), Quaternion.identity);
+            Instantiate(_pfLaser, GetShotSpawnPoint(1), Quaternion.identity, _projectileContainer);
         else
         {
-            Instantiate(_pfLaser, GetShotSpawnPoint(1), Quaternion.identity);
-            Instantiate(_pfLaser, GetShotSpawnPoint(2), Quaternion.identity);
-            Instantiate(_pfLaser, GetShotSpawnPoint(3), Quaternion.identity);
+            Instantiate(_pfLaser, GetShotSpawnPoint(1), Quaternion.identity, _projectileContainer);
+            Instantiate(_pfLaser, GetShotSpawnPoint(2), Quaternion.identity, _projectileContainer);
+            Instantiate(_pfLaser, GetShotSpawnPoint(3), Quaternion.identity, _projectileContainer);
         }
         StartCoroutine(ShotCooldown());
     }

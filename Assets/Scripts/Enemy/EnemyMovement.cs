@@ -23,6 +23,8 @@ public class EnemyMovement : MonoBehaviour
     {
         if (other.CompareTag("Projectile"))
         {
+            UIManager.i.AddToEnemiesKilled(1);
+            UIManager.i.AddToScore(10);
             Destroy(other.gameObject);
             Destroy(gameObject);
         }
@@ -36,6 +38,10 @@ public class EnemyMovement : MonoBehaviour
         }
 
         if (other.CompareTag("Shield"))
+        {
+            other.GetComponentInParent<PlayerShield>().StopAllCoroutines();
+            other.gameObject.SetActive(false);
             Destroy(gameObject);
+        }
     }
 }
