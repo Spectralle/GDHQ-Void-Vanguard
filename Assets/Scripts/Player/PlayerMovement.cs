@@ -8,6 +8,7 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector3 _keyboardInput;
     private bool _isSpeedBoosted;
+    private int _speedMultiplier = 1;
 
 
     private void Awake() => transform.position = _startPosition;
@@ -16,7 +17,7 @@ public class PlayerMovement : MonoBehaviour
     {
         #region Player Movement
         _keyboardInput = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0);
-        transform.Translate(_keyboardInput * _movementSpeed * Time.deltaTime);
+        transform.Translate(_keyboardInput * (_movementSpeed * _speedMultiplier) * Time.deltaTime);
         #endregion
 
         #region Restrict player to within level bounds
@@ -49,10 +50,9 @@ public class PlayerMovement : MonoBehaviour
         {
             case PowerupType.SpeedBoost:
                 _isSpeedBoosted = true;
-                float originalSpeed = _movementSpeed;
-                _movementSpeed *= 3;
+                _speedMultiplier = 3;
                 yield return new WaitForSeconds(duration);
-                _movementSpeed = originalSpeed;
+                _speedMultiplier = 1;
                 _isSpeedBoosted = false;
                 break;
         }

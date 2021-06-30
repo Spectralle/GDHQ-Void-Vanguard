@@ -8,13 +8,15 @@ public class SpawnManager : MonoBehaviour
     public static int EnemiesAlive;
 
     [SerializeField] private GameObject _player;
+    [Header("Enemies:")]
+    [SerializeField] private bool _spawnEnemies = true;
     [SerializeField] private Transform _enemyContainer;
-    [SerializeField] private Transform _powerupContainer;
-    [Space]
     [SerializeField] private Vector2 _enemySpawnDelay = new Vector2(2.5f, 5);
-    [SerializeField] private Vector2 _powerupSpawnDelay = new Vector2(6, 17);
-    [Space]
     [SerializeField] private GameObject[] _enemyTypes = new GameObject[0];
+    [Header("PowerUps:")]
+    [SerializeField] private bool _spawnPowerups = true;
+    [SerializeField] private Transform _powerupContainer;
+    [SerializeField] private Vector2 _powerupSpawnDelay = new Vector2(6, 17);
     [SerializeField] private GameObject[] _powerupTypes = new GameObject[0];
 
 
@@ -42,10 +44,9 @@ public class SpawnManager : MonoBehaviour
     {
         yield return new WaitForSeconds(1.5f);
 
-        while (CanSpawn)
+        while (CanSpawn && _spawnEnemies)
         {
-            Instantiate(_enemyTypes[Random.Range(0, _enemyTypes.Length)],
-                GetSpawnPosition(1f), Quaternion.identity, _enemyContainer);
+            Instantiate(_enemyTypes[Random.Range(0, _enemyTypes.Length)], GetSpawnPosition(1f), Quaternion.identity, _enemyContainer);
             EnemiesAlive++;
             yield return new WaitForSeconds(Random.Range(_enemySpawnDelay.x, _enemySpawnDelay.y));
         }
@@ -55,7 +56,7 @@ public class SpawnManager : MonoBehaviour
     {
         yield return new WaitForSeconds(Random.Range(2.5f, 10f));
 
-        while (CanSpawn)
+        while (CanSpawn && _spawnPowerups)
         {
             Instantiate(_powerupTypes[Random.Range(0, _powerupTypes.Length)],
                 GetSpawnPosition(1.5f), Quaternion.identity, _powerupContainer);
