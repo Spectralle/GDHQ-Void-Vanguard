@@ -4,8 +4,11 @@ using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
+    public static SpawnManager i;
+
     public static bool CanSpawn = true;
     public static int EnemiesAlive;
+    public static int PowerupsInLevel;
 
     [SerializeField] private GameObject _player;
     [Header("Enemies:")]
@@ -20,17 +23,19 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] private GameObject[] _powerupTypes = new GameObject[0];
 
 
-    private void Start()
+    private void Awake() => i = this;
+
+    public static void StartSpawning()
     {
-        if (_player && _enemyContainer && _powerupContainer && _enemyTypes.Length > 0 && _powerupTypes.Length > 0)
+        if (i._player && i._enemyContainer && i._powerupContainer && i._enemyTypes.Length > 0 && i._powerupTypes.Length > 0)
         {
-            StartCoroutine(ManageEnemySpawning());
-            StartCoroutine(ManagePowerupSpawning());
+            i.StartCoroutine(ManageEnemySpawning());
+            i.StartCoroutine(ManagePowerupSpawning());
         }
         else
         {
-            Debug.Log($"Missing variables in the Spawn Manager on {name}. Spawning canceled!", gameObject);
-            enabled = false;
+            Debug.Log($"Missing variables in the Spawn Manager on {i.name}. Spawning canceled!", i.gameObject);
+            i.enabled = false;
         }    
     }
 
@@ -40,27 +45,28 @@ public class SpawnManager : MonoBehaviour
             CanSpawn = false;
     }
 
-    IEnumerator ManageEnemySpawning()
+    private static IEnumerator ManageEnemySpawning()
     {
         yield return new WaitForSeconds(1.5f);
 
-        while (CanSpawn && _spawnEnemies)
+        while (CanSpawn && i._spawnEnemies)
         {
-            Instantiate(_enemyTypes[Random.Range(0, _enemyTypes.Length)], GetSpawnPosition(1f), Quaternion.identity, _enemyContainer);
+            Instantiate(i._enemyTypes[Random.Range(0, i._enemyTypes.Length)], GetSpawnPosition(1f), Quaternion.identity, i._enemyContainer);
             EnemiesAlive++;
-            yield return new WaitForSeconds(Random.Range(_enemySpawnDelay.x, _enemySpawnDelay.y));
+            yield return new WaitForSeconds(Random.Range(i._enemySpawnDelay.x, i._enemySpawnDelay.y));
         }
     }
     
-    IEnumerator ManagePowerupSpawning()
+    private static IEnumerator ManagePowerupSpawning()
     {
         yield return new WaitForSeconds(Random.Range(2.5f, 10f));
 
-        while (CanSpawn && _spawnPowerups)
+        while (CanSpawn && i._spawnPowerups)
         {
-            Instantiate(_powerupTypes[Random.Range(0, _powerupTypes.Length)],
-                GetSpawnPosition(1.5f), Quaternion.identity, _powerupContainer);
-            yield return new WaitForSeconds(Random.Range(_powerupSpawnDelay.x, _powerupSpawnDelay.y));
+            Instantiate(i._powerupTypes[Random.Range(0, i._powerupTypes.Length)],
+                GetSpawnPosition(1.5f), Quaternion.identity, i._powerupContainer);
+            PowerupsInLevel++;
+            yield return new WaitForSeconds(Random.Range(i._powerupSpawnDelay.x, i._powerupSpawnDelay.y));
         }
     }
 

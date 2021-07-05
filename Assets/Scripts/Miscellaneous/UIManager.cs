@@ -39,7 +39,7 @@ public class UIManager : MonoBehaviour
 
     public void ChangePlayerLives(int currentLives)
     {
-        _playerLives.SetText($"Score: {_playerLivesValue += currentLives}");
+        _playerLives.SetText($"Lives: {currentLives}");
         _playerLivesImage.sprite = LivesSprites[currentLives];
     }
 }

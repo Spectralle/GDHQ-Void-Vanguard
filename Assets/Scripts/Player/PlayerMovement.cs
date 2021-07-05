@@ -8,7 +8,7 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector3 _keyboardInput;
     private bool _isSpeedBoosted;
-    private int _speedMultiplier = 1;
+    private float _speedMultiplier = 1;
 
 
     private void Awake() => transform.position = _startPosition;
@@ -50,7 +50,7 @@ public class PlayerMovement : MonoBehaviour
         {
             case PowerupType.SpeedBoost:
                 _isSpeedBoosted = true;
-                _speedMultiplier = 3;
+                _speedMultiplier = 2.5f;
                 yield return new WaitForSeconds(duration);
                 _speedMultiplier = 1;
                 _isSpeedBoosted = false;
