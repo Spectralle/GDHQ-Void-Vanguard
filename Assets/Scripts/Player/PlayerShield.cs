@@ -37,4 +37,14 @@ public class PlayerShield : MonoBehaviour
         // Allowing for different types of shields in future
         //}
     }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Enemy Projectile"))
+        {
+            GameObject shield = transform.GetChild(0).gameObject;
+            shield.SetActive(false);
+            _isShieldActive = false;
+        }
+    }
 }

@@ -13,22 +13,23 @@ public class PlayerGun : MonoBehaviour
     [Space]
     [Header("Weapons")]
     [SerializeField] private GameObject _pfLaser;
+    [SerializeField] private Vector2 _laserSpeed = new Vector2(0, 8f);
     [SerializeField] private AudioClip _laserAudioClip;
-    [Space]
-    [SerializeField] private Transform _projectileContainer;
 
+    private Transform _projectileContainer;
     private bool _canFire = true;
     private bool _isTripleShotActive;
     private bool _isSpeedBoostActive;
     private float _cooldownMultiplier = 1;
-    private AudioSource audioSource;
+    private AudioSource _audioSource;
 
 
     private void Awake()
     {
+        _projectileContainer = GameObject.Find("Projectile Container").transform;
         if (!_projectileContainer)
             Debug.LogWarning("No container object set for projectiles");
-        audioSource = GetComponent<AudioSource>();
+        _audioSource = GetComponent<AudioSource>();
     }
 
     private void Update()
@@ -42,30 +43,34 @@ public class PlayerGun : MonoBehaviour
         switch (pointIndex)
         {
             default:
-            case 1: return (Vector2)transform.position + _shotPoint1 + new Vector2(0, _pfLaser.transform.lossyScale.y);
-            case 2: return (Vector2)transform.position + _shotPoint2 + new Vector2(0, _pfLaser.transform.lossyScale.y);
-            case 3: return (Vector2)transform.position + _shotPoint3 + new Vector2(0, _pfLaser.transform.lossyScale.y);
+            case 1: return (Vector2)transform.position + _shotPoint1;
+            case 2: return (Vector2)transform.position + _shotPoint2;
+            case 3: return (Vector2)transform.position + _shotPoint3;
         }
     }
 
     public void ShootLaser()
     {
+        _canFire = false;
         if (!_isTripleShotActive)
-            Instantiate(_pfLaser, GetShotSpawnPoint(1), Quaternion.identity, _projectileContainer);
+            Instantiate(_pfLaser, GetShotSpawnPoint(1), Quaternion.identity, _projectileContainer)
+                .GetComponent<LaserMovement>().SetMovementDirection(_laserSpeed);
         else
         {
-            Instantiate(_pfLaser, GetShotSpawnPoint(1), Quaternion.identity, _projectileContainer);
-            Instantiate(_pfLaser, GetShotSpawnPoint(2), Quaternion.identity, _projectileContainer);
-            Instantiate(_pfLaser, GetShotSpawnPoint(3), Quaternion.identity, _projectileContainer);
+            Instantiate(_pfLaser, GetShotSpawnPoint(1), Quaternion.identity, _projectileContainer)
+                .GetComponent<LaserMovement>().SetMovementDirection(_laserSpeed);
+            Instantiate(_pfLaser, GetShotSpawnPoint(2), Quaternion.identity, _projectileContainer)
+                .GetComponent<LaserMovement>().SetMovementDirection(_laserSpeed);
+            Instantiate(_pfLaser, GetShotSpawnPoint(3), Quaternion.identity, _projectileContainer)
+                .GetComponent<LaserMovement>().SetMovementDirection(_laserSpeed);
         }
-        if (audioSource && _laserAudioClip)
-            audioSource.PlayOneShot(_laserAudioClip);
+        if (_audioSource && _laserAudioClip)
+            _audioSource.PlayOneShot(_laserAudioClip);
         StartCoroutine(ShotCooldown());
     }
 
     private IEnumerator ShotCooldown()
     {
-        _canFire = false;
         yield return new WaitForSeconds(_shotCooldown * _cooldownMultiplier);
         _canFire = true;
     }

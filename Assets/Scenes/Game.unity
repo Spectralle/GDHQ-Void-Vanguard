@@ -573,9 +573,9 @@ RectTransform:
   m_Father: {fileID: 308024253}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 1}
-  m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 530.16425, y: -609.99994}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: -109.835754, y: 110.00006}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &493621438
@@ -1326,7 +1326,7 @@ GameObject:
   - component: {fileID: 880606676}
   - component: {fileID: 880606675}
   m_Layer: 5
-  m_Name: Press R to restart
+  m_Name: Player Input
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1371,7 +1371,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Press R to restart
+  m_text: 'Press R to restart
+
+    Press Q to quit'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2662,6 +2664,7 @@ GameObject:
   - component: {fileID: 1716475207}
   - component: {fileID: 1716475210}
   - component: {fileID: 1716475211}
+  - component: {fileID: 1716475212}
   m_Layer: 0
   m_Name: Game Handler
   m_TagString: GameController
@@ -2762,6 +2765,18 @@ MonoBehaviour:
   _victoryText: {fileID: 2127651837}
   _defeatText: {fileID: 608134103}
   _gameplayUIContainer: {fileID: 308024252}
+--- !u!114 &1716475212
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1716475206}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef2fa93d2f0b3a6458ed6251f085be28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1795921423
 GameObject:
   m_ObjectHideFlags: 0
@@ -2774,7 +2789,7 @@ GameObject:
   - component: {fileID: 1795921426}
   - component: {fileID: 1795921425}
   m_Layer: 5
-  m_Name: Press R to restart
+  m_Name: Player Input
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2819,7 +2834,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Press R to restart
+  m_text: 'Press R to restart
+
+    Press Q to quit'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
