@@ -3,20 +3,18 @@ using UnityEngine;
 
 public class PlayerShield : MonoBehaviour
 {
-    [SerializeField] private GameObject _childShield;
-
     private bool _isShieldActive;
 
 
     private void Start()
     {
-        if (_childShield == null)
+        if (!transform.GetChild(0))
         {
             Debug.LogError("No child shield defined. Shields disabled");
             enabled = false;
         }
         else
-            _childShield.SetActive(false);
+            transform.GetChild(0).gameObject.SetActive(false);
     }
 
     public void ActivatePowerup(PowerupType type, int duration)
@@ -28,13 +26,15 @@ public class PlayerShield : MonoBehaviour
 
     private IEnumerator ManagePowerup(PowerupType type, int duration)
     {
-        switch (type)
-        {
-            case PowerupType.Shield:
-                _childShield.SetActive(true);
+        //switch (type)
+        //{
+        //    case PowerupType.Shield:
+                GameObject shield = transform.GetChild(0).gameObject;
+                shield.SetActive(true);
                 yield return new WaitForSeconds(duration);
-                _childShield.SetActive(false);
-                break;
-        }
+                shield.SetActive(false);
+        //        break;
+        // Allowing for different types of shields in future
+        //}
     }
 }

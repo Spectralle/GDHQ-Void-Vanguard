@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class PlayerGun : MonoBehaviour
 {
     [Header("Variables")]
@@ -12,12 +13,23 @@ public class PlayerGun : MonoBehaviour
     [Space]
     [Header("Weapons")]
     [SerializeField] private GameObject _pfLaser;
+    [SerializeField] private AudioClip _laserAudioClip;
     [Space]
     [SerializeField] private Transform _projectileContainer;
 
     private bool _canFire = true;
     private bool _isTripleShotActive;
+    private bool _isSpeedBoostActive;
+    private float _cooldownMultiplier = 1;
+    private AudioSource audioSource;
 
+
+    private void Awake()
+    {
+        if (!_projectileContainer)
+            Debug.LogWarning("No container object set for projectiles");
+        audioSource = GetComponent<AudioSource>();
+    }
 
     private void Update()
     {
@@ -46,20 +58,21 @@ public class PlayerGun : MonoBehaviour
             Instantiate(_pfLaser, GetShotSpawnPoint(2), Quaternion.identity, _projectileContainer);
             Instantiate(_pfLaser, GetShotSpawnPoint(3), Quaternion.identity, _projectileContainer);
         }
+        if (audioSource && _laserAudioClip)
+            audioSource.PlayOneShot(_laserAudioClip);
         StartCoroutine(ShotCooldown());
     }
 
     private IEnumerator ShotCooldown()
     {
         _canFire = false;
-        yield return new WaitForSeconds(_shotCooldown);
+        yield return new WaitForSeconds(_shotCooldown * _cooldownMultiplier);
         _canFire = true;
     }
 
     public void ActivatePowerup(PowerupType type, int duration)
     {
-        if (_isTripleShotActive)
-            StopAllCoroutines();
+        StopCoroutine(ManagePowerup(type, duration));
         StartCoroutine(ManagePowerup(type, duration));
     }
 
@@ -71,6 +84,13 @@ public class PlayerGun : MonoBehaviour
                 _isTripleShotActive = true;
                 yield return new WaitForSeconds(duration);
                 _isTripleShotActive = false;
+                break;
+            case PowerupType.SpeedBoost:
+                _isSpeedBoostActive = true;
+                _cooldownMultiplier = 0.7f;
+                yield return new WaitForSeconds(duration);
+                _cooldownMultiplier = 1;
+                _isSpeedBoostActive = false;
                 break;
         }
     }

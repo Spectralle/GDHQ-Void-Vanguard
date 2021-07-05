@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class Powerup : MonoBehaviour
 {
     [SerializeField] private PowerupType _type;
     [SerializeField] private int _fallSpeed = 3;
     [SerializeField] private int _duration = 5;
+    [SerializeField] private AudioClip _powerupAudioClip;
 
 
     private void Update()
@@ -23,7 +25,11 @@ public class Powerup : MonoBehaviour
         {
             collision.gameObject.TryGetComponent(out PlayerPowerup plPu);
             if (plPu)
-                plPu.ActivatePowerup(_type, _duration);
+            {
+                GetComponent<AudioSource>().PlayOneShot(_powerupAudioClip);
+                plPu.ActivatePowerup(_type, _duration, _powerupAudioClip);
+            }
+            SpawnManager.PowerupsInLevel--;
             Destroy(gameObject);
         }
     }

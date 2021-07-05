@@ -1,23 +1,62 @@
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class PlayerHealth : MonoBehaviour
 {
     [SerializeField] private int _currentLives = 3;
     public int CurrentLives => _currentLives;
+    [SerializeField] private GameObject _damage2LivesLeft;
+    [SerializeField] private GameObject _damage1LifeLeft;
+    [SerializeField] private AudioClip _explosionAudioClip;
 
+
+    private void Awake()
+    {
+        _damage2LivesLeft.SetActive(false);
+        _damage1LifeLeft.SetActive(false);
+    }
 
     public void Damage() => Damage(1);
 
     public void Damage(int livesLost)
     {
         if (_currentLives > 0)
-            _currentLives--;
+            _currentLives -= livesLost;
 
-        UIManager.i.ChangePlayerLives(_currentLives);
-
-        if (_currentLives <= 0)
-            Die();
+        switch (_currentLives)
+        {
+            case 3:
+                UIManager.i.ChangePlayerLives(_currentLives);
+                _damage2LivesLeft.SetActive(false);
+                _damage1LifeLeft.SetActive(false);
+                break;
+            case 2:
+                UIManager.i.ChangePlayerLives(_currentLives);
+                _damage2LivesLeft.SetActive(true);
+                _damage1LifeLeft.SetActive(false);
+                break;
+            case 1:
+                UIManager.i.ChangePlayerLives(_currentLives);
+                _damage2LivesLeft.SetActive(false);
+                _damage1LifeLeft.SetActive(true);
+                break;
+            case 0:
+                Die();
+                break;
+        }
     }
 
-    public void Die() => Destroy(gameObject);
+    public void Die()
+    {
+        GetComponent<AudioSource>().PlayOneShot(_explosionAudioClip, 1.2f);
+        GameConclusionHandler.i.Defeat();
+        Destroy(gameObject);
+    }
+
+
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && _currentLives > 0)
+            Die();
+    }
 }
