@@ -13,7 +13,7 @@ PrefabInstance:
       objectReference: {fileID: 9100000, guid: 21406fc694306fa48b0ed518f193f0e6, type: 2}
     - target: {fileID: 2641604716268628962, guid: 10f28822dc705f34bb4374f4aa1386d9, type: 3}
       propertyPath: m_Name
-      value: SpeedBoost PowerUp
+      value: SpeedBoost PowerUp Variant
       objectReference: {fileID: 0}
     - target: {fileID: 2641604716268628964, guid: 10f28822dc705f34bb4374f4aa1386d9, type: 3}
       propertyPath: m_Sprite

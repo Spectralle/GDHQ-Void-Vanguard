@@ -32,7 +32,10 @@ public class GameConclusionHandler : MonoBehaviour
         if (_isDefeated || _isVictorious)
         {
             if (Input.GetKeyDown(KeyCode.R))
-                ResetGame();
+                GameSceneManager.ResetGame();
+
+            if (Input.GetKeyDown(KeyCode.Q))
+                GameSceneManager.QuitGame();
         }
     }
 
@@ -60,6 +63,4 @@ public class GameConclusionHandler : MonoBehaviour
         _isDefeated = false;
         _isVictorious = false;
     }
-
-    public void ResetGame() => SceneManager.LoadScene("Game");
 }

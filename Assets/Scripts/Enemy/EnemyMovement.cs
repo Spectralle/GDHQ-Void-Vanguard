@@ -9,6 +9,7 @@ public class EnemyMovement : MonoBehaviour
 
     private Animator _anim;
     private bool _isDestroyed;
+    public bool IsDestroyed;
 
 
     private void Awake()
@@ -35,7 +36,7 @@ public class EnemyMovement : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Projectile"))
+        if (other.CompareTag("Player Projectile"))
         {
             UIManager.i.AddToEnemiesKilled(1);
             UIManager.i.AddToScore(10);
@@ -51,7 +52,7 @@ public class EnemyMovement : MonoBehaviour
             StartCoroutine(Explode());
         }
 
-        if (other.CompareTag("Shield"))
+        if (other.CompareTag("Player Shield"))
         {
             other.GetComponentInParent<PlayerShield>().StopAllCoroutines();
             other.gameObject.SetActive(false);
@@ -62,10 +63,14 @@ public class EnemyMovement : MonoBehaviour
     private IEnumerator Explode()
     {
         _isDestroyed = true;
+
         if (_anim)
             _anim.SetTrigger("OnEnemyDeath");
+
         GetComponent<AudioSource>().PlayOneShot(_explosionAudioClip, 0.9f);
+
         GetComponent<Collider2D>().enabled = false;
+
         Destroy(gameObject, 2.5f);
 
         while (_moveSpeed > 0.00f)

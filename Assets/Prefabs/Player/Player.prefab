@@ -487,7 +487,7 @@ GameObject:
   - component: {fileID: 4030032297436371344}
   m_Layer: 0
   m_Name: PlayerShield
-  m_TagString: Shield
+  m_TagString: Player Shield
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -663,7 +663,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: a45d21c30e0154a9ca1a5d6fb2bf3cfa, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -776,7 +776,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_Sprite: {fileID: 21300000, guid: 1b4a8fdd39d3a45d0a9ee484ad6800ec, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -948,6 +948,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _startPosition: {x: 0, y: -3, z: 0}
   _movementSpeed: 5
+  _thruster: {fileID: 6806159552466919942}
 --- !u!114 &6858344343892727150
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -960,13 +961,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3ccf701bbb1dfd4093665dacd696e6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _shotCooldown: 0.2
+  _shotCooldown: 0.3
   _shotPoint1: {x: 0, y: 0.75}
   _shotPoint2: {x: -0.785, y: -0.61}
   _shotPoint3: {x: 0.785, y: -0.61}
   _pfLaser: {fileID: 7759052408972298117, guid: 35a56cba45ca7994481fab06dc589632, type: 3}
+  _laserSpeed: {x: 0, y: 20}
   _laserAudioClip: {fileID: 8300000, guid: 75676f361bdfeaf41a46623e95df3dbc, type: 3}
-  _projectileContainer: {fileID: 0}
 --- !u!114 &2207040055764492020
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -982,7 +983,7 @@ MonoBehaviour:
   _currentLives: 3
   _damage2LivesLeft: {fileID: 5661705165425011922}
   _damage1LifeLeft: {fileID: 2168894622898438699}
-  _explosionAudioClip: {fileID: 8300000, guid: a885c043fab7e46438bba03ba9dab6bc, type: 3}
+  _explosionPrefab: {fileID: 5901384970640918411, guid: 0bfc6987dd1f45e42952cf904a763407, type: 3}
 --- !u!114 &8413316032799347752
 MonoBehaviour:
   m_ObjectHideFlags: 0

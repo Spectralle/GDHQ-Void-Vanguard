@@ -7,13 +7,19 @@ public class PlayerHealth : MonoBehaviour
     public int CurrentLives => _currentLives;
     [SerializeField] private GameObject _damage2LivesLeft;
     [SerializeField] private GameObject _damage1LifeLeft;
-    [SerializeField] private AudioClip _explosionAudioClip;
+    [Space]
+    [SerializeField] private GameObject _explosionPrefab;
 
 
     private void Awake()
     {
         _damage2LivesLeft.SetActive(false);
         _damage1LifeLeft.SetActive(false);
+    }
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && _currentLives > 0)
+            Die();
     }
 
     public void Damage() => Damage(1);
@@ -48,15 +54,21 @@ public class PlayerHealth : MonoBehaviour
 
     public void Die()
     {
-        GetComponent<AudioSource>().PlayOneShot(_explosionAudioClip, 1.2f);
+        _currentLives = 0;
+
+        Instantiate(_explosionPrefab, transform.position, Quaternion.identity, GameObject.Find("Game Handler/Scene").transform);
+
         GameConclusionHandler.i.Defeat();
-        Destroy(gameObject);
+
+        Destroy(gameObject, 0.5f);
     }
 
-
-    private void Update()
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && _currentLives > 0)
-            Die();
+        if (other.CompareTag("Enemy Projectile"))
+        {
+            Destroy(other.gameObject);
+            Damage();
+        }
     }
 }

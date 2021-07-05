@@ -4,31 +4,29 @@ using UnityEngine;
 [RequireComponent(typeof(AudioSource))]
 public class Asteroid : MonoBehaviour
 {
-    [SerializeField] private float _rotationSpeed = 5;
+    [SerializeField] private float _rotationSpeed = 15;
     [SerializeField] private GameObject _explosionPrefab;
-    [SerializeField] private AudioClip _explosionAudioClip;
 
+
+    private void Awake()
+    {
+        int randSpin = Random.Range(0, 100);
+        if (randSpin < 50)
+            _rotationSpeed = -_rotationSpeed;
+    }
 
     private void Update() => transform.Rotate(Vector3.forward * _rotationSpeed * Time.deltaTime);
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Projectile"))
+        if (other.CompareTag("Player Projectile"))
             StartCoroutine(Explode(other.gameObject));
     }
 
     private IEnumerator Explode(GameObject other)
     {
-        GameObject explosion = Instantiate(
-            _explosionPrefab,
-            transform.position,
-            Quaternion.identity,
-            GameObject.Find("Game Handler/Scene").transform
-        );
+        Instantiate(_explosionPrefab, transform.position, Quaternion.identity, GameObject.Find("Game Handler/Scene").transform);
 
-        GetComponent<AudioSource>().PlayOneShot(_explosionAudioClip, 1.2f);
-
-        Destroy(explosion, 2.55f);
         Destroy(other.gameObject);
 
         GetComponent<Collider2D>().enabled = false;

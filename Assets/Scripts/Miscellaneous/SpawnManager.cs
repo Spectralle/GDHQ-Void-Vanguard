@@ -27,6 +27,11 @@ public class SpawnManager : MonoBehaviour
 
     public static void StartSpawning()
     {
+        string E = i._spawnEnemies ? " Enemies" : string.Empty;
+        string P = i._spawnEnemies ? " Powerups" : string.Empty;
+        string B = E != string.Empty && P != string.Empty ? " and" : string.Empty;
+        Debug.Log($"Started spawning{E}{B}{P}!");
+
         if (i._player && i._enemyContainer && i._powerupContainer && i._enemyTypes.Length > 0 && i._powerupTypes.Length > 0)
         {
             i.StartCoroutine(ManageEnemySpawning());
@@ -47,7 +52,7 @@ public class SpawnManager : MonoBehaviour
 
     private static IEnumerator ManageEnemySpawning()
     {
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1f);
 
         while (CanSpawn && i._spawnEnemies)
         {
@@ -59,7 +64,7 @@ public class SpawnManager : MonoBehaviour
     
     private static IEnumerator ManagePowerupSpawning()
     {
-        yield return new WaitForSeconds(Random.Range(2.5f, 10f));
+        yield return new WaitForSeconds(Random.Range(2f, 10f));
 
         while (CanSpawn && i._spawnPowerups)
         {
