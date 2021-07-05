@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(AudioSource))]
 public class Asteroid : MonoBehaviour
 {
     [SerializeField] private float _rotationSpeed = 15;

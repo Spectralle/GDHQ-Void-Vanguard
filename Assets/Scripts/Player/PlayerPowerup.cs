@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 
-[RequireComponent(typeof(AudioSource))]
 public class PlayerPowerup : MonoBehaviour
 {
     private AudioSource audioSource;

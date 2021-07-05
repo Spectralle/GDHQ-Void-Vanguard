@@ -52,7 +52,7 @@ public class SpawnManager : MonoBehaviour
 
     private static IEnumerator ManageEnemySpawning()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.8f);
 
         while (CanSpawn && i._spawnEnemies)
         {
@@ -64,7 +64,7 @@ public class SpawnManager : MonoBehaviour
     
     private static IEnumerator ManagePowerupSpawning()
     {
-        yield return new WaitForSeconds(Random.Range(2f, 10f));
+        yield return new WaitForSeconds(Random.Range(1.8f, 10f));
 
         while (CanSpawn && i._spawnPowerups)
         {

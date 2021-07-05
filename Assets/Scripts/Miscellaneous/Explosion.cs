@@ -7,9 +7,9 @@ public class Explosion : MonoBehaviour
 
     private void Awake()
     {
-        AudioSource src = GetComponent<AudioSource>();
-        src.clip = _explosionAudioClip;
-        src.Play();
+        TryGetComponent(out AudioSource _asrc);
+        _asrc.clip = _explosionAudioClip;
+        _asrc.Play();
         Destroy(gameObject, 3f);
     }
 }

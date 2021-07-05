@@ -9,15 +9,8 @@ public class EnemyMovement : MonoBehaviour
 
     private Animator _anim;
     private bool _isDestroyed;
-    public bool IsDestroyed;
+    public bool IsDestroyed => _isDestroyed;
 
-
-    private void Awake()
-    {
-        TryGetComponent(out _anim);
-        if (!_anim)
-            Debug.LogError("No animator on enemy!");
-    }
 
     private void Update()
     {
@@ -64,12 +57,17 @@ public class EnemyMovement : MonoBehaviour
     {
         _isDestroyed = true;
 
+        TryGetComponent(out _anim);
         if (_anim)
             _anim.SetTrigger("OnEnemyDeath");
 
-        GetComponent<AudioSource>().PlayOneShot(_explosionAudioClip, 0.9f);
+        TryGetComponent(out AudioSource _asrc);
+        if (_asrc)
+            _asrc.PlayOneShot(_explosionAudioClip, 0.9f);
 
-        GetComponent<Collider2D>().enabled = false;
+        TryGetComponent(out Collider2D _c2d);
+        if (_c2d)
+            _c2d.enabled = false;
 
         Destroy(gameObject, 2.5f);
 

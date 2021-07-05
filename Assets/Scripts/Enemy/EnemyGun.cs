@@ -18,7 +18,7 @@ public class EnemyGun : MonoBehaviour
     private Transform _projectileContainer;
     private bool _canFire = true;
     private float _cooldownMultiplier = 1;
-    private AudioSource _audioSource;
+    private AudioSource _asrc;
 
 
     private void Awake()
@@ -26,12 +26,12 @@ public class EnemyGun : MonoBehaviour
         _projectileContainer = GameObject.Find("Projectile Container").transform;
         if (!_projectileContainer)
             Debug.LogWarning("No container object set for projectiles");
-        _audioSource = GetComponent<AudioSource>();
+        _asrc = GetComponent<AudioSource>();
     }
 
     private void Update()
     {
-        if (_canFire && !GetComponent<EnemyMovement>()._isDestroyed)
+        if (_canFire && !GetComponent<EnemyMovement>().IsDestroyed)
             ShootLaser();
     }
 
@@ -54,8 +54,8 @@ public class EnemyGun : MonoBehaviour
         Instantiate(_pfLaser, GetShotSpawnPoint(2), Quaternion.identity, _projectileContainer)
                 .GetComponent<LaserMovement>().SetMovementDirection(_laserSpeed);
 
-        if (_audioSource && _laserAudioClip)
-            _audioSource.PlayOneShot(_laserAudioClip);
+        if (_asrc && _laserAudioClip)
+            _asrc.PlayOneShot(_laserAudioClip);
 
         StartCoroutine(ShotCooldown());
     }
