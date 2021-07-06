@@ -41,14 +41,7 @@ public class EnemyMovement : MonoBehaviour
         {
             other.TryGetComponent(out PlayerHealth playerHealth);
             if (playerHealth)
-                playerHealth.Damage(1);
-            StartCoroutine(Explode());
-        }
-
-        if (other.CompareTag("Player Shield"))
-        {
-            other.GetComponentInParent<PlayerShield>().StopAllCoroutines();
-            other.gameObject.SetActive(false);
+                playerHealth.Damage();
             StartCoroutine(Explode());
         }
     }
