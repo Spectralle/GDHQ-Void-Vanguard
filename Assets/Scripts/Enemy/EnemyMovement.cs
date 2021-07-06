@@ -18,14 +18,14 @@ public class EnemyMovement : MonoBehaviour
 
         if (!_isDestroyed && transform.position.y < LevelBoundary.D(-2))
         {
-            if (SpawnManager.CanSpawn)
+            if (SpawnManager.i.CanSpawn)
                 transform.position = SpawnManager.GetSpawnPosition();
             else
                 Destroy(gameObject);
         }
     }
 
-    private void OnDestroy() => SpawnManager.EnemiesAlive--;
+    private void OnDestroy() => SpawnManager.i.EnemiesAlive--;
 
     private void OnTriggerEnter2D(Collider2D other)
     {

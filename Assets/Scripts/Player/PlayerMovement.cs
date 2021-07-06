@@ -12,7 +12,6 @@ public class PlayerMovement : MonoBehaviour
     private float _speedMultiplier = 1;
     private Vector3 _thrusterOriginalScale = Vector3.one;
 
-
     private void Awake()
     {
         transform.position = _startPosition;
@@ -65,11 +64,20 @@ public class PlayerMovement : MonoBehaviour
         {
             case PowerupType.SpeedBoost:
                 _isSpeedBoosted = true;
+
                 _speedMultiplier = 2.5f;
-                _thruster.transform.localScale = new Vector3(_thrusterOriginalScale.x * 1.2f, _thrusterOriginalScale.y * 1.6f, _thrusterOriginalScale.z);
+
+                _thruster.transform.localScale = new Vector3(
+                    _thrusterOriginalScale.x * 1.2f,
+                    _thrusterOriginalScale.y * 1.6f,
+                    _thrusterOriginalScale.z);
+
                 yield return new WaitForSeconds(duration);
+
                 _thruster.transform.localScale = _thrusterOriginalScale;
+
                 _speedMultiplier = 1;
+
                 _isSpeedBoosted = false;
                 break;
         }

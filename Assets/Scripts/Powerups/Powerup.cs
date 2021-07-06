@@ -28,7 +28,7 @@ public class Powerup : MonoBehaviour
                 GetComponent<AudioSource>().PlayOneShot(_powerupAudioClip);
                 plPu.ActivatePowerup(_type, _duration, _powerupAudioClip);
             }
-            SpawnManager.PowerupsInLevel--;
+            SpawnManager.i.PowerupsInLevel--;
             Destroy(gameObject);
         }
     }

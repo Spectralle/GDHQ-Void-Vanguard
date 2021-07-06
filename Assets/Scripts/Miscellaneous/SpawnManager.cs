@@ -6,9 +6,9 @@ public class SpawnManager : MonoBehaviour
 {
     public static SpawnManager i;
 
-    public static bool CanSpawn = true;
-    public static int EnemiesAlive;
-    public static int PowerupsInLevel;
+    public bool CanSpawn = true;
+    public int EnemiesAlive;
+    public int PowerupsInLevel;
 
     [SerializeField] private GameObject _player;
     [Header("Enemies:")]
@@ -27,13 +27,13 @@ public class SpawnManager : MonoBehaviour
 
     public static void StartSpawning()
     {
-        string E = i._spawnEnemies ? " Enemies" : string.Empty;
-        string P = i._spawnEnemies ? " Powerups" : string.Empty;
-        string B = E != string.Empty && P != string.Empty ? " and" : string.Empty;
-        Debug.Log($"Started spawning{E}{B}{P}!");
-
         if (i._player && i._enemyContainer && i._powerupContainer && i._enemyTypes.Length > 0 && i._powerupTypes.Length > 0)
         {
+            string E = i._spawnEnemies ? " Enemies" : string.Empty;
+            string P = i._spawnEnemies ? " Powerups" : string.Empty;
+            string B = E != string.Empty && P != string.Empty ? " and" : string.Empty;
+            Debug.Log($"Started spawning{E}{B}{P}!");
+
             i.StartCoroutine(ManageEnemySpawning());
             i.StartCoroutine(ManagePowerupSpawning());
         }
@@ -52,25 +52,26 @@ public class SpawnManager : MonoBehaviour
 
     private static IEnumerator ManageEnemySpawning()
     {
-        yield return new WaitForSeconds(0.8f);
+        yield return new WaitForSeconds(0.5f);
+        Debug.Log(i.CanSpawn + " " + i._spawnEnemies);
 
-        while (CanSpawn && i._spawnEnemies)
+        while (i.CanSpawn && i._spawnEnemies)
         {
             Instantiate(i._enemyTypes[Random.Range(0, i._enemyTypes.Length)], GetSpawnPosition(1f), Quaternion.identity, i._enemyContainer);
-            EnemiesAlive++;
+            i.EnemiesAlive++;
             yield return new WaitForSeconds(Random.Range(i._enemySpawnDelay.x, i._enemySpawnDelay.y));
         }
     }
     
     private static IEnumerator ManagePowerupSpawning()
     {
-        yield return new WaitForSeconds(Random.Range(1.8f, 10f));
+        yield return new WaitForSeconds(Random.Range(1.5f, 10f));
 
-        while (CanSpawn && i._spawnPowerups)
+        while (i.CanSpawn && i._spawnPowerups)
         {
             Instantiate(i._powerupTypes[Random.Range(0, i._powerupTypes.Length)],
                 GetSpawnPosition(1.5f), Quaternion.identity, i._powerupContainer);
-            PowerupsInLevel++;
+            i.PowerupsInLevel++;
             yield return new WaitForSeconds(Random.Range(i._powerupSpawnDelay.x, i._powerupSpawnDelay.y));
         }
     }
