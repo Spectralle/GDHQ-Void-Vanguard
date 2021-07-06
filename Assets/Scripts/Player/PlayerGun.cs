@@ -16,12 +16,14 @@ public class PlayerGun : MonoBehaviour
     [SerializeField] private Vector2 _laserSpeed = new Vector2(0, 8f);
     [SerializeField] private AudioClip _laserAudioClip;
 
+    #pragma warning disable CS0414
     private Transform _projectileContainer;
     private bool _canFire = true;
     private bool _isTripleShotActive;
     private bool _isSpeedBoostActive;
     private float _cooldownMultiplier = 1;
     private AudioSource _audioSource;
+    #pragma warning restore CS0414
 
 
     private void Awake()

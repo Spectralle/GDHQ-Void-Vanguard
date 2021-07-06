@@ -3,18 +3,30 @@ using UnityEngine;
 
 public class PlayerShield : MonoBehaviour
 {
-    private bool _isShieldActive;
+    [SerializeField] private Color _fullShield = Color.white;
+    [SerializeField] private Color _twoThirdsShield = Color.grey;
+    [SerializeField] private Color _oneThirdShield = Color.red;
+
+    private int _hitsRemaining = 3;
+    private bool _isShieldActive = false;
+    public bool IsActive => _isShieldActive;
+    private GameObject _shieldObj;
+    private SpriteRenderer _spriteRenderer;
 
 
-    private void Start()
+    private void Awake()
     {
-        if (!transform.GetChild(0))
+        _shieldObj = transform.Find("Player Shield").gameObject;
+        if (!_shieldObj)
         {
             Debug.LogError("No child shield defined. Shields disabled");
             enabled = false;
         }
         else
-            transform.GetChild(0).gameObject.SetActive(false);
+        {
+            _spriteRenderer = _shieldObj.GetComponent<SpriteRenderer>();
+            _shieldObj.SetActive(false);
+        }
     }
 
     public void ActivatePowerup(PowerupType type, int duration)
@@ -26,25 +38,40 @@ public class PlayerShield : MonoBehaviour
 
     private IEnumerator ManagePowerup(PowerupType type, int duration)
     {
-        //switch (type)
-        //{
-        //    case PowerupType.Shield:
-                GameObject shield = transform.GetChild(0).gameObject;
-                shield.SetActive(true);
-                yield return new WaitForSeconds(duration);
-                shield.SetActive(false);
-        //        break;
-        // Allowing for different types of shields in future
-        //}
+        _isShieldActive = true;
+        _hitsRemaining = 3;
+        _shieldObj.SetActive(true);
+        _spriteRenderer.color = _fullShield;
+        yield return new WaitForSeconds(duration);
+        _shieldObj.SetActive(false);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Enemy Projectile"))
+        if (other.CompareTag("Enemy Projectile") || other.CompareTag("Enemy"))
         {
-            GameObject shield = transform.GetChild(0).gameObject;
-            shield.SetActive(false);
-            _isShieldActive = false;
+            Destroy(other.gameObject);
+
+            _hitsRemaining--;
+
+            switch (_hitsRemaining)
+            {
+                case 3:
+                    _spriteRenderer.color = _fullShield;
+                    break;
+                case 2:
+                    _spriteRenderer.color = _twoThirdsShield;
+                    break;
+                case 1:
+                    _spriteRenderer.color = _oneThirdShield;
+                    break;
+                case 0:
+                    _hitsRemaining = 3;
+                    _isShieldActive = false;
+                    StopAllCoroutines();
+                    _shieldObj.SetActive(false);
+                    break;
+            }
         }
     }
 }

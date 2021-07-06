@@ -2,29 +2,44 @@ using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour
 {
-    [SerializeField] private int _currentLives = 3;
     public int CurrentLives => _currentLives;
+    [SerializeField] private int _currentLives = 3;
+    [Space]
     [SerializeField] private GameObject _damage2LivesLeft;
     [SerializeField] private GameObject _damage1LifeLeft;
     [Space]
     [SerializeField] private GameObject _explosionPrefab;
+
+    private PlayerShield _shield;
 
 
     private void Awake()
     {
         _damage2LivesLeft.SetActive(false);
         _damage1LifeLeft.SetActive(false);
+
+        TryGetComponent(out _shield);
     }
+
     private void Update()
     {
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && _currentLives > 0)
             Die();
+
+        if (Input.GetKeyDown(KeyCode.E) && _currentLives > 0)
+            Damage();
     }
 
     public void Damage() => Damage(1);
 
     public void Damage(int livesLost)
     {
+        if (_shield)
+        {
+            if (_shield.IsActive)
+                return;
+        }
+
         if (_currentLives > 0)
             _currentLives -= livesLost;
 
@@ -56,6 +71,8 @@ public class PlayerHealth : MonoBehaviour
         _currentLives = 0;
 
         Instantiate(_explosionPrefab, transform.position, Quaternion.identity, GameObject.Find("Game Handler/Scene").transform);
+
+        GetComponent<PlayerMovement>().enabled = false;
 
         GameConclusionHandler.i.Defeat();
 

@@ -6,9 +6,9 @@ public class SpawnManager : MonoBehaviour
 {
     public static SpawnManager i;
 
-    public bool CanSpawn = true;
-    public int EnemiesAlive;
-    public int PowerupsInLevel;
+    [HideInInspector] public bool CanSpawn = true;
+    [HideInInspector] public int EnemiesAlive;
+    [HideInInspector] public int PowerupsInLevel;
 
     [SerializeField] private GameObject _player;
     [Header("Enemies:")]
@@ -53,7 +53,6 @@ public class SpawnManager : MonoBehaviour
     private static IEnumerator ManageEnemySpawning()
     {
         yield return new WaitForSeconds(0.5f);
-        Debug.Log(i.CanSpawn + " " + i._spawnEnemies);
 
         while (i.CanSpawn && i._spawnEnemies)
         {
