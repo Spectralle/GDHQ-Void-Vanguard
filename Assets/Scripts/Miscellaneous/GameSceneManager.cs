@@ -9,7 +9,11 @@ public class GameSceneManager : MonoBehaviour
             QuitGame();
     }
 
-    public static void ResetGame() => SceneManager.LoadScene(1);
+    public static void ResetGame()
+    {
+        SceneManager.LoadScene(1);
+        SpawnManager.i.CanSpawn = true;
+    }
 
     public static void QuitGame() => Application.Quit();
 }
