@@ -17,7 +17,6 @@ public class PlayerPowerup : MonoBehaviour
                 if (playerGun1)
                     playerGun1.ActivatePowerup(type, duration);
                 break;
-
             case PowerupType.SpeedBoost:
                 TryGetComponent(out PlayerMovement playerMovement);
                 if (playerMovement)
@@ -26,11 +25,12 @@ public class PlayerPowerup : MonoBehaviour
                 if (playerGun2)
                     playerGun2.ActivatePowerup(type, duration);
                 break;
-
             case PowerupType.Shield:
                 TryGetComponent(out PlayerShield playerShield);
                 if (playerShield)
                     playerShield.ActivatePowerup(type, duration);
+                break;
+            case PowerupType.None:
                 break;
         }
     }

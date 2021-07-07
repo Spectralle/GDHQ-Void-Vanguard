@@ -3,5 +3,5 @@
     None,
     TripleShot,
     SpeedBoost,
-    Shield
+    Shield,
 }
