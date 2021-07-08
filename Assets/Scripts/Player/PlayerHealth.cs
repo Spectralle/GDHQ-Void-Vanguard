@@ -21,14 +21,17 @@ public class PlayerHealth : MonoBehaviour
         TryGetComponent(out _shield);
     }
 
+#if UNITY_EDITOR
+    // DEBUG COMMANDS
     private void Update()
     {
-        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftShift) && _currentLives > 0)
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftAlt) && _currentLives > 0)
             Die();
 
-        if (Input.GetKeyDown(KeyCode.E) && _currentLives > 0)
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.LeftShift) && _currentLives > 0)
             Damage();
     }
+#endif
 
     public void Damage() => Damage(1);
 
@@ -46,17 +49,47 @@ public class PlayerHealth : MonoBehaviour
         switch (_currentLives)
         {
             case 3:
-                UIManager.i.ChangePlayerLives(_currentLives);
+                UIManager.i.ChangeLives(_currentLives);
                 _damage2LivesLeft.SetActive(false);
                 _damage1LifeLeft.SetActive(false);
                 break;
             case 2:
-                UIManager.i.ChangePlayerLives(_currentLives);
+                UIManager.i.ChangeLives(_currentLives);
                 _damage2LivesLeft.SetActive(true);
                 _damage1LifeLeft.SetActive(false);
                 break;
             case 1:
-                UIManager.i.ChangePlayerLives(_currentLives);
+                UIManager.i.ChangeLives(_currentLives);
+                _damage2LivesLeft.SetActive(false);
+                _damage1LifeLeft.SetActive(true);
+                break;
+            case 0:
+                Die();
+                break;
+        }
+    }
+
+    public void Heal() => Heal(3 - _currentLives);
+
+    public void Heal(int livesToHeal)
+    {
+        if (_currentLives < 3)
+            _currentLives += livesToHeal;
+
+        switch (_currentLives)
+        {
+            case 3:
+                UIManager.i.ChangeLives(_currentLives);
+                _damage2LivesLeft.SetActive(false);
+                _damage1LifeLeft.SetActive(false);
+                break;
+            case 2:
+                UIManager.i.ChangeLives(_currentLives);
+                _damage2LivesLeft.SetActive(true);
+                _damage1LifeLeft.SetActive(false);
+                break;
+            case 1:
+                UIManager.i.ChangeLives(_currentLives);
                 _damage2LivesLeft.SetActive(false);
                 _damage1LifeLeft.SetActive(true);
                 break;

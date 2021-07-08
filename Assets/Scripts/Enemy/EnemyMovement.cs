@@ -31,8 +31,8 @@ public class EnemyMovement : MonoBehaviour
     {
         if (other.CompareTag("Player Projectile"))
         {
-            UIManager.i.AddToEnemiesKilled(1);
-            UIManager.i.AddToScore(10);
+            UIManager.i.ChangeKills(1);
+            UIManager.i.ChangeScore(10);
             Destroy(other.gameObject);
             StartCoroutine(Explode());
         }

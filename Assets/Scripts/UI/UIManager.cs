@@ -8,15 +8,14 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI _enemiesKilled;
     [SerializeField] private TextMeshProUGUI _playerScore;
+    [SerializeField] private TextMeshProUGUI _playerAmmo;
     [SerializeField] private TextMeshProUGUI _playerLives;
     [SerializeField] private Image _playerLivesImage;
     [Space]
     [SerializeField] private Sprite[] LivesSprites;
 
-    private int _enemiesKilledValue;
-    private int _playerScoreValue;
-    private int _playerLivesValue;
-
+    private int _kills;
+    private int _score;
 
 
     private void Awake()
@@ -29,17 +28,17 @@ public class UIManager : MonoBehaviour
         }
         
         i = this;
-        _playerLivesValue = FindObjectOfType<PlayerHealth>().CurrentLives;
-        ChangePlayerLives(_playerLivesValue);
     }
 
-    public void AddToEnemiesKilled(int amount) => _enemiesKilled.SetText($"Enemies Killed: {_enemiesKilledValue += amount}");
+    public void ChangeKills(int value) => _enemiesKilled.SetText($"Enemies Killed: {_kills += value}");
 
-    public void AddToScore(int amount) => _playerScore.SetText($"Score: {_playerScoreValue += amount}");
+    public void ChangeScore(int value) => _playerScore.SetText($"Score: {_score += value}");
 
-    public void ChangePlayerLives(int currentLives)
+    public void ChangeAmmo(int value) => _playerAmmo.SetText($"Ammo: {value}");
+
+    public void ChangeLives(int value)
     {
-        _playerLives.SetText($"Lives: {currentLives}");
-        _playerLivesImage.sprite = LivesSprites[currentLives];
+        _playerLives.SetText($"Lives: {value}");
+        _playerLivesImage.sprite = LivesSprites[value];
     }
 }

@@ -12,7 +12,8 @@ public class GameSceneManager : MonoBehaviour
     public static void ResetGame()
     {
         SceneManager.LoadScene(1);
-        SpawnManager.i.CanSpawn = true;
+        if (SpawnManager.i)
+            SpawnManager.i.CanSpawn = true;
     }
 
     public static void QuitGame() => Application.Quit();

@@ -302,7 +302,6 @@ GameObject:
   - component: {fileID: 6858344343892727150}
   - component: {fileID: 2207040055764492020}
   - component: {fileID: 8413316032799347752}
-  - component: {fileID: -1387337389245155033}
   - component: {fileID: 4746337827884717969}
   m_Layer: 0
   m_Name: Player
@@ -553,6 +552,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3ccf701bbb1dfd4093665dacd696e6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _ammoCount: 15
   _shotCooldown: 0.3
   _shotPoint1: {x: 0, y: 0.75}
   _shotPoint2: {x: -0.785, y: -0.61}
@@ -591,18 +591,6 @@ MonoBehaviour:
   _fullShield: {r: 0.5058824, g: 0.8509804, b: 1, a: 1}
   _twoThirdsShield: {r: 0, g: 0.49019608, b: 1, a: 1}
   _oneThirdShield: {r: 0, g: 0.19607843, b: 0.7372549, a: 0.8784314}
---- !u!114 &-1387337389245155033
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6858344343892727124}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c6a2de7c0955011438a504b13b2fce4c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!82 &4746337827884717969
 AudioSource:
   m_ObjectHideFlags: 0
