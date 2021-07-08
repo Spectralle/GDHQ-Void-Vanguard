@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Powerup : MonoBehaviour
@@ -22,12 +20,32 @@ public class Powerup : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            collision.gameObject.TryGetComponent(out PlayerPowerup plPu);
-            if (plPu)
+            collision.gameObject.TryGetComponent(out AudioSource plAS);
+            plAS.PlayOneShot(_powerupAudioClip);
+            switch (_type)
             {
-                GetComponent<AudioSource>().PlayOneShot(_powerupAudioClip);
-                plPu.ActivatePowerup(_type, _duration, _powerupAudioClip);
+                case PowerupType.TripleShot:
+                    collision.TryGetComponent(out PlayerGun playerGun1);
+                    if (playerGun1)
+                        playerGun1.ActivatePowerup(_type, _duration);
+                    break;
+                case PowerupType.SpeedBoost:
+                    collision.TryGetComponent(out PlayerMovement playerMovement);
+                    if (playerMovement)
+                        playerMovement.ActivatePowerup(_type, _duration);
+                    collision.TryGetComponent(out PlayerGun playerGun2);
+                    if (playerGun2)
+                        playerGun2.ActivatePowerup(_type, _duration);
+                    break;
+                case PowerupType.Shield:
+                    collision.TryGetComponent(out PlayerShield playerShield);
+                    if (playerShield)
+                        playerShield.ActivatePowerup(_type, _duration);
+                    break;
+                case PowerupType.None:
+                    break;
             }
+
             SpawnManager.i.PowerupsInLevel--;
             Destroy(gameObject);
         }

@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerGun : MonoBehaviour
 {
     [Header("Variables")]
+    [SerializeField] private int _ammoCount = 15;
     [SerializeField] private float _shotCooldown = 0.4f;
     [Space]
     [SerializeField] private Vector2 _shotPoint1 = new Vector2(0, 0.75f);
@@ -17,11 +18,13 @@ public class PlayerGun : MonoBehaviour
     [SerializeField] private AudioClip _laserAudioClip;
 
     #pragma warning disable CS0414
-    private Transform _projectileContainer;
+    public int CurrentAmmo => _currentAmmo;
+    private int _currentAmmo;
     private bool _canFire = true;
     private bool _isTripleShotActive;
     private bool _isSpeedBoostActive;
     private float _cooldownMultiplier = 1;
+    private Transform _projectileContainer;
     private AudioSource _audioSource;
     #pragma warning restore CS0414
 
@@ -32,6 +35,8 @@ public class PlayerGun : MonoBehaviour
         if (!_projectileContainer)
             Debug.LogWarning("No container object set for projectiles");
         _audioSource = GetComponent<AudioSource>();
+
+        _currentAmmo = _ammoCount;
     }
 
     private void Update()
@@ -40,20 +45,14 @@ public class PlayerGun : MonoBehaviour
             ShootLaser();
     }
 
-    private Vector3 GetShotSpawnPoint(int pointIndex)
-    {
-        switch (pointIndex)
-        {
-            default:
-            case 1: return (Vector2)transform.position + _shotPoint1;
-            case 2: return (Vector2)transform.position + _shotPoint2;
-            case 3: return (Vector2)transform.position + _shotPoint3;
-        }
-    }
-
     public void ShootLaser()
     {
+        if (_currentAmmo == 0)
+            return;
+
         _canFire = false;
+        _currentAmmo--;
+        UIManager.i.ChangeAmmo(_currentAmmo);
         if (!_isTripleShotActive)
             Instantiate(_pfLaser, GetShotSpawnPoint(1), Quaternion.identity, _projectileContainer)
                 .GetComponent<LaserMovement>().SetMovementDirection(_laserSpeed);
@@ -71,10 +70,33 @@ public class PlayerGun : MonoBehaviour
         StartCoroutine(ShotCooldown());
     }
 
+    private Vector3 GetShotSpawnPoint(int pointIndex)
+    {
+        switch (pointIndex)
+        {
+            default:
+            case 1: return (Vector2)transform.position + _shotPoint1;
+            case 2: return (Vector2)transform.position + _shotPoint2;
+            case 3: return (Vector2)transform.position + _shotPoint3;
+        }
+    }
+
     private IEnumerator ShotCooldown()
     {
         yield return new WaitForSeconds(_shotCooldown * _cooldownMultiplier);
         _canFire = true;
+    }
+
+    public void RefillPrimaryAmmo()
+    {
+        _currentAmmo = _ammoCount;
+        UIManager.i.ChangeAmmo(_currentAmmo);
+    }
+
+    public void AddToPrimaryAmmo(int amount)
+    {
+        _currentAmmo = Mathf.Clamp(_currentAmmo + amount, 0, _ammoCount);
+        UIManager.i.ChangeAmmo(_currentAmmo);
     }
 
     public void ActivatePowerup(PowerupType type, int duration)
