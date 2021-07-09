@@ -31,7 +31,7 @@ public class ConclusionFlickerEffect : MonoBehaviour
         while (_isFlickering)
         {
             yield return new WaitForSecondsRealtime(_flickerDelay);
-            _flickerGroup.alpha = 0.3f;
+            _flickerGroup.alpha = 0f;
             yield return new WaitForSecondsRealtime(_flickerDelay);
             _flickerGroup.alpha = 1;
         }

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 26e70386d64e9184aa4627331afb2a5c
+guid: 5f5810c035c188c41acd256268e7c7a0
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,7 +9,7 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - ArcadeClassic
+  - KenVector Future Thin
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0
