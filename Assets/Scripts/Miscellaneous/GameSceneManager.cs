@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+using UnityEditor;
+#endif
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameSceneManager : MonoBehaviour
@@ -16,5 +19,12 @@ public class GameSceneManager : MonoBehaviour
             SpawnManager.i.CanSpawn = true;
     }
 
-    public static void QuitGame() => Application.Quit();
+    public static void QuitGame()
+    {
+        Application.Quit();
+
+        #if UNITY_EDITOR
+        EditorApplication.ExitPlaymode();
+        #endif
+    }
 }

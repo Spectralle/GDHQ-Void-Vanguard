@@ -16,6 +16,7 @@ public class PlayerGun : MonoBehaviour
     [SerializeField] private GameObject _pfLaser;
     [SerializeField] private Vector2 _laserSpeed = new Vector2(0, 8f);
     [SerializeField] private AudioClip _laserAudioClip;
+    [SerializeField] private AudioClip _laserFailedAudioClip;
 
     #pragma warning disable CS0414
     public int CurrentAmmo => _currentAmmo;
@@ -48,7 +49,12 @@ public class PlayerGun : MonoBehaviour
     public void ShootLaser()
     {
         if (_currentAmmo == 0)
+        {
+            _audioSource.PlayOneShot(_laserFailedAudioClip);
+            _canFire = false;
+            StartCoroutine(ShotCooldown());
             return;
+        }
 
         _canFire = false;
         _currentAmmo--;

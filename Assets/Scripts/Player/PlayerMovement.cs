@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -9,11 +10,14 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector3 _keyboardInput = Vector3.zero;
     private bool _isSpeedBoosted;
+    public bool IsSpeedBoosted => _isSpeedBoosted;
     private float _speedMultiplier = 1;
     private Vector3 _thrusterOriginalScale = Vector3.one;
+    private Animator _anim;
 
     private void Awake()
     {
+        TryGetComponent(out _anim);
         transform.position = _startPosition;
         _thrusterOriginalScale = _thruster.transform.localScale;
     }
@@ -23,16 +27,7 @@ public class PlayerMovement : MonoBehaviour
         _keyboardInput = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0);
         transform.Translate(_keyboardInput * (_movementSpeed * _speedMultiplier) * Time.deltaTime);
 
-        if (Input.GetKeyDown(KeyCode.LeftShift) && !_isSpeedBoosted)
-        {
-            _speedMultiplier = 1.6f;
-            _thruster.transform.localScale = new Vector3(_thrusterOriginalScale.x * 1.1f, _thrusterOriginalScale.y * 1.3f, _thrusterOriginalScale.z);
-        }
-        if (Input.GetKeyUp(KeyCode.LeftShift) && !_isSpeedBoosted)
-        {
-            _speedMultiplier = 1f;
-            _thruster.transform.localScale = _thrusterOriginalScale;
-        }
+        HandleShipAnimation();
 
         #region Restrict player to within level bounds
         float x = transform.position.x;
@@ -51,6 +46,41 @@ public class PlayerMovement : MonoBehaviour
         #endregion
     }
 
+    private void HandleShipAnimation()
+    {
+        if (!_anim)
+            return;
+
+        _anim.SetFloat("VelocityX", _keyboardInput.x);
+        if (Input.GetKey(KeyCode.A))
+            _anim.SetBool("AHeldDown", true);
+        else
+        {
+            if (!Input.GetKey(KeyCode.A))
+                _anim.SetBool("AHeldDown", false);
+        }
+
+        if (Input.GetKey(KeyCode.D))
+            _anim.SetBool("DHeldDown", true);
+        else
+        {
+            if (!Input.GetKey(KeyCode.D))
+                _anim.SetBool("DHeldDown", false);
+        }
+    }
+
+    public void ActivateBoost(float speedMultiplier, float thrusterScaleUpX, float thrusterScaleUpY)
+    {
+        _speedMultiplier = speedMultiplier;
+        _thruster.transform.localScale = new Vector3(_thrusterOriginalScale.x * thrusterScaleUpX, _thrusterOriginalScale.y * thrusterScaleUpY, _thrusterOriginalScale.z);
+    }
+
+    public void DeactivateBoost()
+    {
+        _speedMultiplier = 1;
+        _thruster.transform.localScale = _thrusterOriginalScale;
+    }
+
     public void ActivatePowerup(PowerupType type, int duration)
     {
         if (_isSpeedBoosted)
@@ -64,20 +94,9 @@ public class PlayerMovement : MonoBehaviour
         {
             case PowerupType.SpeedBoost:
                 _isSpeedBoosted = true;
-
-                _speedMultiplier = 2.5f;
-
-                _thruster.transform.localScale = new Vector3(
-                    _thrusterOriginalScale.x * 1.2f,
-                    _thrusterOriginalScale.y * 1.6f,
-                    _thrusterOriginalScale.z);
-
+                ActivateBoost(1.6f, 1.2f, 1.7f);
                 yield return new WaitForSeconds(duration);
-
-                _thruster.transform.localScale = _thrusterOriginalScale;
-
-                _speedMultiplier = 1;
-
+                DeactivateBoost();
                 _isSpeedBoosted = false;
                 break;
         }
