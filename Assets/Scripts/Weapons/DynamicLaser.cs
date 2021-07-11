@@ -1,7 +1,7 @@
 using UnityEngine;
 
 
-public class PlayerDynamicLaser : MonoBehaviour
+public class DynamicLaser : MonoBehaviour
 {
     private LineRenderer _lineRendererLeft;
     private LineRenderer _lineRendererRight;
@@ -27,10 +27,6 @@ public class PlayerDynamicLaser : MonoBehaviour
             _lineRendererLeft.SetPosition(1, GetLaserEndPoint(_lineRendererLeft.transform));
             _lineRendererRight.SetPosition(1, GetLaserEndPoint(_lineRendererRight.transform));
         }
-
-        // Testing
-        if (Input.GetKeyDown(KeyCode.V) && !_isActive)
-            ActivateLaser();
     }
 
     public void ActivateLaser()
