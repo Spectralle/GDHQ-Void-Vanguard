@@ -49,21 +49,25 @@ public class PlayerHealth : MonoBehaviour
         switch (_currentLives)
         {
             case 3:
+                CameraShaker.StartShaking(.7f, .3f);
                 UIManager.i.ChangeLives(_currentLives);
                 _damage2LivesLeft.SetActive(false);
                 _damage1LifeLeft.SetActive(false);
                 break;
             case 2:
+                CameraShaker.StartShaking(.7f, .3f);
                 UIManager.i.ChangeLives(_currentLives);
                 _damage2LivesLeft.SetActive(true);
                 _damage1LifeLeft.SetActive(false);
                 break;
             case 1:
+                CameraShaker.StartShaking(.7f, .3f);
                 UIManager.i.ChangeLives(_currentLives);
                 _damage2LivesLeft.SetActive(false);
                 _damage1LifeLeft.SetActive(true);
                 break;
             case 0:
+                CameraShaker.StartShaking(1.5f, .6f);
                 Die();
                 break;
         }
@@ -116,6 +120,7 @@ public class PlayerHealth : MonoBehaviour
     {
         if (other.CompareTag("Enemy Projectile"))
         {
+            CameraShaker.StartShaking(.8f, .3f);
             Destroy(other.gameObject);
             Damage();
         }

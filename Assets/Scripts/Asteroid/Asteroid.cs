@@ -21,6 +21,7 @@ public class Asteroid : MonoBehaviour
         if (other.CompareTag("Player Projectile"))
         {
             Destroy(other.gameObject);
+            CameraShaker.StartShaking(1.2f, .5f);
             StartCoroutine(Explode());
         }
     }

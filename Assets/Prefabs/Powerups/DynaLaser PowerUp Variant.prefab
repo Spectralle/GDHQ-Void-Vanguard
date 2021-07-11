@@ -9,7 +9,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7139210404609598385, guid: 1e0bc9e5e4864cd4da542f6e20b169b0, type: 3}
       propertyPath: m_Name
-      value: Powerup Prefab
+      value: DynaLaser PowerUp Variant
       objectReference: {fileID: 0}
     - target: {fileID: 7139210404609598389, guid: 1e0bc9e5e4864cd4da542f6e20b169b0, type: 3}
       propertyPath: _type
@@ -17,7 +17,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7139210404609598389, guid: 1e0bc9e5e4864cd4da542f6e20b169b0, type: 3}
       propertyPath: _duration
-      value: 10
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 7139210404609598390, guid: 1e0bc9e5e4864cd4da542f6e20b169b0, type: 3}
       propertyPath: m_RootOrder

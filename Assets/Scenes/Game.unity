@@ -2132,7 +2132,7 @@ Transform:
   m_GameObject: {fileID: 1003006460}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 1}
-  m_LocalScale: {x: 1.1822445, y: 1.1851432, z: 1}
+  m_LocalScale: {x: 1.2413567, y: 1.2444004, z: 1.05}
   m_Children: []
   m_Father: {fileID: 505357042}
   m_RootOrder: 7
@@ -2535,6 +2535,7 @@ GameObject:
   - component: {fileID: 1320321606}
   - component: {fileID: 1320321605}
   - component: {fileID: 1320321607}
+  - component: {fileID: 1320321608}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -2667,6 +2668,51 @@ MonoBehaviour:
   m_BeforeTransparentBundles: []
   m_BeforeStackBundles: []
   m_AfterStackBundles: []
+--- !u!114 &1320321608
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1320321603}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb003d83aca04474ab314124ff4775f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _strengthOverTime:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.5
+      inSlope: 6.2614217
+      outSlope: 3.3333333
+      tangentMode: 69
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.13053612
+    - serializedVersion: 3
+      time: 0.15
+      value: 1
+      inSlope: 3.3333333
+      outSlope: -3.1541803
+      tangentMode: 1
+      weightedMode: 0
+      inWeight: 0.37529138
+      outWeight: 0.03578773
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.20732206
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1001 &1478998657
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3076,9 +3122,9 @@ MonoBehaviour:
   - {fileID: 2641604716268628962, guid: 10f28822dc705f34bb4374f4aa1386d9, type: 3}
   - {fileID: 1923556897455880983, guid: 1d60a6026b4d5dc4f8bf4565e8d68695, type: 3}
   - {fileID: 7408431643284925137, guid: 457edb95f95a8be4dabd5fcc316fcb49, type: 3}
+  - {fileID: 2367699532824588073, guid: bba9247aa7f108d4ebf1569b469ee267, type: 3}
   - {fileID: 4405693010180981932, guid: 91e3e35980fcf2540812e0d86bad8386, type: 3}
   - {fileID: 8122863273168900285, guid: dc2116d53115e8d4591a0510fe3460b4, type: 3}
-  - {fileID: 2367699532824588073, guid: bba9247aa7f108d4ebf1569b469ee267, type: 3}
 --- !u!114 &1716475208
 MonoBehaviour:
   m_ObjectHideFlags: 0
