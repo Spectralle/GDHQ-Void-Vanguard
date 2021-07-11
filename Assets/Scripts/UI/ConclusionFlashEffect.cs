@@ -1,8 +1,7 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class ConclusionFlickerEffect : MonoBehaviour
+public class ConclusionFlashEffect : MonoBehaviour
 {
     [SerializeField] private float _flickerDelay = 1;
     [SerializeField] private CanvasGroup _flickerGroup;
@@ -31,7 +30,7 @@ public class ConclusionFlickerEffect : MonoBehaviour
         while (_isFlickering)
         {
             yield return new WaitForSecondsRealtime(_flickerDelay);
-            _flickerGroup.alpha = 0f;
+            _flickerGroup.alpha = 0.3f;
             yield return new WaitForSecondsRealtime(_flickerDelay);
             _flickerGroup.alpha = 1;
         }
