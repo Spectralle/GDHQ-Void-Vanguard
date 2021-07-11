@@ -19,14 +19,17 @@ public class Asteroid : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player Projectile"))
-            StartCoroutine(Explode(other.gameObject));
+        {
+            Destroy(other.gameObject);
+            StartCoroutine(Explode());
+        }
     }
 
-    private IEnumerator Explode(GameObject other)
+    public void MakeExplode() => StartCoroutine(Explode());
+
+    private IEnumerator Explode()
     {
         Instantiate(_explosionPrefab, transform.position, Quaternion.identity, GameObject.Find("Game Handler/Scene").transform);
-
-        Destroy(other.gameObject);
 
         GetComponent<Collider2D>().enabled = false;
 

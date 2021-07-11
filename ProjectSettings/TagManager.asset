@@ -9,6 +9,7 @@ TagManager:
   - Enemy Projectile
   - Player Shield
   - Powerup
+  - Asteroid
   layers:
   - Default
   - TransparentFX

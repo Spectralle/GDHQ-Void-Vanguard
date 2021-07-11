@@ -46,8 +46,13 @@ public class EnemyMovement : MonoBehaviour
         }
     }
 
+    public void MakeExplode() => StartCoroutine(Explode());
+
     private IEnumerator Explode()
     {
+        if (_isDestroyed)
+            yield return null;
+
         _isDestroyed = true;
 
         TryGetComponent(out _anim);

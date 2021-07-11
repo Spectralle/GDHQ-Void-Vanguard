@@ -28,7 +28,7 @@ public class PlayerHealth : MonoBehaviour
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftAlt) && _currentLives > 0)
             Die();
 
-        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.LeftShift) && _currentLives > 0)
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Z) && _currentLives > 0)
             Damage();
     }
 #endif
