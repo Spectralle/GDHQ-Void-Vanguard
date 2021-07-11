@@ -17,6 +17,8 @@ public class PlayerGun : MonoBehaviour
     [SerializeField] private Vector2 _laserSpeed = new Vector2(0, 8f);
     [SerializeField] private AudioClip _laserAudioClip;
     [SerializeField] private AudioClip _laserFailedAudioClip;
+    [SerializeField] private DynamicLaser _dynalaser;
+    [SerializeField] private AudioClip _dynaLaserAudioClip;
 
     #pragma warning disable CS0414
     public int CurrentAmmo => _currentAmmo;
@@ -24,6 +26,7 @@ public class PlayerGun : MonoBehaviour
     private bool _canFire = true;
     private bool _isTripleShotActive;
     private bool _isSpeedBoostActive;
+    private bool _isDynaLaserActive;
     private float _cooldownMultiplier = 1;
     private Transform _projectileContainer;
     private AudioSource _audioSource;
@@ -43,7 +46,15 @@ public class PlayerGun : MonoBehaviour
     private void Update()
     {
         if (Input.GetButtonDown("Fire1") && _canFire)
-            ShootLaser();
+        {
+            if (!_isDynaLaserActive)
+                ShootLaser();
+            else
+                ShootDynaLaser();
+        }
+
+        if (Input.GetKeyDown(KeyCode.V))
+            _isDynaLaserActive = !_isDynaLaserActive;
     }
 
     public void ShootLaser()
@@ -71,6 +82,15 @@ public class PlayerGun : MonoBehaviour
             Instantiate(_pfLaser, GetShotSpawnPoint(3), Quaternion.identity, _projectileContainer)
                 .GetComponent<LaserMovement>().SetMovementDirection(_laserSpeed);
         }
+        if (_audioSource && _laserAudioClip)
+            _audioSource.PlayOneShot(_laserAudioClip);
+        StartCoroutine(ShotCooldown());
+    }
+
+    public void ShootDynaLaser()
+    {
+        _canFire = false;
+        _dynalaser.ActivateLaser();
         if (_audioSource && _laserAudioClip)
             _audioSource.PlayOneShot(_laserAudioClip);
         StartCoroutine(ShotCooldown());
@@ -126,6 +146,13 @@ public class PlayerGun : MonoBehaviour
                 yield return new WaitForSeconds(duration);
                 _cooldownMultiplier = 1;
                 _isSpeedBoostActive = false;
+                break;
+            case PowerupType.DynamicLaser:
+                _isDynaLaserActive = true;
+                _cooldownMultiplier = 8f;
+                yield return new WaitForSeconds(duration);
+                _cooldownMultiplier = 1;
+                _isDynaLaserActive = false;
                 break;
         }
     }

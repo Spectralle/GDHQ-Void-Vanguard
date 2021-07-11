@@ -31,8 +31,6 @@ public class EnemyMovement : MonoBehaviour
     {
         if (other.CompareTag("Player Projectile"))
         {
-            UIManager.i.ChangeKills(1);
-            UIManager.i.ChangeScore(10);
             Destroy(other.gameObject);
             StartCoroutine(Explode());
         }
@@ -54,6 +52,9 @@ public class EnemyMovement : MonoBehaviour
             yield return null;
 
         _isDestroyed = true;
+
+        UIManager.i.ChangeKills(1);
+        UIManager.i.ChangeScore(10);
 
         TryGetComponent(out _anim);
         if (_anim)

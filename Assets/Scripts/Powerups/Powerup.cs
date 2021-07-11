@@ -42,6 +42,11 @@ public class Powerup : MonoBehaviour
                     if (playerShield)
                         playerShield.ActivatePowerup(_type, _duration);
                     break;
+                case PowerupType.DynamicLaser:
+                    collision.TryGetComponent(out PlayerGun playerGun3);
+                    if (playerGun3)
+                        playerGun3.ActivatePowerup(_type, _duration);
+                    break;
                 case PowerupType.None:
                     break;
             }

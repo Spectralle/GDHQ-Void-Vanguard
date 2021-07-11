@@ -4,5 +4,5 @@
     TripleShot,
     SpeedBoost,
     Shield,
-    AmmoRefill,
+    DynamicLaser,
 }
