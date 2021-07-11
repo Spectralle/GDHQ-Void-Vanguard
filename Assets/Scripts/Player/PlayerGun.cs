@@ -52,9 +52,6 @@ public class PlayerGun : MonoBehaviour
             else
                 ShootDynaLaser();
         }
-
-        if (Input.GetKeyDown(KeyCode.V))
-            _isDynaLaserActive = !_isDynaLaserActive;
     }
 
     public void ShootLaser()

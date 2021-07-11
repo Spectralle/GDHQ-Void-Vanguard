@@ -14,10 +14,13 @@ public class PlayerMovement : MonoBehaviour
     private float _speedMultiplier = 1;
     private Vector3 _thrusterOriginalScale = Vector3.one;
     private Animator _anim;
+    private PlayerThruster _playerThruster;
+
 
     private void Awake()
     {
         TryGetComponent(out _anim);
+        TryGetComponent(out _playerThruster);
         transform.position = _startPosition;
         _thrusterOriginalScale = _thruster.transform.localScale;
     }
