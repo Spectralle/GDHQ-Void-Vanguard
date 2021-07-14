@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class DynamicLaser : MonoBehaviour
 {
+    [SerializeField] private LayerMask _raycastLayerMask;
+
     private LineRenderer _lineRendererLeft;
     private LineRenderer _lineRendererRight;
     private Animator _anim;
@@ -41,7 +43,7 @@ public class DynamicLaser : MonoBehaviour
 
     private Vector2 GetLaserEndPoint(Transform origin)
     {
-        RaycastHit2D hit = Physics2D.Raycast(origin.position, origin.up, _laserLength);
+        RaycastHit2D hit = Physics2D.Raycast(origin.position, origin.up, _laserLength, _raycastLayerMask);
 
         if (hit.transform == null)
             return origin.localPosition + new Vector3(0, _laserLength, 0);
