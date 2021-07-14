@@ -8,38 +8,42 @@ public class SpawnManager : MonoBehaviour
 
     [HideInInspector] public bool CanSpawn = true;
     [HideInInspector] public int EnemiesAlive;
-    [HideInInspector] public int PowerupsInLevel;
+    [HideInInspector] public int ItemsInLevel;
 
     [SerializeField] private GameObject _player;
     [Header("Enemies:")]
     [SerializeField] private bool _spawnEnemies = true;
     [SerializeField] private Transform _enemyContainer;
     [SerializeField] private Vector2 _enemySpawnDelay = new Vector2(2.5f, 5);
-    [SerializeField] private GameObject[] _enemyTypes = new GameObject[0];
+    [SerializeField] private WeightedSpawnTable _enemies;
     [Header("PowerUps:")]
     [SerializeField] private bool _spawnPowerups = true;
     [SerializeField] private Transform _powerupContainer;
     [SerializeField] private Vector2 _powerupSpawnDelay = new Vector2(6, 17);
-    [SerializeField] private GameObject[] _powerupTypes = new GameObject[0];
-
+    [SerializeField] private WeightedSpawnTable _powerups;
+    [SerializeField] private WeightedSpawnTable _refills;
 
     private void Awake() => i = this;
 
     public static void StartSpawning()
     {
-        if (i._player && i._enemyContainer && i._powerupContainer && i._enemyTypes.Length > 0 && i._powerupTypes.Length > 0)
+        if (i._player)
         {
+            #if UNITY_EDITOR
             string E = i._spawnEnemies ? " Enemies" : string.Empty;
             string P = i._spawnEnemies ? " Powerups" : string.Empty;
             string B = E != string.Empty && P != string.Empty ? " and" : string.Empty;
             Debug.Log($"Started spawning{E}{B}{P}!");
+            #endif
 
-            i.StartCoroutine(ManageEnemySpawning());
-            i.StartCoroutine(ManagePowerupSpawning());
+            if (i._enemyContainer && i._enemies.HasArrayEntries())
+                i.StartCoroutine(ManageEnemySpawning());
+            if (i._powerupContainer && i._powerups.HasArrayEntries() && i._refills.HasArrayEntries())
+                i.StartCoroutine(ManagePowerupSpawning());
         }
         else
         {
-            Debug.Log($"Missing variables in the Spawn Manager on {i.name}. Spawning canceled!", i.gameObject);
+            Debug.Log($"Missing the Player reference in the Spawn Manager. Spawning canceled!", i.gameObject);
             i.enabled = false;
         }    
     }
@@ -56,7 +60,8 @@ public class SpawnManager : MonoBehaviour
 
         while (i.CanSpawn && i._spawnEnemies)
         {
-            Instantiate(i._enemyTypes[Random.Range(0, i._enemyTypes.Length)], GetSpawnPosition(1f), Quaternion.identity, i._enemyContainer);
+            GameObject toSpawn = i._enemies.GetRandomWeightedSpawnable();
+            Instantiate(toSpawn, GetSpawnPosition(1f), Quaternion.identity, i._enemyContainer);
             i.EnemiesAlive++;
             yield return new WaitForSeconds(Random.Range(i._enemySpawnDelay.x, i._enemySpawnDelay.y));
         }
@@ -68,9 +73,15 @@ public class SpawnManager : MonoBehaviour
 
         while (i.CanSpawn && i._spawnPowerups)
         {
-            Instantiate(i._powerupTypes[Random.Range(0, i._powerupTypes.Length)],
-                GetSpawnPosition(1.5f), Quaternion.identity, i._powerupContainer);
-            i.PowerupsInLevel++;
+            int total = i._powerups.ChanceForLoot + i._refills.ChanceForLoot;
+            int powerupOrRefill = Random.Range(0, total);
+
+            GameObject toSpawn = powerupOrRefill < i._powerups.ChanceForLoot ?
+                i._powerups.GetRandomWeightedSpawnable() :
+                i._refills.GetRandomWeightedSpawnable();
+
+            Instantiate(toSpawn, GetSpawnPosition(1.5f), Quaternion.identity, i._powerupContainer);
+            i.ItemsInLevel++;
             yield return new WaitForSeconds(Random.Range(i._powerupSpawnDelay.x, i._powerupSpawnDelay.y));
         }
     }
