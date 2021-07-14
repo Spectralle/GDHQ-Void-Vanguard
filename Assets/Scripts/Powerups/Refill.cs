@@ -26,14 +26,14 @@ public class Refill : MonoBehaviour
                     collision.gameObject.TryGetComponent(out PlayerHealth plHth);
                     if (plHth)
                         plHth.Heal(1);
-                    SpawnManager.i.PowerupsInLevel--;
+                    SpawnManager.i.ItemsInLevel--;
                     Destroy(gameObject);
                     break;
                 case RefillType.Ammo:
                     collision.gameObject.TryGetComponent(out PlayerGun plGun);
                     if (plGun)
                         plGun.RefillPrimaryAmmo();
-                    SpawnManager.i.PowerupsInLevel--;
+                    SpawnManager.i.ItemsInLevel--;
                     Destroy(gameObject);
                     break;
                 case RefillType.None:

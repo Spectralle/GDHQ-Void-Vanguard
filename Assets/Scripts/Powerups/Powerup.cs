@@ -51,7 +51,7 @@ public class Powerup : MonoBehaviour
                     break;
             }
 
-            SpawnManager.i.PowerupsInLevel--;
+            SpawnManager.i.ItemsInLevel--;
             Destroy(gameObject);
         }
     }

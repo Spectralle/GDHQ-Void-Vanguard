@@ -3108,19 +3108,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CanSpawn: 1
   EnemiesAlive: 0
-  PowerupsInLevel: 0
+  ItemsInLevel: 0
   _player: {fileID: 1478998659}
   _spawnEnemies: 1
   _enemyContainer: {fileID: 1315715290}
-  _enemySpawnDelay: {x: 2.5, y: 3.5}
-  _enemyTypes:
-  - {fileID: 7709881818554600201, guid: a328951309050b0458f1035b0c0536a8, type: 3}
+  _enemySpawnDelay: {x: 2.5, y: 4}
+  _enemies:
+    ChanceForLoot: 100
+    LootList:
+    - Object: {fileID: 7709881818554600201, guid: a328951309050b0458f1035b0c0536a8, type: 3}
+      Chance: 100
   _spawnPowerups: 1
   _powerupContainer: {fileID: 773045036}
-  _powerupSpawnDelay: {x: 3, y: 12}
-  _powerupTypes:
-  - {fileID: 7408431643284925137, guid: 457edb95f95a8be4dabd5fcc316fcb49, type: 3}
-  - {fileID: 2367699532824588073, guid: bba9247aa7f108d4ebf1569b469ee267, type: 3}
+  _powerupSpawnDelay: {x: 6, y: 15}
+  _powerups:
+    ChanceForLoot: 100
+    LootList:
+    - Object: {fileID: 2641604716268628962, guid: 10f28822dc705f34bb4374f4aa1386d9, type: 3}
+      Chance: 83
+    - Object: {fileID: 1923556897455880983, guid: 1d60a6026b4d5dc4f8bf4565e8d68695, type: 3}
+      Chance: 79
+    - Object: {fileID: 7408431643284925137, guid: 457edb95f95a8be4dabd5fcc316fcb49, type: 3}
+      Chance: 60
+    - Object: {fileID: 2367699532824588073, guid: bba9247aa7f108d4ebf1569b469ee267, type: 3}
+      Chance: 12
+  _refills:
+    ChanceForLoot: 80
+    LootList:
+    - Object: {fileID: 8122863273168900285, guid: dc2116d53115e8d4591a0510fe3460b4, type: 3}
+      Chance: 38
+    - Object: {fileID: 4405693010180981932, guid: 91e3e35980fcf2540812e0d86bad8386, type: 3}
+      Chance: 66
 --- !u!114 &1716475208
 MonoBehaviour:
   m_ObjectHideFlags: 0
