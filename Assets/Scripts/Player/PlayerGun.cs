@@ -66,7 +66,7 @@ public class PlayerGun : MonoBehaviour
 
         _canFire = false;
         _currentAmmo--;
-        UIManager.i.ChangeAmmo(_currentAmmo);
+        UIManager.i.ChangeAmmo(_currentAmmo, _ammoCount);
         if (!_isTripleShotActive)
             Instantiate(_pfLaser, GetShotSpawnPoint(1), Quaternion.identity, _projectileContainer)
                 .GetComponent<LaserMovement>().SetMovementDirection(_laserSpeed);
@@ -113,13 +113,13 @@ public class PlayerGun : MonoBehaviour
     public void RefillPrimaryAmmo()
     {
         _currentAmmo = _ammoCount;
-        UIManager.i.ChangeAmmo(_currentAmmo);
+        UIManager.i.ChangeAmmo(_currentAmmo, _ammoCount);
     }
 
     public void AddToPrimaryAmmo(int amount)
     {
         _currentAmmo = Mathf.Clamp(_currentAmmo + amount, 0, _ammoCount);
-        UIManager.i.ChangeAmmo(_currentAmmo);
+        UIManager.i.ChangeAmmo(_currentAmmo, _ammoCount);
     }
 
     public void ActivatePowerup(PowerupType type, int duration)

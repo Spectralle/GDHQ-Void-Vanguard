@@ -39,7 +39,7 @@ public class UIManager : MonoBehaviour
 
     public void ChangeScore(int value) => _playerScore.SetText($"Score: {_score += value}");
 
-    public void ChangeAmmo(int value) => _playerAmmo.SetText($"Ammo: {value}");
+    public void ChangeAmmo(int value, int max) => _playerAmmo.SetText($"Ammo: {value}/{max}");
 
     public void ChangeThruster(float value) => _playerThrusterBarImage.fillAmount = value / 100;
 

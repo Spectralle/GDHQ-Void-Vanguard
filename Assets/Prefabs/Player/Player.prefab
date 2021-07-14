@@ -47,6 +47,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d36c005ab3eb0c04f92713dfcdebb607, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _raycastLayerMask:
+    serializedVersion: 2
+    m_Bits: 375
 --- !u!95 &6438975318907113961
 Animator:
   serializedVersion: 3
@@ -169,7 +172,7 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -234450217
   m_SortingLayer: 1
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Positions:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 30, z: 0}
@@ -334,7 +337,7 @@ GameObject:
   - component: {fileID: 3935534797363244126}
   - component: {fileID: 5879198406169825202}
   - component: {fileID: 4030032297436371344}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Player Shield
   m_TagString: Player Shield
   m_Icon: {fileID: 0}
@@ -511,7 +514,7 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -234450217
   m_SortingLayer: 1
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Positions:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 30, z: 0}
@@ -1180,9 +1183,9 @@ LineRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -234450217
+  m_SortingLayer: 1
+  m_SortingOrder: 1
   m_Positions:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0.5, z: 0}
