@@ -47,6 +47,11 @@ public class Powerup : MonoBehaviour
                     if (playerGun3)
                         playerGun3.ActivatePowerup(_type, _duration);
                     break;
+                case PowerupType.Blindness:
+                    collision.TryGetComponent(out PlayerPPVolumeEffects Vol);
+                    if (Vol)
+                        Vol.EnableBlindness(_duration);
+                    break;
                 case PowerupType.None:
                     break;
             }

@@ -20,8 +20,10 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] private bool _spawnPowerups = true;
     [SerializeField] private Transform _powerupContainer;
     [SerializeField] private Vector2 _powerupSpawnDelay = new Vector2(6, 17);
+    [Space]
     [SerializeField] private WeightedSpawnTable _powerups;
     [SerializeField] private WeightedSpawnTable _refills;
+    [SerializeField] private WeightedSpawnTable _powerdowns;
 
     private void Awake() => i = this;
 
@@ -73,12 +75,16 @@ public class SpawnManager : MonoBehaviour
 
         while (i.CanSpawn && i._spawnPowerups)
         {
-            int total = i._powerups.ChanceForLoot + i._refills.ChanceForLoot;
-            int powerupOrRefill = Random.Range(0, total);
+            int total = i._powerups.ChanceForLoot + i._refills.ChanceForLoot + i._powerdowns.ChanceForLoot;
+            int powerupOrRefillOrPowerdown = Random.Range(0, total);
 
-            GameObject toSpawn = powerupOrRefill < i._powerups.ChanceForLoot ?
-                i._powerups.GetRandomWeightedSpawnable() :
-                i._refills.GetRandomWeightedSpawnable();
+            GameObject toSpawn;
+            if (powerupOrRefillOrPowerdown < i._powerups.ChanceForLoot)
+                toSpawn = i._powerups.GetRandomWeightedSpawnable();
+            else if (powerupOrRefillOrPowerdown > (i._powerups.ChanceForLoot + i._refills.ChanceForLoot))
+                toSpawn = i._powerdowns.GetRandomWeightedSpawnable();
+            else
+                toSpawn = i._refills.GetRandomWeightedSpawnable();
 
             Instantiate(toSpawn, GetSpawnPosition(1.5f), Quaternion.identity, i._powerupContainer);
             i.ItemsInLevel++;
