@@ -5,4 +5,5 @@
     SpeedBoost,
     Shield,
     DynamicLaser,
+    Blindness,
 }

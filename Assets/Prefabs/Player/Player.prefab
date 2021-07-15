@@ -33,7 +33,7 @@ Transform:
   - {fileID: 1395705415872025048}
   - {fileID: 429881067134206036}
   m_Father: {fileID: 6858344343892727120}
-  m_RootOrder: 4
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2075095349
 MonoBehaviour:
@@ -100,7 +100,7 @@ Transform:
   - {fileID: 8663619674473164162}
   - {fileID: 3346073550682366008}
   m_Father: {fileID: 6858344343892727120}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4605037150027857836
 GameObject:
@@ -323,7 +323,7 @@ Transform:
   - {fileID: 4194543200231893996}
   - {fileID: 7190162676264598211}
   m_Father: {fileID: 6858344343892727120}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5926066313271752043
 GameObject:
@@ -603,7 +603,7 @@ Transform:
   m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
   m_Children: []
   m_Father: {fileID: 6858344343892727120}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &704049009331873780
 SpriteRenderer:
@@ -692,6 +692,7 @@ GameObject:
   - component: {fileID: 6858344343892727150}
   - component: {fileID: 2207040055764492020}
   - component: {fileID: 8413316032799347752}
+  - component: {fileID: 4884510422514310309}
   - component: {fileID: 4746337827884717969}
   - component: {fileID: 144187609346123278}
   m_Layer: 0
@@ -713,10 +714,10 @@ Transform:
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children:
   - {fileID: 4324513220140325426}
+  - {fileID: 2075095347}
   - {fileID: 6166424285599349828}
   - {fileID: 8994323174388103398}
   - {fileID: 9194158053131322183}
-  - {fileID: 2075095347}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1000,6 +1001,18 @@ MonoBehaviour:
   _fullShield: {r: 0.5058824, g: 0.8509804, b: 1, a: 1}
   _twoThirdsShield: {r: 0, g: 0.49019608, b: 1, a: 1}
   _oneThirdShield: {r: 0, g: 0.19607843, b: 0.7372549, a: 0.8784314}
+--- !u!114 &4884510422514310309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6858344343892727124}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d349459183bbf3646a87599b06474925, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!82 &4746337827884717969
 AudioSource:
   m_ObjectHideFlags: 0
