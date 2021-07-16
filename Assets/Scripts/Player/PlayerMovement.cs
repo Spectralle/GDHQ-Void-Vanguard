@@ -8,6 +8,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float _movementSpeed = 3f;
     [SerializeField] private GameObject _thruster;
 
+    private bool _canControlMovement;
     private Vector3 _keyboardInput = Vector3.zero;
     private bool _isSpeedBoosted;
     public bool IsSpeedBoosted => _isSpeedBoosted;
@@ -15,6 +16,7 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 _thrusterOriginalScale = Vector3.one;
     private Animator _anim;
     private PlayerThruster _playerThruster;
+    private bool _restrictInBoundary;
 
 
     private void Awake()
@@ -23,29 +25,37 @@ public class PlayerMovement : MonoBehaviour
         TryGetComponent(out _playerThruster);
         transform.position = _startPosition;
         _thrusterOriginalScale = _thruster.transform.localScale;
+
+        StartCoroutine(PlayerEntersScene());
     }
 
     private void Update()
     {
-        _keyboardInput = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0);
-        transform.Translate(_keyboardInput * (_movementSpeed * _speedMultiplier) * Time.deltaTime);
+        if (_canControlMovement)
+        {
+            _keyboardInput = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0);
+            transform.Translate(_keyboardInput * (_movementSpeed * _speedMultiplier) * Time.deltaTime);
+        }
 
         HandleShipAnimation();
 
         #region Restrict player to within level bounds
-        float x = transform.position.x;
-        float y = transform.position.y;
+        if (_restrictInBoundary)
+        {
+            float x = transform.position.x;
+            float y = transform.position.y;
 
-        if (transform.position.x <= LevelBoundary.L())
-            x = LevelBoundary.R();  // X wraps
-        else if (transform.position.x >= LevelBoundary.R())
-            x = LevelBoundary.L(); // X wraps
-        if (transform.position.y <= LevelBoundary.D())
-            y = LevelBoundary.D(); // Y doesn't wrap
-        else if (transform.position.y >= LevelBoundary.U())
-            y = LevelBoundary.U();  // Y doesn't wrap
+            if (transform.position.x <= LevelBoundary.L())
+                x = LevelBoundary.R();  // X wraps
+            else if (transform.position.x >= LevelBoundary.R())
+                x = LevelBoundary.L(); // X wraps
+            if (transform.position.y <= LevelBoundary.D())
+                y = LevelBoundary.D(); // Y doesn't wrap
+            else if (transform.position.y >= LevelBoundary.U())
+                y = LevelBoundary.U();  // Y doesn't wrap
 
-        transform.position = new Vector3(x, y, transform.position.z);
+            transform.position = new Vector3(x, y, transform.position.z);
+        }
         #endregion
     }
 
@@ -103,5 +113,19 @@ public class PlayerMovement : MonoBehaviour
                 _isSpeedBoosted = false;
                 break;
         }
+    }
+
+    private IEnumerator PlayerEntersScene()
+    {
+        transform.position = new Vector3(_startPosition.x, _startPosition.y - 6f, _startPosition.z);
+
+        while (Vector3.Distance(transform.position, _startPosition) > 0.1f)
+        {
+            transform.Translate(new Vector3(0, _movementSpeed * 1.3f * Mathf.Clamp01(Vector3.Distance(transform.position, _startPosition)) * Time.deltaTime));
+            yield return new WaitForEndOfFrame();
+        }
+
+        _restrictInBoundary = true;
+        _canControlMovement = true;
     }
 }
