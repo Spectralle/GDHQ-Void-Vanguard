@@ -18,7 +18,7 @@ public class PlayerThruster : MonoBehaviour
         if (_playerMovement.IsSpeedBoosted)
             _isThrusting = false;
 
-        if (Input.GetKeyDown(KeyCode.LeftShift) && !_playerMovement.IsSpeedBoosted && _thrustRemaining > 10)
+        if (Input.GetKeyDown(KeyCode.LeftShift) && !_playerMovement.IsSpeedBoosted && _thrustRemaining > 40)
             StartManualThruster();
 
         if (Input.GetKey(KeyCode.LeftShift) && _isThrusting && _thrustRemaining > 0)
