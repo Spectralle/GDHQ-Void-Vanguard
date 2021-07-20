@@ -5,6 +5,7 @@ using UnityEngine;
 public class EnemyMovement : MonoBehaviour
 {
     [SerializeField] private float _moveSpeed = 5;
+    [SerializeField, Range(0, 10)] private float _evadeChance = 3;
     [SerializeField] private AudioClip _explosionAudioClip;
 
     private Animator _anim;
@@ -19,20 +20,30 @@ public class EnemyMovement : MonoBehaviour
         if (!_isDestroyed && transform.position.y < LevelBoundary.D(-2))
         {
             if (SpawnManager.i.CanSpawn)
+            {
+                StopCoroutine(Evade());
                 transform.position = SpawnManager.GetSpawnPosition();
+            }
             else
                 Destroy(gameObject);
         }
     }
 
+    #region Collide
     private void OnDestroy() => SpawnManager.i.EnemiesAlive--;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player Projectile"))
         {
-            Destroy(other.gameObject);
-            StartCoroutine(Explode());
+            int evadeChance = Random.Range(1, 10);
+            if (evadeChance <= _evadeChance)
+                StartCoroutine(Evade());
+            else
+            {
+                Destroy(other.gameObject);
+                StartCoroutine(Explode());
+            }
         }
 
         if (other.CompareTag("Player"))
@@ -43,7 +54,33 @@ public class EnemyMovement : MonoBehaviour
             StartCoroutine(Explode());
         }
     }
+    #endregion
 
+    #region Evade
+    private IEnumerator Evade()
+    {
+        float X = 2.5f;
+        int leftOrRight = Random.Range(0, 2);
+        if (leftOrRight == 0)
+            X = -X;
+
+        float relativeX = transform.position.x + X;
+
+        if (relativeX < LevelBoundary.L(2) || relativeX > LevelBoundary.R(2))
+        {
+            X = -X;
+            relativeX = transform.position.x + X;
+        }
+
+        while (transform.position.x != X)
+        {
+            transform.position = Vector3.Lerp(transform.position, new Vector2(relativeX, transform.position.y), Time.deltaTime * 4.5f);
+            yield return new WaitForEndOfFrame();
+        }
+    }
+    #endregion
+
+    #region Explode
     public void MakeExplode() => StartCoroutine(Explode());
 
     private IEnumerator Explode()
@@ -76,4 +113,5 @@ public class EnemyMovement : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
     }
+    #endregion
 }
