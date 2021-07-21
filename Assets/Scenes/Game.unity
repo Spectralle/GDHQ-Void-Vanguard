@@ -4225,12 +4225,12 @@ MonoBehaviour:
     - Object: {fileID: 2367699532824588073, guid: bba9247aa7f108d4ebf1569b469ee267, type: 3}
       Chance: 12
   _refills:
-    ChanceForLoot: 86
+    ChanceForLoot: 100
     LootList:
     - Object: {fileID: 8122863273168900285, guid: dc2116d53115e8d4591a0510fe3460b4, type: 3}
       Chance: 38
     - Object: {fileID: 4405693010180981932, guid: 91e3e35980fcf2540812e0d86bad8386, type: 3}
-      Chance: 66
+      Chance: 100
   _powerdowns:
     ChanceForLoot: 56
     LootList:

@@ -6,15 +6,28 @@ public class EnemyMovement : MonoBehaviour
 {
     [SerializeField] private float _moveSpeed = 5;
     [SerializeField, Range(0, 10)] private float _evadeChance = 3;
+    [SerializeField, Range(0, 2)] private float _sineMoveScale = 0.5f;
     [SerializeField] private AudioClip _explosionAudioClip;
 
     private Animator _anim;
     private bool _isDestroyed;
     public bool IsDestroyed => _isDestroyed;
+    private float _originX = 0;
+    private bool _canSine = true;
 
+
+    private void Awake() => SetOriginX(transform.position.x);
+
+    private void SetOriginX(float X) => _originX = X;
 
     private void Update()
     {
+        if (_canSine)
+        {
+            float X = _originX + (Mathf.Sin(transform.position.y) * _sineMoveScale);
+            transform.position = new Vector3(X, transform.position.y);
+        }
+
         transform.Translate(Vector3.down * _moveSpeed * Time.deltaTime);
 
         if (!_isDestroyed && transform.position.y < LevelBoundary.D(-2))
@@ -23,6 +36,7 @@ public class EnemyMovement : MonoBehaviour
             {
                 StopCoroutine(Evade());
                 transform.position = SpawnManager.GetSpawnPosition();
+                SetOriginX(transform.position.x);
             }
             else
                 Destroy(gameObject);
@@ -59,24 +73,28 @@ public class EnemyMovement : MonoBehaviour
     #region Evade
     private IEnumerator Evade()
     {
+        _canSine = false;
+
         float X = 2.5f;
         int leftOrRight = Random.Range(0, 2);
         if (leftOrRight == 0)
             X = -X;
 
-        float relativeX = transform.position.x + X;
+        _originX = _originX + X;
 
-        if (relativeX < LevelBoundary.L(2) || relativeX > LevelBoundary.R(2))
+        if (_originX < LevelBoundary.L(2) || _originX > LevelBoundary.R(2))
         {
             X = -X;
-            relativeX = transform.position.x + X;
+            _originX = transform.position.x + X;
         }
 
         while (transform.position.x != X)
         {
-            transform.position = Vector3.Lerp(transform.position, new Vector2(relativeX, transform.position.y), Time.deltaTime * 4.5f);
+            transform.position = Vector3.Lerp(transform.position, new Vector2(_originX, transform.position.y), Time.deltaTime * 4.5f);
             yield return new WaitForEndOfFrame();
         }
+
+        _canSine = true;
     }
     #endregion
 
