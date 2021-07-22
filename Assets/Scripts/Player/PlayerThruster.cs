@@ -13,32 +13,34 @@ public class PlayerThruster : MonoBehaviour
 
     private void Awake() => _playerMovement = GetComponent<PlayerMovement>();
 
+    private void Start() => UIManager.i.ChangeThruster(_thrustRemaining);
+
     void Update()
     {
         if (_playerMovement.IsSpeedBoosted)
             _isThrusting = false;
 
-        if (Input.GetKeyDown(KeyCode.LeftShift) && !_playerMovement.IsSpeedBoosted && _thrustRemaining > 40)
+        if (Input.GetKeyDown(KeyCode.LeftShift))
             StartManualThruster();
-
-        if (Input.GetKey(KeyCode.LeftShift) && _isThrusting && _thrustRemaining > 0)
-            MaintainManualThruster();
-
-        if (Input.GetKeyUp(KeyCode.LeftShift) && !_playerMovement.IsSpeedBoosted)
+        else if (Input.GetKeyUp(KeyCode.LeftShift))
             StopManualThruster();
 
-        if (!_isThrusting && _thrustRemaining < 100)
+        if (_isThrusting)
+            DrainManualThruster();
+        else
             RechargeManualThruster();
     }
 
     private void StartManualThruster()
     {
+        if (_playerMovement.IsSpeedBoosted || _thrustRemaining < 40)
+            return;
+
         _playerMovement.ActivateBoost(1.6f, 1.1f, 1.5f);
         _isThrusting = true;
-        UIManager.i.ChangeThrusterBarVisibility(1);
     }
 
-    private void MaintainManualThruster()
+    private void DrainManualThruster()
     {
         _thrustRemaining -= Time.deltaTime * _usageSpeed;
 
@@ -53,20 +55,22 @@ public class PlayerThruster : MonoBehaviour
 
     private void StopManualThruster()
     {
+        if (_playerMovement.IsSpeedBoosted)
+            return;
+
         _playerMovement.DeactivateBoost();
         _isThrusting = false;
     }
 
     private void RechargeManualThruster()
     {
+        if (_thrustRemaining == 100)
+            return;
+
         _thrustRemaining += Time.deltaTime * _rechargeSpeed;
-        UIManager.i.ChangeThrusterBarVisibility(0.4f);
 
         if (_thrustRemaining > 100)
-        {
             _thrustRemaining = 100;
-            UIManager.i.ChangeThrusterBarVisibility(0);
-        }
 
         UIManager.i.ChangeThruster(_thrustRemaining);
     }

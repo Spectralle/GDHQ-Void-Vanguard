@@ -599,7 +599,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6806159552466919942}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -2.47, z: 0}
+  m_LocalPosition: {x: 0, y: -2.55, z: 0}
   m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
   m_Children: []
   m_Father: {fileID: 6858344343892727120}
@@ -692,6 +692,7 @@ GameObject:
   - component: {fileID: 6858344343892727150}
   - component: {fileID: 2207040055764492020}
   - component: {fileID: 8413316032799347752}
+  - component: {fileID: 8206715953121109153}
   - component: {fileID: 4884510422514310309}
   - component: {fileID: 4746337827884717969}
   - component: {fileID: 144187609346123278}
@@ -709,7 +710,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6858344343892727124}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -3, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children:
@@ -1001,6 +1002,21 @@ MonoBehaviour:
   _fullShield: {r: 0.5058824, g: 0.8509804, b: 1, a: 1}
   _twoThirdsShield: {r: 0, g: 0.49019608, b: 1, a: 1}
   _oneThirdShield: {r: 0, g: 0.19607843, b: 0.7372549, a: 0.8784314}
+--- !u!114 &8206715953121109153
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6858344343892727124}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 236485c0991fcc84eb68b195a42fedb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _magnetStrength: 1.6
+  _usageSpeed: 60
+  _rechargeSpeed: 10
 --- !u!114 &4884510422514310309
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1010,7 +1026,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6858344343892727124}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d349459183bbf3646a87599b06474925, type: 3}
+  m_Script: {fileID: 11500000, guid: 2b9081a8b259c384b9dc05bb5b9fe5fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _ppVolume: {fileID: 0}
@@ -1124,7 +1140,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: 75bc9825c9fdea04ca76a968679b926b, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 0
+  m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
