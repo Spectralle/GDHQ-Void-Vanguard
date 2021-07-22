@@ -35,7 +35,6 @@ public class PlayerThruster : MonoBehaviour
     {
         _playerMovement.ActivateBoost(1.6f, 1.1f, 1.5f);
         _isThrusting = true;
-        UIManager.i.ChangeThrusterBarVisibility(1);
     }
 
     private void MaintainManualThruster()
@@ -60,13 +59,9 @@ public class PlayerThruster : MonoBehaviour
     private void RechargeManualThruster()
     {
         _thrustRemaining += Time.deltaTime * _rechargeSpeed;
-        UIManager.i.ChangeThrusterBarVisibility(0.4f);
 
         if (_thrustRemaining > 100)
-        {
             _thrustRemaining = 100;
-            UIManager.i.ChangeThrusterBarVisibility(0);
-        }
 
         UIManager.i.ChangeThruster(_thrustRemaining);
     }
