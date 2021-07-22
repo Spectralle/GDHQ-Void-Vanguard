@@ -11,12 +11,13 @@ public class UIManager : MonoBehaviour
     [Space]
     [SerializeField] private TextMeshProUGUI _playerScore;
     [Space]
-    [SerializeField] private TextMeshProUGUI _playerAmmoText;
     [SerializeField] private Image _playerAmmoFill;
+    [SerializeField] private TextMeshProUGUI _playerAmmoText;
     [Space]
     [SerializeField] private Image _playerMagnetFill;
+    [SerializeField] private Image _playerMagnetAvailable;
     [Space]
-    [SerializeField] private Image _playerThrusterBarImage;
+    [SerializeField] private Image _playerThrusterFill;
     [Space]
     [SerializeField] private TextMeshProUGUI _playerLives;
     [SerializeField] private Image _playerLivesImage;
@@ -28,8 +29,8 @@ public class UIManager : MonoBehaviour
 
     private void Awake()
     {
-        if (!_enemiesKilled || !_playerScore || !_playerAmmoFill || !_playerThrusterBarImage ||
-            !_playerLives || !_playerLivesImage || LivesSprites.Length == 0)
+        if (!_enemiesKilled || !_playerScore || !_playerAmmoFill || !_playerThrusterFill ||
+            !_playerMagnetFill || !_playerLives || !_playerLivesImage || LivesSprites.Length == 0)
         {
             Debug.Log("No UI assigned. UI updates disabled.");
             enabled = false;
@@ -40,7 +41,6 @@ public class UIManager : MonoBehaviour
 
         ChangeScore(0);
         ChangeKills(0);
-        ChangeThruster(100);
     }
 
     public void ChangeKills(int value) => _enemiesKilled.SetText($"Kills: {_kills += value}");
@@ -53,9 +53,16 @@ public class UIManager : MonoBehaviour
         StartCoroutine(SmoothChangeAmmoFillAmount((1 / max) * value));
     }
 
-    public void ChangeMagnet(float value, float max) => StartCoroutine(SmoothChangeMagnetFillAmount((1 / max) * value));
+    public void ChangeMagnet(float value)
+    {
+        _playerMagnetFill.fillAmount = value / 100;
+        if (value == 100)
+            _playerMagnetAvailable.enabled = false;
+        else
+            _playerMagnetAvailable.enabled = true;
+    }
 
-    public void ChangeThruster(float value) => _playerThrusterBarImage.fillAmount = value / 100;
+    public void ChangeThruster(float value) => _playerThrusterFill.fillAmount = value / 100;
 
     public void ChangeLives(int value)
     {
@@ -81,28 +88,6 @@ public class UIManager : MonoBehaviour
             while (_playerAmmoFill.fillAmount < value)
             {
                 _playerAmmoFill.fillAmount += (Time.deltaTime);
-                yield return new WaitForEndOfFrame();
-            }
-        }
-    }
-
-    private IEnumerator SmoothChangeMagnetFillAmount(float value)
-    {
-        bool isRaising = _playerMagnetFill.fillAmount < value;
-
-        if (!isRaising)
-        {
-            while (_playerMagnetFill.fillAmount > value)
-            {
-                _playerMagnetFill.fillAmount -= (Time.deltaTime * 5);
-                yield return new WaitForEndOfFrame();
-            }
-        }
-        else
-        {
-            while (_playerMagnetFill.fillAmount < value)
-            {
-                _playerMagnetFill.fillAmount += (Time.deltaTime * 5);
                 yield return new WaitForEndOfFrame();
             }
         }

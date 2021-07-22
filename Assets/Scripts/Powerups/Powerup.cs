@@ -7,13 +7,37 @@ public class Powerup : MonoBehaviour
     [SerializeField] private int _duration = 5;
     [SerializeField] private AudioClip _powerupAudioClip;
 
+    private Transform _player;
+    private float _magnetStrength;
+    private LineRenderer _magnetLineRenderer;
+
+
+    private void Awake()
+    {
+        _player = FindObjectOfType<PlayerMovement>().transform;
+        _magnetStrength = PlayerMagnet.MagnetStrength;
+        _magnetLineRenderer = GetComponent<LineRenderer>();
+    }
 
     private void Update()
     {
-        transform.Translate(Vector3.down * _fallSpeed * Time.deltaTime);
+        if (PlayerMagnet.IsMagnetized)
+        {
+            _magnetLineRenderer.enabled = true;
+            _magnetLineRenderer.SetPosition(0, transform.position);
+            _magnetLineRenderer.SetPosition(1, _player.position);
+            Vector2 directionToPlayer = (_player.position - transform.position).normalized;
+            transform.Translate(directionToPlayer * (_fallSpeed * _magnetStrength) * Time.deltaTime);
+        }
+        else
+        {
+            _magnetLineRenderer.enabled = false;
+            transform.Translate(Vector3.down * _fallSpeed * Time.deltaTime);
+        }
 
         if (transform.position.y < LevelBoundary.D(-2))
             Destroy(gameObject);
+
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -48,7 +72,7 @@ public class Powerup : MonoBehaviour
                         playerGun3.ActivatePowerup(_type, _duration);
                     break;
                 case PowerupType.Blindness:
-                    collision.TryGetComponent(out PlayerPPVolumeEffects Vol);
+                    collision.TryGetComponent(out PlayerPostProcessEffects Vol);
                     if (Vol)
                         Vol.EnableBlindness(_duration);
                     break;

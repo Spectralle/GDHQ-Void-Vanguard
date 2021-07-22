@@ -7,10 +7,25 @@ public class Refill : MonoBehaviour
     [SerializeField] private int _fallSpeed = 3;
     [SerializeField] private AudioClip _powerupAudioClip;
 
+    private Transform _player;
+    private float _magnetStrength;
+
+
+    private void Awake()
+    {
+        _player = FindObjectOfType<PlayerMovement>().transform;
+        _magnetStrength = PlayerMagnet.MagnetStrength;
+    }
 
     private void Update()
     {
-        transform.Translate(Vector3.down * _fallSpeed * Time.deltaTime);
+        if (PlayerMagnet.IsMagnetized)
+        {
+            Vector2 directionToPlayer = (_player.position - transform.position).normalized;
+            transform.Translate(directionToPlayer * (_fallSpeed * _magnetStrength) * Time.deltaTime);
+        }
+        else
+            transform.Translate(Vector3.down * _fallSpeed * Time.deltaTime);
         
         if (transform.position.y < LevelBoundary.D(-2))
             Destroy(gameObject);
@@ -20,6 +35,8 @@ public class Refill : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
+            collision.gameObject.TryGetComponent(out AudioSource plAS);
+            plAS.PlayOneShot(_powerupAudioClip);
             switch (_type)
             {
                 case RefillType.Health:

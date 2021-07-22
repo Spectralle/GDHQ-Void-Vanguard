@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 
-public class PlayerPPVolumeEffects : MonoBehaviour
+public class PlayerPostProcessEffects : MonoBehaviour
 {
     [SerializeField] private PostProcessVolume _ppVolume;
     [SerializeField, Range(0.1f, 4f)] private float defaultFadeSpeed = 1.5f;
