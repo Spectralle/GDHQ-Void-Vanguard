@@ -46,6 +46,9 @@ public class PlayerHealth : MonoBehaviour
         if (_currentLives > 0)
             _currentLives -= livesLost;
 
+        if (_currentLives < 0)
+            _currentLives = 0;
+
         switch (_currentLives)
         {
             case 3:
