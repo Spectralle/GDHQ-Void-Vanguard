@@ -14,25 +14,32 @@ public class EnemyMovement : MonoBehaviour
     public bool IsDestroyed => _isDestroyed;
     private float _originX = 0;
     private bool _canSine = true;
+    private Vector3 _baseMovementDirection = Vector3.down;
+    private int _damageAmount = 1;
+    private bool _isShootingAsteroid;
 
 
     private void Awake() => SetOriginX(transform.position.x);
 
     private void SetOriginX(float X) => _originX = X;
+    public void SetMovementDirection(Vector3 dir) => _baseMovementDirection = dir;
+    public void SetDamageAmount(int amount) => _damageAmount = amount;
+    public void SetAsAsteroid() => _isShootingAsteroid = true;
 
     private void Update()
     {
-        if (_canSine)
+        if (_canSine && _sineMoveScale > 0)
         {
             float X = _originX + (Mathf.Sin(transform.position.y) * _sineMoveScale);
+            transform.right *= X;
             transform.position = new Vector3(X, transform.position.y);
         }
 
-        transform.Translate(Vector3.down * _moveSpeed * Time.deltaTime);
+        transform.Translate(_baseMovementDirection * _moveSpeed * Time.deltaTime);
 
         if (!_isDestroyed && transform.position.y < LevelBoundary.D(-2))
         {
-            if (SpawnManager.i.CanSpawn)
+            if (SpawnManager.i.CanSpawn && !_isShootingAsteroid)
             {
                 StopCoroutine(Evade());
                 transform.position = SpawnManager.GetSpawnPosition();
@@ -48,7 +55,7 @@ public class EnemyMovement : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player Projectile"))
+        if (other.CompareTag("Player Projectile") && !_isShootingAsteroid)
         {
             int evadeChance = Random.Range(1, 10);
             if (evadeChance <= _evadeChance)
@@ -64,7 +71,7 @@ public class EnemyMovement : MonoBehaviour
         {
             other.TryGetComponent(out PlayerHealth playerHealth);
             if (playerHealth)
-                playerHealth.Damage();
+                playerHealth.Damage(_damageAmount);
             StartCoroutine(Explode());
         }
     }

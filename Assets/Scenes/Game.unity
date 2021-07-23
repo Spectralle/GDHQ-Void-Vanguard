@@ -4957,15 +4957,23 @@ MonoBehaviour:
   _player: {fileID: 1478998659}
   _spawnEnemies: 1
   _enemyContainer: {fileID: 1315715290}
-  _enemySpawnDelay: {x: 2.5, y: 4}
+  _enemySpawnDelay: {x: 3, y: 4.5}
   _enemies:
     ChanceForLoot: 100
     LootList:
     - Object: {fileID: 7709881818554600201, guid: a328951309050b0458f1035b0c0536a8, type: 3}
       Chance: 100
+  _spawnAsteroids: 1
+  _asteroidContainer: {fileID: 1315715290}
+  _asteroidSpawnDelay: {x: 15, y: 30}
+  _asteroids:
+    ChanceForLoot: 100
+    LootList:
+    - Object: {fileID: 8120925468854027568, guid: 6cb0368260c12e843879a1e143239bfc, type: 3}
+      Chance: 100
   _spawnPowerups: 1
   _powerupContainer: {fileID: 773045036}
-  _powerupSpawnDelay: {x: 5, y: 13}
+  _powerupSpawnDelay: {x: 5, y: 12}
   _powerups:
     ChanceForLoot: 100
     LootList:

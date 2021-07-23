@@ -9,18 +9,23 @@ public class Refill : MonoBehaviour
 
     private Transform _player;
     private float _magnetStrength;
+    private LineRenderer _magnetLineRenderer;
 
 
     private void Awake()
     {
         _player = FindObjectOfType<PlayerMovement>().transform;
         _magnetStrength = PlayerMagnet.MagnetStrength;
+        _magnetLineRenderer = GetComponent<LineRenderer>();
     }
 
     private void Update()
     {
         if (PlayerMagnet.IsMagnetized)
         {
+            _magnetLineRenderer.enabled = true;
+            _magnetLineRenderer.SetPosition(0, transform.position);
+            _magnetLineRenderer.SetPosition(1, _player.position);
             Vector2 directionToPlayer = (_player.position - transform.position).normalized;
             transform.Translate(directionToPlayer * (_fallSpeed * _magnetStrength) * Time.deltaTime);
         }
