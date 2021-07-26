@@ -36,7 +36,10 @@ public class Powerup : MonoBehaviour
         }
 
         if (transform.position.y < LevelBoundary.D(-2))
+        {
+            SpawnManager.ChangeItemsExist(transform);
             Destroy(gameObject);
+        }
 
     }
 
@@ -80,7 +83,7 @@ public class Powerup : MonoBehaviour
                     break;
             }
 
-            SpawnManager.i.ItemsInLevel--;
+            SpawnManager.ChangeItemsExist(transform);
             Destroy(gameObject);
         }
     }

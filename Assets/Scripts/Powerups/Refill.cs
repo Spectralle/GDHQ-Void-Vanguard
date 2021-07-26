@@ -33,7 +33,10 @@ public class Refill : MonoBehaviour
             transform.Translate(Vector3.down * _fallSpeed * Time.deltaTime);
         
         if (transform.position.y < LevelBoundary.D(-2))
+        {
+            SpawnManager.ChangeItemsExist(transform);
             Destroy(gameObject);
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -48,19 +51,18 @@ public class Refill : MonoBehaviour
                     collision.gameObject.TryGetComponent(out PlayerHealth plHth);
                     if (plHth)
                         plHth.Heal(1);
-                    SpawnManager.i.ItemsInLevel--;
-                    Destroy(gameObject);
                     break;
                 case RefillType.Ammo:
                     collision.gameObject.TryGetComponent(out PlayerGun plGun);
                     if (plGun)
                         plGun.RefillPrimaryAmmo();
-                    SpawnManager.i.ItemsInLevel--;
-                    Destroy(gameObject);
                     break;
                 case RefillType.None:
                     break;
             }
+
+            SpawnManager.ChangeItemsExist(transform);
+            Destroy(gameObject);
         }
     }
 }

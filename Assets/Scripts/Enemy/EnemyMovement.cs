@@ -10,6 +10,7 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField] private AudioClip _explosionAudioClip;
 
     private Animator _anim;
+    private EnemyGun _gun;
     private bool _isDestroyed;
     public bool IsDestroyed => _isDestroyed;
     private float _originX = 0;
@@ -19,7 +20,11 @@ public class EnemyMovement : MonoBehaviour
     private bool _isShootingAsteroid;
 
 
-    private void Awake() => SetOriginX(transform.position.x);
+    private void Awake()
+    {
+        TryGetComponent(out _gun);
+        SetOriginX(transform.position.x);
+    }
 
     private void SetOriginX(float X) => _originX = X;
     public void SetMovementDirection(Vector3 dir) => _baseMovementDirection = dir;
@@ -44,6 +49,7 @@ public class EnemyMovement : MonoBehaviour
                 StopCoroutine(Evade());
                 transform.position = SpawnManager.GetSpawnPosition();
                 SetOriginX(transform.position.x);
+                _gun.ShootAntiItemLaser();
             }
             else
                 Destroy(gameObject);
@@ -51,7 +57,7 @@ public class EnemyMovement : MonoBehaviour
     }
 
     #region Collide
-    private void OnDestroy() => SpawnManager.i.EnemiesAlive--;
+    private void OnDestroy() => SpawnManager.ChangeEnemiesAlive(transform);
 
     private void OnTriggerEnter2D(Collider2D other)
     {

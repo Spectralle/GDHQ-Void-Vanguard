@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -7,8 +8,6 @@ public class SpawnManager : MonoBehaviour
     public static SpawnManager i;
 
     [HideInInspector] public bool CanSpawn = true;
-    [HideInInspector] public int EnemiesAlive;
-    [HideInInspector] public int ItemsInLevel;
 
     [SerializeField] private GameObject _player;
     [Header("Enemies:")]
@@ -32,9 +31,24 @@ public class SpawnManager : MonoBehaviour
 
     private Vector3 directionToPlayer = Vector3.zero;
 
+    public static List<Transform> EnemyList = new List<Transform>();
+    public static bool EnemiesExist => EnemyList.Count > 0;
+    public static int EnemyCount => EnemyList.Count;
+
+    public static List<Transform> ItemList = new List<Transform>();
+    public static bool ItemsExist => ItemList.Count > 0;
+    public static int ItemCount => ItemList.Count;
+
 
     private void Awake() => i = this;
 
+    private void Update()
+    {
+        if (_player == null)
+            CanSpawn = false;
+    }
+
+    #region Manage spawning
     public static void StartSpawning()
     {
         if (i._player)
@@ -63,12 +77,6 @@ public class SpawnManager : MonoBehaviour
         }    
     }
 
-    private void Update()
-    {
-        if (_player == null)
-            CanSpawn = false;
-    }
-
     private static IEnumerator ManageEnemySpawning()
     {
         yield return new WaitForSeconds(0.5f);
@@ -76,8 +84,9 @@ public class SpawnManager : MonoBehaviour
         while (i.CanSpawn && i._spawnEnemies)
         {
             GameObject toSpawn = i._enemies.GetRandomWeightedSpawnable();
-            Instantiate(toSpawn, GetSpawnPosition(1f), Quaternion.identity, i._enemyContainer);
-            i.EnemiesAlive++;
+            Transform enemy = Instantiate(toSpawn, GetSpawnPosition(1f), Quaternion.identity, i._enemyContainer).transform;
+            ChangeEnemiesAlive(enemy);
+
             yield return new WaitForSeconds(Random.Range(i._enemySpawnDelay.x, i._enemySpawnDelay.y));
         }
     }
@@ -116,8 +125,9 @@ public class SpawnManager : MonoBehaviour
             else
                 toSpawn = i._refills.GetRandomWeightedSpawnable();
 
-            Instantiate(toSpawn, GetSpawnPosition(1.5f), Quaternion.identity, i._powerupContainer);
-            i.ItemsInLevel++;
+            Transform item = Instantiate(toSpawn, GetSpawnPosition(1.5f), Quaternion.identity, i._powerupContainer).transform;
+            ChangeItemsExist(item);
+
             yield return new WaitForSeconds(Random.Range(i._powerupSpawnDelay.x, i._powerupSpawnDelay.y));
         }
     }
@@ -137,5 +147,22 @@ public class SpawnManager : MonoBehaviour
             spawnPosition.x = limit;
 
         return spawnPosition;
+    }
+    #endregion
+
+    public static void ChangeEnemiesAlive(Transform enemy)
+    {
+        if (EnemyList.Contains(enemy))
+            EnemyList.Remove(enemy);
+        else
+            EnemyList.Add(enemy);
+    }
+
+    public static void ChangeItemsExist(Transform item)
+    {
+        if (ItemList.Contains(item))
+            ItemList.Remove(item);
+        else
+            ItemList.Add(item);
     }
 }
