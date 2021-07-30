@@ -247,9 +247,10 @@ MonoBehaviour:
   _pfLaser: {fileID: 2050861904007121940, guid: 7f9c2ef9b9523cd43b3b26bb0e14c642, type: 3}
   _laserSpeed: {x: 0, y: -10}
   _laserAudioClip: {fileID: 8300000, guid: 75676f361bdfeaf41a46623e95df3dbc, type: 3}
-  _activationChance: 1
+  AntiPowerupType: 0
+  _activationChance: 2
   _shotDelay: 0.5
-  _shotDuration: 0.5
+  _shotDuration: 0.6
 --- !u!95 &2028059189
 Animator:
   serializedVersion: 3

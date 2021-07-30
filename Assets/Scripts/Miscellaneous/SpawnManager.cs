@@ -5,29 +5,36 @@ using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
+#pragma warning disable CS0414
     public static SpawnManager i;
 
     [HideInInspector] public bool CanSpawn = true;
-
     [SerializeField] private GameObject _player;
+
+    [Header("Wave Spawning:")]
+    [SerializeField] private AnimationCurve _enemiesEachWave;
+    [SerializeField] private AnimationCurve _waveEnemyDifficulty;
+    [SerializeField] private SpawnWaveGroup _spawnWaves;
+    [SerializeField, Range(0, 20)] private int _waveRecoveryBuffer = 5;
+
     [Header("Enemies:")]
     [SerializeField] private bool _spawnEnemies = true;
     [SerializeField] private Transform _enemyContainer;
     [SerializeField] private Vector2 _enemySpawnDelay = new Vector2(2.5f, 5);
-    [SerializeField] private WeightedSpawnTable _enemies;
+    [SerializeField] private WeightedSpawnTable_TotalChance _enemies;
     [Header("Asteroids:")]
     [SerializeField] private bool _spawnAsteroids = true;
     [SerializeField] private Transform _asteroidContainer;
     [SerializeField] private Vector2 _asteroidSpawnDelay = new Vector2(16, 30);
-    [SerializeField] private WeightedSpawnTable _asteroids;
+    [SerializeField] private WeightedSpawnTable_TotalChance _asteroids;
     [Header("PowerUps:")]
     [SerializeField] private bool _spawnPowerups = true;
     [SerializeField] private Transform _powerupContainer;
     [SerializeField] private Vector2 _powerupSpawnDelay = new Vector2(6, 17);
     [Space]
-    [SerializeField] private WeightedSpawnTable _powerups;
-    [SerializeField] private WeightedSpawnTable _refills;
-    [SerializeField] private WeightedSpawnTable _powerdowns;
+    [SerializeField] private WeightedSpawnTable_TotalChance _powerups;
+    [SerializeField] private WeightedSpawnTable_TotalChance _refills;
+    [SerializeField] private WeightedSpawnTable_TotalChance _powerdowns;
 
     private Vector3 directionToPlayer = Vector3.zero;
 
@@ -38,6 +45,7 @@ public class SpawnManager : MonoBehaviour
     public static List<Transform> ItemList = new List<Transform>();
     public static bool ItemsExist => ItemList.Count > 0;
     public static int ItemCount => ItemList.Count;
+#pragma warning restore CS0414
 
 
     private void Awake() => i = this;
@@ -84,7 +92,7 @@ public class SpawnManager : MonoBehaviour
         while (i.CanSpawn && i._spawnEnemies)
         {
             GameObject toSpawn = i._enemies.GetRandomWeightedSpawnable();
-            Transform enemy = Instantiate(toSpawn, GetSpawnPosition(1f), Quaternion.identity, i._enemyContainer).transform;
+            Transform enemy = Instantiate(toSpawn, GetEnemySpawnPosition(1f), Quaternion.identity, i._enemyContainer).transform;
             ChangeEnemiesAlive(enemy);
 
             yield return new WaitForSeconds(Random.Range(i._enemySpawnDelay.x, i._enemySpawnDelay.y));
@@ -114,26 +122,26 @@ public class SpawnManager : MonoBehaviour
 
         while (i.CanSpawn && i._spawnPowerups)
         {
-            int total = i._powerups.ChanceForLoot + i._refills.ChanceForLoot + i._powerdowns.ChanceForLoot;
+            int total = i._powerups.ChanceForSpawn + i._refills.ChanceForSpawn + i._powerdowns.ChanceForSpawn;
             int powerupOrRefillOrPowerdown = Random.Range(0, total);
 
             GameObject toSpawn;
-            if (powerupOrRefillOrPowerdown < i._powerups.ChanceForLoot)
+            if (powerupOrRefillOrPowerdown < i._powerups.ChanceForSpawn)
                 toSpawn = i._powerups.GetRandomWeightedSpawnable();
-            else if (powerupOrRefillOrPowerdown > (i._powerups.ChanceForLoot + i._refills.ChanceForLoot))
+            else if (powerupOrRefillOrPowerdown > (i._powerups.ChanceForSpawn + i._refills.ChanceForSpawn))
                 toSpawn = i._powerdowns.GetRandomWeightedSpawnable();
             else
                 toSpawn = i._refills.GetRandomWeightedSpawnable();
 
-            Transform item = Instantiate(toSpawn, GetSpawnPosition(1.5f), Quaternion.identity, i._powerupContainer).transform;
+            Transform item = Instantiate(toSpawn, GetEnemySpawnPosition(1.5f), Quaternion.identity, i._powerupContainer).transform;
             ChangeItemsExist(item);
 
             yield return new WaitForSeconds(Random.Range(i._powerupSpawnDelay.x, i._powerupSpawnDelay.y));
         }
     }
 
-    public static Vector2 GetSpawnPosition() => GetSpawnPosition(0);
-    public static Vector2 GetSpawnPosition(float Xoffset) => new Vector2(Random.Range(LevelBoundary.L(Xoffset), LevelBoundary.R(-Xoffset)), LevelBoundary.U(2));
+    public static Vector2 GetEnemySpawnPosition() => GetEnemySpawnPosition(0);
+    public static Vector2 GetEnemySpawnPosition(float Xoffset) => new Vector2(Random.Range(LevelBoundary.L(Xoffset), LevelBoundary.R(-Xoffset)), LevelBoundary.U(2));
 
     public static Vector2 GetAsteroidSpawnPosition()
     {

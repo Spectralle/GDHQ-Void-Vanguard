@@ -11,13 +11,17 @@ public class EnemyGun : MonoBehaviour
     [Space]
     [SerializeField] private Vector2 _shotPoint1 = new Vector2(-0.219f, -1.096f);
     [SerializeField] private Vector2 _shotPoint2 = new Vector2(0.219f, -1.096f);
-    [Space]
     [Header("Weapons")]
     [SerializeField] private GameObject _pfLaser;
     [SerializeField] private Vector2 _laserSpeed = new Vector2(0, -4f);
     [SerializeField] private AudioClip _laserAudioClip;
-    [Space]
     [Header("Anti-Item Laser")]
+    public APType AntiPowerupType;
+    public enum APType
+    {
+        Basic,
+        Advanced
+    }
     [SerializeField, Range(0, 10)] private int _activationChance = 1;
     [SerializeField, Range(0, 1.5f)] private float _shotDelay = 1f;
     [SerializeField, Range(0, 1f)] private float _shotDuration = 0.5f;
@@ -27,6 +31,7 @@ public class EnemyGun : MonoBehaviour
     private float _cooldownMultiplier = 1;
     private AudioSource _asrc;
     private LineRenderer _antiItemLaserRenderer;
+    private float _antiItemTimer;
 
 
     private void Awake()
@@ -42,8 +47,12 @@ public class EnemyGun : MonoBehaviour
     {
         if (_readyToShoot && !GetComponent<EnemyMovement>().IsDestroyed)
             ShootLaser();
+
+        if (AntiPowerupType == APType.Basic)
+            ShootBasicAntiItemLaser();
     }
 
+    #region Default Laser
     private Vector3 GetShotSpawnPoint(int pointIndex)
     {
         switch (pointIndex)
@@ -77,8 +86,60 @@ public class EnemyGun : MonoBehaviour
         yield return new WaitForSeconds(Random.Range(_shotCooldown.x, _shotCooldown.y) * _cooldownMultiplier);
         _readyToShoot = true;
     }
+    #endregion
 
     #region Anti-Item Laser
+    #region Basic
+    public void ShootBasicAntiItemLaser()
+    {
+        if (Random.Range(0, 10) > _activationChance)
+            return;
+
+        if (_antiItemTimer < 1f)
+            _antiItemTimer += Time.deltaTime;
+        else
+        {
+            _antiItemTimer = 0;
+
+            RaycastHit2D hit1 = Physics2D.Raycast((Vector2)transform.position + _shotPoint1, Vector2.down);
+            if (hit1)
+            {
+                if (hit1.transform.CompareTag("Powerup"))
+                {
+                    Instantiate(_pfLaser, (Vector2)transform.position + _shotPoint1, Quaternion.identity, _projectileContainer)
+                    .GetComponent<LaserMovement>().SetMovementDirection(_laserSpeed);
+
+                    if (_asrc && _laserAudioClip)
+                        _asrc.PlayOneShot(_laserAudioClip);
+                }
+            }
+
+            RaycastHit2D hit2 = Physics2D.Raycast((Vector2)transform.position + _shotPoint2, Vector2.down);
+            if (hit2)
+            {
+                if (hit2.transform.CompareTag("Powerup"))
+                {
+                    Instantiate(_pfLaser, (Vector2)transform.position + _shotPoint2, Quaternion.identity, _projectileContainer)
+                        .GetComponent<LaserMovement>().SetMovementDirection(_laserSpeed);
+
+                    if (_asrc && _laserAudioClip)
+                        _asrc.PlayOneShot(_laserAudioClip);
+                }
+            }
+        }
+
+        Debug.DrawRay((Vector2)transform.position + _shotPoint1, Vector2.down * 15);
+        Debug.DrawRay((Vector2)transform.position + _shotPoint2, Vector2.down * 15);
+    }
+    #endregion
+
+    #region Advanced
+    public void ShootAdvAntiItemLaser()
+    {
+        if (Random.Range(0, 10) <= _activationChance)
+            StartCoroutine(ShootAdvancedAntiItemLaser());
+    }
+
     private List<Transform> GetItemsBelowMe()
     {
         if (SpawnManager.ItemsExist)
@@ -87,7 +148,7 @@ public class EnemyGun : MonoBehaviour
 
             foreach (Transform t in SpawnManager.ItemList)
             {
-                if (t.position.y < (transform.position.y - 2))
+                if (t && t.position.y < (transform.position.y - 4))
                     _itemsBelowMe.Add(t);
             }
 
@@ -110,20 +171,28 @@ public class EnemyGun : MonoBehaviour
                 Vector2.Distance(transform.position, closestTarget.position))
                 closestTarget = _itemsBelowMe[i];
         }
+
         return closestTarget;
     }
 
-    private IEnumerator ShootAILaser()
+    private Vector2 GetClosestGun(Vector2 targetPosition)
+    {
+        Vector2 activeShotPoint;
+        if (Vector2.Distance(_shotPoint1, targetPosition) < Vector2.Distance(_shotPoint2, targetPosition))
+            activeShotPoint = _shotPoint1 + new Vector2(0, 0.15f);
+        else
+            activeShotPoint = _shotPoint2 + new Vector2(0, 0.15f);
+        return activeShotPoint;
+    }
+
+    private IEnumerator ShootAdvancedAntiItemLaser()
     {
         yield return new WaitForSeconds(_shotDelay);
 
         Transform target = GetClosestItem();
         if (target == null)
-            yield return null;
-
-        Vector2 activeShotPoint =
-            Vector2.Distance(_shotPoint1, target.position) < Vector2.Distance(_shotPoint2, target.position) ?
-            _shotPoint1 : _shotPoint2;
+            yield break;
+        
         _antiItemLaserRenderer.enabled = true;
 
         float timer = 0;
@@ -133,7 +202,7 @@ public class EnemyGun : MonoBehaviour
                 timer = _shotDuration;
             else
             {
-                _antiItemLaserRenderer.SetPosition(0, transform.position + (Vector3)activeShotPoint);
+                _antiItemLaserRenderer.SetPosition(0, transform.position + (Vector3)GetClosestGun(target.position));
                 _antiItemLaserRenderer.SetPosition(1, target.position);
                 timer += Time.deltaTime;
                 yield return new WaitForEndOfFrame();
@@ -142,18 +211,18 @@ public class EnemyGun : MonoBehaviour
 
         _antiItemLaserRenderer.enabled = false;
         if (target != null)
-            Destroy(target.gameObject);
+        {
+            target.TryGetComponent(out IPickup obj);
+            obj.DestroyThis(true);
+        }
     }
     #endregion
-
-    public void ShootAntiItemLaser() => StartCoroutine(ShootAILaser());
+    #endregion
 
 
     private void OnDrawGizmosSelected()
     {
-        Color c = Color.red;
-        c.a = 0.5f;
-        Gizmos.color = c;
+        Gizmos.color = Color.white;
         Gizmos.DrawSphere(transform.position + (Vector3)_shotPoint1, 0.02f);
         Gizmos.DrawSphere(transform.position + (Vector3)_shotPoint2, 0.02f);
     }

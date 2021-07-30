@@ -5,6 +5,7 @@ public class Asteroid : MonoBehaviour
 {
     [SerializeField] private float _rotationSpeed = 15;
     [SerializeField] private GameObject _explosionPrefab;
+    [SerializeField] private GameObject _text;
 
 
     private void Awake()
@@ -22,6 +23,7 @@ public class Asteroid : MonoBehaviour
         {
             Destroy(other.gameObject);
             CameraShaker.StartShaking(1.2f, .5f);
+            Destroy(_text);
             StartCoroutine(Explode());
         }
     }

@@ -47,9 +47,10 @@ public class EnemyMovement : MonoBehaviour
             if (SpawnManager.i.CanSpawn && !_isShootingAsteroid)
             {
                 StopCoroutine(Evade());
-                transform.position = SpawnManager.GetSpawnPosition();
+                transform.position = SpawnManager.GetEnemySpawnPosition();
                 SetOriginX(transform.position.x);
-                _gun.ShootAntiItemLaser();
+                if (_gun.AntiPowerupType == EnemyGun.APType.Advanced)
+                    _gun.ShootAdvAntiItemLaser();
             }
             else
                 Destroy(gameObject);

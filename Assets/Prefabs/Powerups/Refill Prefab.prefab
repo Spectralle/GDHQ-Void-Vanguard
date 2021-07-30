@@ -101,6 +101,7 @@ MonoBehaviour:
   _type: 0
   _fallSpeed: 3
   _powerupAudioClip: {fileID: 8300000, guid: 5ee343246919d2b4bba63ae629e95494, type: 3}
+  _explosionPrefab: {fileID: 5901384970640918411, guid: 0bfc6987dd1f45e42952cf904a763407, type: 3}
 --- !u!58 &5244093514158546335
 CircleCollider2D:
   m_ObjectHideFlags: 0
