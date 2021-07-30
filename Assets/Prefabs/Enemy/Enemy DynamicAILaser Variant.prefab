@@ -9,7 +9,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -6422748477226092474, guid: a328951309050b0458f1035b0c0536a8, type: 3}
       propertyPath: AntiPowerupType
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -6422748477226092474, guid: a328951309050b0458f1035b0c0536a8, type: 3}
       propertyPath: _activationChance

@@ -33,10 +33,9 @@ public class EnemyMovement : MonoBehaviour
 
     private void Update()
     {
-        if (_canSine && _sineMoveScale > 0)
+        if (_canSine && _sineMoveScale > 0 && _moveSpeed > 0)
         {
             float X = _originX + (Mathf.Sin(transform.position.y) * _sineMoveScale);
-            transform.right *= X;
             transform.position = new Vector3(X, transform.position.y);
         }
 

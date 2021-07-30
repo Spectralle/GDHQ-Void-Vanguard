@@ -7,6 +7,7 @@ public class EnemyGun : MonoBehaviour
 {
     [Header("Variables")]
     [SerializeField] private bool _canShoot = true;
+    [SerializeField] private bool _canShootBackwards = true;
     [SerializeField] private Vector2 _shotCooldown = new Vector2(2.5f, 7);
     [Space]
     [SerializeField] private Vector2 _shotPoint1 = new Vector2(-0.219f, -1.096f);
@@ -19,6 +20,7 @@ public class EnemyGun : MonoBehaviour
     public APType AntiPowerupType;
     public enum APType
     {
+        None,
         Basic,
         Advanced
     }
@@ -26,17 +28,22 @@ public class EnemyGun : MonoBehaviour
     [SerializeField, Range(0, 1.5f)] private float _shotDelay = 1f;
     [SerializeField, Range(0, 1f)] private float _shotDuration = 0.5f;
 
-    private Transform _projectileContainer;
+    private static Transform _player;
+    private static Transform _projectileContainer;
     private bool _readyToShoot = true;
     private float _cooldownMultiplier = 1;
     private AudioSource _asrc;
     private LineRenderer _antiItemLaserRenderer;
     private float _antiItemTimer;
+    private float _backwardsShotTimer;
 
 
     private void Awake()
     {
-        _projectileContainer = GameObject.Find("Projectile Container").transform;
+        if (!_projectileContainer)
+            _projectileContainer = GameObject.Find("Projectile Container").transform;
+        if (!_player)
+            _player = GameObject.Find("Player").transform;
         if (!_projectileContainer)
             Debug.LogWarning("No container object set for projectiles");
         _asrc = GetComponent<AudioSource>();
@@ -45,8 +52,26 @@ public class EnemyGun : MonoBehaviour
 
     private void Update()
     {
+        if (_player && _canShootBackwards)
+        {
+            if (_backwardsShotTimer <= 0)
+            {
+                bool isPlayerAboveThis =
+                    transform.position.y < _player.position.y &&
+                    _player.transform.position.x > transform.position.x - 1 &&
+                    _player.transform.position.x < transform.position.x + 1;
+
+                if (isPlayerAboveThis)
+                    ShootALaserBolt(transform.position, _projectileContainer, -_laserSpeed * 0.75f);
+
+                _backwardsShotTimer = 1f;
+            }
+            else
+                _backwardsShotTimer -= Time.deltaTime;
+        }
+
         if (_readyToShoot && !GetComponent<EnemyMovement>().IsDestroyed)
-            ShootLaser();
+            ShootDefaultLaser();
 
         if (AntiPowerupType == APType.Basic)
             ShootBasicAntiItemLaser();
@@ -63,22 +88,26 @@ public class EnemyGun : MonoBehaviour
         }
     }
 
-    public void ShootLaser()
+    public void ShootDefaultLaser()
     {
         if (!_canShoot)
             return;
 
         _readyToShoot = false;
 
-        Instantiate(_pfLaser, GetShotSpawnPoint(1), Quaternion.identity, _projectileContainer)
-                .GetComponent<LaserMovement>().SetMovementDirection(_laserSpeed);
-        Instantiate(_pfLaser, GetShotSpawnPoint(2), Quaternion.identity, _projectileContainer)
-                .GetComponent<LaserMovement>().SetMovementDirection(_laserSpeed);
+        ShootALaserBolt(GetShotSpawnPoint(1), _projectileContainer, _laserSpeed);
+        ShootALaserBolt(GetShotSpawnPoint(2), _projectileContainer, _laserSpeed);
 
         if (_asrc && _laserAudioClip)
             _asrc.PlayOneShot(_laserAudioClip);
 
         StartCoroutine(ShotCooldown());
+    }
+
+    private void ShootALaserBolt(Vector2 origin, Transform parent, Vector2 direction)
+    {
+        Instantiate(_pfLaser, origin, Quaternion.identity, parent)
+            .GetComponent<LaserMovement>().SetMovementDirection(direction);
     }
 
     private IEnumerator ShotCooldown()
@@ -88,8 +117,7 @@ public class EnemyGun : MonoBehaviour
     }
     #endregion
 
-    #region Anti-Item Laser
-    #region Basic
+    #region Basic Anti-Item Laser
     public void ShootBasicAntiItemLaser()
     {
         if (Random.Range(0, 10) > _activationChance)
@@ -106,8 +134,7 @@ public class EnemyGun : MonoBehaviour
             {
                 if (hit1.transform.CompareTag("Powerup"))
                 {
-                    Instantiate(_pfLaser, (Vector2)transform.position + _shotPoint1, Quaternion.identity, _projectileContainer)
-                    .GetComponent<LaserMovement>().SetMovementDirection(_laserSpeed);
+                    ShootALaserBolt((Vector2)transform.position + _shotPoint1, _projectileContainer, _laserSpeed);
 
                     if (_asrc && _laserAudioClip)
                         _asrc.PlayOneShot(_laserAudioClip);
@@ -119,21 +146,17 @@ public class EnemyGun : MonoBehaviour
             {
                 if (hit2.transform.CompareTag("Powerup"))
                 {
-                    Instantiate(_pfLaser, (Vector2)transform.position + _shotPoint2, Quaternion.identity, _projectileContainer)
-                        .GetComponent<LaserMovement>().SetMovementDirection(_laserSpeed);
+                    ShootALaserBolt((Vector2)transform.position + _shotPoint2, _projectileContainer, _laserSpeed);
 
                     if (_asrc && _laserAudioClip)
                         _asrc.PlayOneShot(_laserAudioClip);
                 }
             }
         }
-
-        Debug.DrawRay((Vector2)transform.position + _shotPoint1, Vector2.down * 15);
-        Debug.DrawRay((Vector2)transform.position + _shotPoint2, Vector2.down * 15);
     }
     #endregion
 
-    #region Advanced
+    #region Advanced Anti-Item Laser
     public void ShootAdvAntiItemLaser()
     {
         if (Random.Range(0, 10) <= _activationChance)
@@ -216,7 +239,6 @@ public class EnemyGun : MonoBehaviour
             obj.DestroyThis(true);
         }
     }
-    #endregion
     #endregion
 
 

@@ -4903,6 +4903,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 505357042}
     m_Modifications:
+    - target: {fileID: 2207040055764492020, guid: e08c39b8f26ef7c4b9851f9e0ff72a3d, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4884510422514310309, guid: e08c39b8f26ef7c4b9851f9e0ff72a3d, type: 3}
       propertyPath: _ppVolume
       value: 
@@ -5377,59 +5381,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CanSpawn: 1
   _player: {fileID: 1478998659}
-  _enemiesEachWave:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 6
-      inSlope: 0.06913911
-      outSlope: 0.06913911
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.15076923
-    - serializedVersion: 3
-      time: 100
-      value: 50
-      inSlope: 1.2136116
-      outSlope: 1.2136116
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.08
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  _waveEnemyDifficulty:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 18.624134
-      outSlope: 18.624134
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.22461538
-    - serializedVersion: 3
-      time: 1
-      value: 50
-      inSlope: 94.79936
-      outSlope: 94.79936
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.086153865
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  _spawnWaves: {fileID: 11400000, guid: ec1daa6390de51f468326a6fba433a9e, type: 2}
-  _waveRecoveryBuffer: 5
   _spawnEnemies: 1
   _enemyContainer: {fileID: 1315715290}
-  _enemySpawnDelay: {x: 3, y: 5}
+  _enemySpawnDelay: {x: 5, y: 5}
   _enemies:
     ChanceForSpawn: 100
     SpawnList:
