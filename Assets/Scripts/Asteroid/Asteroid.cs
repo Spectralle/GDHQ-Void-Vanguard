@@ -5,6 +5,7 @@ public class Asteroid : MonoBehaviour
 {
     [SerializeField] private float _rotationSpeed = 15;
     [SerializeField] private GameObject _explosionPrefab;
+    [SerializeField] private GameObject _text;
 
 
     private void Awake()
@@ -14,7 +15,11 @@ public class Asteroid : MonoBehaviour
             _rotationSpeed = -_rotationSpeed;
     }
 
-    private void Update() => transform.Rotate(Vector3.forward * _rotationSpeed * Time.deltaTime);
+    private void Update()
+    {
+        transform.Rotate(Vector3.forward * _rotationSpeed * Time.deltaTime);
+        _text.transform.rotation = Quaternion.identity;
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -22,6 +27,7 @@ public class Asteroid : MonoBehaviour
         {
             Destroy(other.gameObject);
             CameraShaker.StartShaking(1.2f, .5f);
+            _text.SetActive(false);
             StartCoroutine(Explode());
         }
     }

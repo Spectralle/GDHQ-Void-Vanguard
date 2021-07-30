@@ -308,6 +308,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rotationSpeed: -15
   _explosionPrefab: {fileID: 5901384970640918411, guid: 0bfc6987dd1f45e42952cf904a763407, type: 3}
+  _text: {fileID: 5551785125930100174}
 --- !u!82 &7575610864324765508
 AudioSource:
   m_ObjectHideFlags: 0

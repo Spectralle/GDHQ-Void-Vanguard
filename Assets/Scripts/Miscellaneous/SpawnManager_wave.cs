@@ -3,13 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class SpawnManager : MonoBehaviour
+public class SpawnManager_wave : MonoBehaviour
 {
 #pragma warning disable CS0414
-    public static SpawnManager i;
+    public static SpawnManager_wave i;
 
     [HideInInspector] public bool CanSpawn = true;
     [SerializeField] private GameObject _player;
+
+    [Header("Wave Spawning:")]
+    [SerializeField] private AnimationCurve _enemiesEachWave;
+    [SerializeField] private AnimationCurve _waveEnemyDifficulty;
+    [SerializeField] private SpawnWaveGroup _spawnWaves;
+    [SerializeField, Range(0, 20)] private int _waveRecoveryBuffer = 5;
 
     [Header("Enemies:")]
     [SerializeField] private bool _spawnEnemies = true;

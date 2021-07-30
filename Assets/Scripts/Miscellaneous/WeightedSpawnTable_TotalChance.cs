@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
 
 [System.Serializable]
-public struct WeightedSpawnTable
+public struct WeightedSpawnTable_TotalChance
 {
+    [Range(0, 100)]
+    public int ChanceForSpawn;
     public SpawnTableObject[] SpawnList;
     public bool HasArrayEntries() => SpawnList.Length > 0;
 

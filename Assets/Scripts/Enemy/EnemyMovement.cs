@@ -10,6 +10,7 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField] private AudioClip _explosionAudioClip;
 
     private Animator _anim;
+    private EnemyGun _gun;
     private bool _isDestroyed;
     public bool IsDestroyed => _isDestroyed;
     private float _originX = 0;
@@ -19,7 +20,11 @@ public class EnemyMovement : MonoBehaviour
     private bool _isShootingAsteroid;
 
 
-    private void Awake() => SetOriginX(transform.position.x);
+    private void Awake()
+    {
+        TryGetComponent(out _gun);
+        SetOriginX(transform.position.x);
+    }
 
     private void SetOriginX(float X) => _originX = X;
     public void SetMovementDirection(Vector3 dir) => _baseMovementDirection = dir;
@@ -28,10 +33,9 @@ public class EnemyMovement : MonoBehaviour
 
     private void Update()
     {
-        if (_canSine && _sineMoveScale > 0)
+        if (_canSine && _sineMoveScale > 0 && _moveSpeed > 0)
         {
             float X = _originX + (Mathf.Sin(transform.position.y) * _sineMoveScale);
-            transform.right *= X;
             transform.position = new Vector3(X, transform.position.y);
         }
 
@@ -42,8 +46,10 @@ public class EnemyMovement : MonoBehaviour
             if (SpawnManager.i.CanSpawn && !_isShootingAsteroid)
             {
                 StopCoroutine(Evade());
-                transform.position = SpawnManager.GetSpawnPosition();
+                transform.position = SpawnManager.GetEnemySpawnPosition();
                 SetOriginX(transform.position.x);
+                if (_gun.AntiPowerupType == EnemyGun.APType.Advanced)
+                    _gun.ShootAdvAntiItemLaser();
             }
             else
                 Destroy(gameObject);
@@ -51,7 +57,7 @@ public class EnemyMovement : MonoBehaviour
     }
 
     #region Collide
-    private void OnDestroy() => SpawnManager.i.EnemiesAlive--;
+    private void OnDestroy() => SpawnManager.ChangeEnemiesAlive(transform);
 
     private void OnTriggerEnter2D(Collider2D other)
     {
