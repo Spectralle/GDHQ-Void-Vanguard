@@ -13,6 +13,7 @@ public class UIManager : MonoBehaviour
     [Space]
     [SerializeField] private Image _playerAmmoFill;
     [SerializeField] private TextMeshProUGUI _playerAmmoText;
+    [SerializeField] private RectTransform[] _playerAmmoIcons;
     [Space]
     [SerializeField] private Image _playerMagnetFill;
     [SerializeField] private Image _playerMagnetAvailable;
@@ -50,6 +51,12 @@ public class UIManager : MonoBehaviour
     public void ChangeAmmo(float value, float max)
     {
         _playerAmmoText.SetText($"{value}/{max}");
+        foreach (RectTransform icon in i._playerAmmoIcons)
+        {
+            float width = (value * (64 - 23.48f) / max) + 23.48f;
+            icon.sizeDelta = new Vector2(width, icon.sizeDelta.y);
+        }
+
         StartCoroutine(SmoothChangeAmmoFillAmount((1 / max) * value));
     }
 
