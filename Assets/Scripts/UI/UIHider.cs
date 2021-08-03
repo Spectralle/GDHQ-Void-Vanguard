@@ -13,13 +13,13 @@ public class UIHider : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && gameObject.activeSelf)
             StartCoroutine(ChangeUICanvasAlpha(_transparency));
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && gameObject.activeSelf)
             StartCoroutine(ChangeUICanvasAlpha(1f));
     }
 
@@ -31,7 +31,7 @@ public class UIHider : MonoBehaviour
         {
             while (_canvasGroup.alpha < endValue)
             {
-                _canvasGroup.alpha += (Time.deltaTime * 2.5f);
+                _canvasGroup.alpha += (Time.deltaTime * 3f);
                 yield return new WaitForEndOfFrame();
             }
         }
@@ -39,7 +39,7 @@ public class UIHider : MonoBehaviour
         {
             while (_canvasGroup.alpha > endValue)
             {
-                _canvasGroup.alpha -= (Time.deltaTime * 2.5f);
+                _canvasGroup.alpha -= (Time.deltaTime * 3f);
                 yield return new WaitForEndOfFrame();
             }
         }

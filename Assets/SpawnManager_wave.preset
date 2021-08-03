@@ -1,0 +1,427 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!181963792 &2655988077585873504
+Preset:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: SpawnManager_wave
+  m_TargetType:
+    m_NativeTypeID: 114
+    m_ManagedTypePPtr: {fileID: 11500000, guid: 9f944bc121665ba42879b7f62a72533f, type: 3}
+    m_ManagedTypeFallback: 
+  m_Properties:
+  - target: {fileID: 0}
+    propertyPath: m_Enabled
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorHideFlags
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorClassIdentifier
+    value: 
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: CanSpawn
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _player
+    value: 
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemiesEachWave.m_Curve.Array.size
+    value: 4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemiesEachWave.m_Curve.Array.data[0].time
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemiesEachWave.m_Curve.Array.data[0].value
+    value: 5
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemiesEachWave.m_Curve.Array.data[0].inSlope
+    value: 0.625
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemiesEachWave.m_Curve.Array.data[0].outSlope
+    value: 0.625
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemiesEachWave.m_Curve.Array.data[0].tangentMode
+    value: 69
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemiesEachWave.m_Curve.Array.data[0].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemiesEachWave.m_Curve.Array.data[0].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemiesEachWave.m_Curve.Array.data[0].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemiesEachWave.m_Curve.Array.data[1].time
+    value: 9
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemiesEachWave.m_Curve.Array.data[1].value
+    value: 10
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemiesEachWave.m_Curve.Array.data[1].inSlope
+    value: 0.625
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemiesEachWave.m_Curve.Array.data[1].outSlope
+    value: -10995.554
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemiesEachWave.m_Curve.Array.data[1].tangentMode
+    value: 69
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemiesEachWave.m_Curve.Array.data[1].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemiesEachWave.m_Curve.Array.data[1].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemiesEachWave.m_Curve.Array.data[1].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemiesEachWave.m_Curve.Array.data[2].time
+    value: 9.001
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemiesEachWave.m_Curve.Array.data[2].value
+    value: -1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemiesEachWave.m_Curve.Array.data[2].inSlope
+    value: -10995.554
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemiesEachWave.m_Curve.Array.data[2].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemiesEachWave.m_Curve.Array.data[2].tangentMode
+    value: 69
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemiesEachWave.m_Curve.Array.data[2].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemiesEachWave.m_Curve.Array.data[2].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemiesEachWave.m_Curve.Array.data[2].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemiesEachWave.m_Curve.Array.data[3].time
+    value: 10
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemiesEachWave.m_Curve.Array.data[3].value
+    value: -1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemiesEachWave.m_Curve.Array.data[3].inSlope
+    value: Infinity
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemiesEachWave.m_Curve.Array.data[3].outSlope
+    value: Infinity
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemiesEachWave.m_Curve.Array.data[3].tangentMode
+    value: 71
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemiesEachWave.m_Curve.Array.data[3].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemiesEachWave.m_Curve.Array.data[3].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemiesEachWave.m_Curve.Array.data[3].outWeight
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemiesEachWave.m_PreInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemiesEachWave.m_PostInfinity
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemiesEachWave.m_RotationOrder
+    value: 4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _waveEnemyDifficulty.m_Curve.Array.size
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _waveEnemyDifficulty.m_Curve.Array.data[0].time
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _waveEnemyDifficulty.m_Curve.Array.data[0].value
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _waveEnemyDifficulty.m_Curve.Array.data[0].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _waveEnemyDifficulty.m_Curve.Array.data[0].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _waveEnemyDifficulty.m_Curve.Array.data[0].tangentMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _waveEnemyDifficulty.m_Curve.Array.data[0].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _waveEnemyDifficulty.m_Curve.Array.data[0].inWeight
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _waveEnemyDifficulty.m_Curve.Array.data[0].outWeight
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _waveEnemyDifficulty.m_Curve.Array.data[1].time
+    value: 10
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _waveEnemyDifficulty.m_Curve.Array.data[1].value
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _waveEnemyDifficulty.m_Curve.Array.data[1].inSlope
+    value: 0.16806173
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _waveEnemyDifficulty.m_Curve.Array.data[1].outSlope
+    value: 0.16806173
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _waveEnemyDifficulty.m_Curve.Array.data[1].tangentMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _waveEnemyDifficulty.m_Curve.Array.data[1].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _waveEnemyDifficulty.m_Curve.Array.data[1].inWeight
+    value: 0.12687263
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _waveEnemyDifficulty.m_Curve.Array.data[1].outWeight
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _waveEnemyDifficulty.m_PreInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _waveEnemyDifficulty.m_PostInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _waveEnemyDifficulty.m_RotationOrder
+    value: 4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _waveRecoveryBuffer
+    value: 5
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _waveText
+    value: 
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _spawnEnemies
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemyContainer
+    value: 
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemySpawnDelay.x
+    value: 3
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemySpawnDelay.y
+    value: 5
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemies.SpawnList.Array.size
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemies.SpawnList.Array.data[0].Object
+    value: 
+    objectReference: {fileID: 7709881818554600201, guid: a328951309050b0458f1035b0c0536a8, type: 3}
+  - target: {fileID: 0}
+    propertyPath: _enemies.SpawnList.Array.data[0].Chance
+    value: 100
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _enemies.SpawnList.Array.data[1].Object
+    value: 
+    objectReference: {fileID: 4880436895115476670, guid: f502f9352d2c04848ab7ad14eb52ac36, type: 3}
+  - target: {fileID: 0}
+    propertyPath: _enemies.SpawnList.Array.data[1].Chance
+    value: 70
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _spawnAsteroids
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _asteroidContainer
+    value: 
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _asteroidSpawnDelay.x
+    value: 15
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _asteroidSpawnDelay.y
+    value: 30
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _asteroids.SpawnList.Array.size
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _asteroids.SpawnList.Array.data[0].Object
+    value: 
+    objectReference: {fileID: 8120925468854027568, guid: 6cb0368260c12e843879a1e143239bfc, type: 3}
+  - target: {fileID: 0}
+    propertyPath: _asteroids.SpawnList.Array.data[0].Chance
+    value: 100
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _spawnPowerups
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _powerupContainer
+    value: 
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _powerupSpawnDelay.x
+    value: 10
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _powerupSpawnDelay.y
+    value: 16
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _powerups.SpawnList.Array.size
+    value: 4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _powerups.SpawnList.Array.data[0].Object
+    value: 
+    objectReference: {fileID: 2641604716268628962, guid: 10f28822dc705f34bb4374f4aa1386d9, type: 3}
+  - target: {fileID: 0}
+    propertyPath: _powerups.SpawnList.Array.data[0].Chance
+    value: 100
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _powerups.SpawnList.Array.data[1].Object
+    value: 
+    objectReference: {fileID: 1923556897455880983, guid: 1d60a6026b4d5dc4f8bf4565e8d68695, type: 3}
+  - target: {fileID: 0}
+    propertyPath: _powerups.SpawnList.Array.data[1].Chance
+    value: 100
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _powerups.SpawnList.Array.data[2].Object
+    value: 
+    objectReference: {fileID: 7408431643284925137, guid: 457edb95f95a8be4dabd5fcc316fcb49, type: 3}
+  - target: {fileID: 0}
+    propertyPath: _powerups.SpawnList.Array.data[2].Chance
+    value: 100
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _powerups.SpawnList.Array.data[3].Object
+    value: 
+    objectReference: {fileID: 2367699532824588073, guid: bba9247aa7f108d4ebf1569b469ee267, type: 3}
+  - target: {fileID: 0}
+    propertyPath: _powerups.SpawnList.Array.data[3].Chance
+    value: 30
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _powerups.ChanceForSpawn
+    value: 100
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _refills.SpawnList.Array.size
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _refills.SpawnList.Array.data[0].Object
+    value: 
+    objectReference: {fileID: 8122863273168900285, guid: dc2116d53115e8d4591a0510fe3460b4, type: 3}
+  - target: {fileID: 0}
+    propertyPath: _refills.SpawnList.Array.data[0].Chance
+    value: 60
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _refills.SpawnList.Array.data[1].Object
+    value: 
+    objectReference: {fileID: 4405693010180981932, guid: 91e3e35980fcf2540812e0d86bad8386, type: 3}
+  - target: {fileID: 0}
+    propertyPath: _refills.SpawnList.Array.data[1].Chance
+    value: 100
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _refills.ChanceForSpawn
+    value: 100
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _powerdowns.SpawnList.Array.size
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _powerdowns.SpawnList.Array.data[0].Object
+    value: 
+    objectReference: {fileID: 4722796244515922528, guid: 4c1f15715c7738a458ed981772c9d1e4, type: 3}
+  - target: {fileID: 0}
+    propertyPath: _powerdowns.SpawnList.Array.data[0].Chance
+    value: 100
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: _powerdowns.ChanceForSpawn
+    value: 75
+    objectReference: {fileID: 0}
+  m_ExcludedProperties: []
