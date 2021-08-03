@@ -56,9 +56,13 @@ public class EnemyMovement : MonoBehaviour
         }
     }
 
-    #region Collide
-    private void OnDestroy() => SpawnManager.ChangeEnemiesAlive(transform);
+    private void OnDestroy()
+    {
+        if (!_isShootingAsteroid && SpawnManager.EnemyList.Contains(transform))
+            SpawnManager.EnemyList.Remove(transform);
+    }
 
+    #region Collide
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player Projectile") && !_isShootingAsteroid)
@@ -116,10 +120,12 @@ public class EnemyMovement : MonoBehaviour
 
     private IEnumerator Explode()
     {
-        if (_isDestroyed)
-            yield return null;
+        if (_isDestroyed || _isShootingAsteroid)
+            yield break;
 
         _isDestroyed = true;
+
+        SpawnManager.ChangeEnemiesAlive(transform);
 
         UIManager.i.ChangeKills(1);
         UIManager.i.ChangeScore(10);

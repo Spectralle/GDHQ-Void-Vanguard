@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class Asteroid : MonoBehaviour
+public class StarterAsteroid : MonoBehaviour
 {
     [SerializeField] private float _rotationSpeed = 15;
     [SerializeField] private GameObject _explosionPrefab;
@@ -46,7 +46,7 @@ public class Asteroid : MonoBehaviour
 
         yield return new WaitForSeconds(2.6f);
 
-        SpawnManager.StartSpawning();
+        SpawnManager.StartSpawningNextWave();
 
         Destroy(gameObject);
     }

@@ -73,6 +73,11 @@ public class Powerup : MonoBehaviour, IPickup
                     if (playerGun3)
                         playerGun3.ActivatePowerup(_type, _duration);
                     break;
+                case PowerupType.HomingMissile:
+                    collision.TryGetComponent(out PlayerGun playerGun4);
+                    if (playerGun4)
+                        playerGun4.ActivatePowerup(_type, _duration);
+                    break;
                 case PowerupType.Blindness:
                     collision.TryGetComponent(out PlayerPostProcessEffects Vol);
                     if (Vol)

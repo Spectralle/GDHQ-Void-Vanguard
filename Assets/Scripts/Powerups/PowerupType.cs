@@ -5,5 +5,6 @@
     SpeedBoost,
     Shield,
     DynamicLaser,
+    HomingMissile,
     Blindness,
 }

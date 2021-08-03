@@ -4,6 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(AudioSource))]
 public class PlayerGun : MonoBehaviour
 {
+    #pragma warning disable CS0414
     [Header("Variables")]
     [SerializeField] private int _ammoCount = 15;
     [SerializeField] private float _shotCooldown = 0.4f;
@@ -14,24 +15,28 @@ public class PlayerGun : MonoBehaviour
     [Space]
     [Header("Weapons")]
     [SerializeField] private GameObject _pfLaser;
+    [SerializeField] private GameObject _pfMissile;
     [SerializeField] private Vector2 _laserSpeed = new Vector2(0, 8f);
     [SerializeField] private AudioClip _laserAudioClip;
     [SerializeField] private AudioClip _laserFailedAudioClip;
     [SerializeField] private DynamicLaser _dynalaser;
     [SerializeField] private AudioClip _dynaLaserAudioClip;
+    [SerializeField] private AudioClip _missileAudioClip;
 
-    
     public int CurrentAmmo => _currentAmmo;
     private int _currentAmmo;
-    #pragma warning disable CS0414
     private bool _canFire = true;
-    private bool _isTripleShotActive;
-    private bool _isSpeedBoostActive;
-    private bool _isDynaLaserActive;
-    #pragma warning restore CS0414
     private float _cooldownMultiplier = 1;
     private Transform _projectileContainer;
     private AudioSource _audioSource;
+
+    // Powerup checks
+    private bool _isAnyPowerupActive;
+    private bool _isTripleShotActive;
+    private bool _isSpeedBoostActive;
+    private bool _isDynaLaserActive;
+    private bool _isHomingMissileActive;
+    #pragma warning restore CS0414
     
 
 
@@ -49,10 +54,12 @@ public class PlayerGun : MonoBehaviour
     {
         if (Input.GetButtonDown("Fire1") && _canFire)
         {
-            if (!_isDynaLaserActive)
-                ShootLaser();
-            else
+            if (_isDynaLaserActive)
                 ShootDynaLaser();
+            else if (_isHomingMissileActive)
+                ShootHomingMissile();
+            else
+                ShootLaser();
         }
     }
 
@@ -81,6 +88,7 @@ public class PlayerGun : MonoBehaviour
             Instantiate(_pfLaser, GetShotSpawnPoint(3), Quaternion.identity, _projectileContainer)
                 .GetComponent<LaserMovement>().SetMovementDirection(_laserSpeed);
         }
+        
         if (_audioSource && _laserAudioClip)
             _audioSource.PlayOneShot(_laserAudioClip);
         StartCoroutine(ShotCooldown());
@@ -92,6 +100,16 @@ public class PlayerGun : MonoBehaviour
         _dynalaser.ActivateLaser();
         if (_audioSource && _laserAudioClip)
             _audioSource.PlayOneShot(_dynaLaserAudioClip);
+        StartCoroutine(ShotCooldown());
+    }
+
+    public void ShootHomingMissile()
+    {
+        _canFire = false;
+        Instantiate(_pfMissile, GetShotSpawnPoint(1), Quaternion.identity, _projectileContainer);
+
+        if (_audioSource && _missileAudioClip)
+            _audioSource.PlayOneShot(_missileAudioClip);
         StartCoroutine(ShotCooldown());
     }
 
@@ -132,26 +150,47 @@ public class PlayerGun : MonoBehaviour
 
     private IEnumerator ManagePowerup(PowerupType type, int duration)
     {
+        if (_isAnyPowerupActive)
+            yield break;
+
         switch (type)
         {
             case PowerupType.TripleShot:
+                _isAnyPowerupActive = true;
                 _isTripleShotActive = true;
                 yield return new WaitForSeconds(duration);
                 _isTripleShotActive = false;
+                _isAnyPowerupActive = false;
                 break;
+
             case PowerupType.SpeedBoost:
+                _isAnyPowerupActive = true;
                 _isSpeedBoostActive = true;
                 _cooldownMultiplier = 0.7f;
                 yield return new WaitForSeconds(duration);
                 _cooldownMultiplier = 1;
                 _isSpeedBoostActive = false;
+                _isAnyPowerupActive = false;
                 break;
+
             case PowerupType.DynamicLaser:
+                _isAnyPowerupActive = true;
                 _isDynaLaserActive = true;
                 _cooldownMultiplier = 8f;
                 yield return new WaitForSeconds(duration);
                 _cooldownMultiplier = 1;
                 _isDynaLaserActive = false;
+                _isAnyPowerupActive = false;
+                break;
+
+            case PowerupType.HomingMissile:
+                _isAnyPowerupActive = true;
+                _isHomingMissileActive = true;
+                _cooldownMultiplier = 3.5f;
+                yield return new WaitForSeconds(duration);
+                _cooldownMultiplier = 1;
+                _isHomingMissileActive = false;
+                _isAnyPowerupActive = false;
                 break;
         }
     }

@@ -1,16 +1,21 @@
 ﻿using UnityEngine;
 
 [System.Serializable]
-public struct WeightedSpawnTable
+public class WeightedSpawnTable
 {
     public SpawnTableObject[] SpawnList;
     public bool HasArrayEntries() => SpawnList.Length > 0;
-
-    private int Total()
+    private int Total() => Total(1);
+    private int Total(float tierNormalized)
     {
+        tierNormalized = Mathf.Clamp01(tierNormalized);
         int t = 0;
-        foreach (SpawnTableObject obj in SpawnList)
-            t += obj.Chance;
+        for (int i = 0; i < SpawnList.Length; i++)
+        {
+            int subtractFromChance = Mathf.RoundToInt(SpawnList[i].Chance *
+                (i / Mathf.Clamp((float)(SpawnList.Length - 1), 1, 999)) * tierNormalized);
+            t += (SpawnList[i].Chance - subtractFromChance);
+        }
         return t;
     }
 
@@ -18,25 +23,28 @@ public struct WeightedSpawnTable
     public struct SpawnTableObject
     {
         public GameObject Object;
-        [Range(0,100)]
+        [Range(0, 100)]
         public int Chance;
     }
 
 
-    public GameObject GetRandomWeightedSpawnable()
+    public GameObject GetRandomWeightedSpawnable() => GetWeightedSpawnable(0);
+
+    public GameObject GetWeightedSpawnable(float tierNormalized)
     {
-        int randomSpawnValue = Random.Range(0, Total());
+        int randomSpawnValue = Random.Range(0, Total(tierNormalized));
         int currentRangeMin = 0;
 
         foreach (SpawnTableObject obj in SpawnList)
         {
             if (randomSpawnValue >= currentRangeMin && randomSpawnValue < (currentRangeMin + obj.Chance))
                 return obj.Object;
-            currentRangeMin += obj.Chance;
+            else
+                currentRangeMin += obj.Chance;
         }
 
         Debug.LogError("Spawn table returned NULL when that should be impossible!\n" +
-            randomSpawnValue + " is not in range (0->" + Total() + ")");
+            randomSpawnValue + " is not in range (0->" + Total(tierNormalized) + ")");
         return null;
     }
 }
