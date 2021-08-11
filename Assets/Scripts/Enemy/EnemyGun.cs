@@ -10,29 +10,33 @@ public class EnemyGun : MonoBehaviour
     [SerializeField] private bool _canShootBackwards = true;
     [SerializeField] private Vector2 _shotCooldown = new Vector2(2.5f, 7);
     [Space]
-    [SerializeField] private Vector2 _shotPoint1 = new Vector2(-0.219f, -1.096f);
-    [SerializeField] private Vector2 _shotPoint2 = new Vector2(0.219f, -1.096f);
-    [Header("Weapons")]
-    [SerializeField] private GameObject _pfLaser;
-    [SerializeField] private Vector2 _laserSpeed = new Vector2(0, -4f);
-    [SerializeField] private AudioClip _laserAudioClip;
+    [SerializeField] private AttackStyle _attackStyle;
+    public enum AttackStyle
+    {
+        OneForward,
+        ThreeForward20,
+        FiveForward30
+    }
+    [Space]
     [Header("Anti-Item Laser")]
-    public APType AntiPowerupType;
-    public enum APType
+    public AILType AILaserType;
+    public enum AILType
     {
         None,
         Basic,
         Advanced
     }
-    [SerializeField, Range(0, 10)] private int _activationChance = 1;
-    [SerializeField, Range(0, 1.5f)] private float _shotDelay = 1f;
-    [SerializeField, Range(0, 1f)] private float _shotDuration = 0.5f;
+    [SerializeField, Range(0, 10)] private int _AAIActivationChance = 1;
+    [SerializeField, Range(0, 1.5f)] private float _AAIShotDelay = 0.5f;
+    [SerializeField, Range(0, 1f)] private float _AAIShotDuration = 0.5f;
+    [SerializeField] private AudioClip _AAIAudioClip;
 
+    private EnemyMovement _enemyMovement;
     private static Transform _player;
     private static Transform _projectileContainer;
     private bool _readyToShoot = true;
     private float _cooldownMultiplier = 1;
-    private AudioSource _asrc;
+    private AudioSource _audioSource;
     private LineRenderer _antiItemLaserRenderer;
     private float _antiItemTimer;
     private float _backwardsShotTimer;
@@ -46,68 +50,100 @@ public class EnemyGun : MonoBehaviour
             _player = GameObject.Find("Player").transform;
         if (!_projectileContainer)
             Debug.LogWarning("No container object set for projectiles");
-        _asrc = GetComponent<AudioSource>();
+        _enemyMovement = GetComponent<EnemyMovement>();
+        _audioSource = GetComponent<AudioSource>();
         _antiItemLaserRenderer = GetComponent<LineRenderer>();
     }
 
     private void Update()
     {
-        if (_player && _canShootBackwards)
+        if (_player && _canShoot && _canShootBackwards)
+            CheckShootBackwards();
+
+        if (_canShoot && _readyToShoot && !_enemyMovement.IsDestroyed)
         {
-            if (_backwardsShotTimer <= 0)
+            switch (_attackStyle)
             {
-                bool isPlayerAboveThis =
-                    transform.position.y < _player.position.y &&
-                    _player.transform.position.x > transform.position.x - 1 &&
-                    _player.transform.position.x < transform.position.x + 1;
-
-                if (isPlayerAboveThis)
-                    ShootALaserBolt(transform.position, _projectileContainer, -_laserSpeed * 0.75f);
-
-                _backwardsShotTimer = 1f;
+                case AttackStyle.OneForward:
+                    StartCoroutine(MakeAnAttack(AttackLibrary.OneForward()));
+                    break;
+                case AttackStyle.ThreeForward20:
+                    StartCoroutine(MakeAnAttack(AttackLibrary.ThreeForward20()));
+                    break;
+                case AttackStyle.FiveForward30:
+                    StartCoroutine(MakeAnAttack(AttackLibrary.FiveForward30()));
+                    break;
             }
-            else
-                _backwardsShotTimer -= Time.deltaTime;
         }
 
-        if (_readyToShoot && !GetComponent<EnemyMovement>().IsDestroyed)
-            ShootDefaultLaser();
-
-        if (AntiPowerupType == APType.Basic)
+        if (AILaserType == AILType.Basic)
             ShootBasicAntiItemLaser();
     }
 
     #region Default Laser
-    private Vector3 GetShotSpawnPoint(int pointIndex)
+    private IEnumerator MakeAnAttack(AttackTemplate attackData, bool fireBackwards = false)
     {
-        switch (pointIndex)
-        {
-            default:
-            case 1: return (Vector2)transform.position + _shotPoint1;
-            case 2: return (Vector2)transform.position + _shotPoint2;
-        }
-    }
-
-    public void ShootDefaultLaser()
-    {
-        if (!_canShoot)
-            return;
-
         _readyToShoot = false;
 
-        ShootALaserBolt(GetShotSpawnPoint(1), _projectileContainer, _laserSpeed);
-        ShootALaserBolt(GetShotSpawnPoint(2), _projectileContainer, _laserSpeed);
+        float angleStep = attackData.Degrees / attackData.Number;
+        float angle = attackData.Degrees != 360 ? (fireBackwards ? 0f : 180f) - (attackData.Degrees - angleStep) / 2 : (fireBackwards ? 0f : 180f);
+        float transformUpAngle = Mathf.Atan2(transform.up.x, transform.up.y);
+        float PIx2 = Mathf.PI * 2;
+        Vector3 originPoint = transform.position;
 
-        if (_asrc && _laserAudioClip)
-            _asrc.PlayOneShot(_laserAudioClip);
+        for (int i = 0; i < attackData.Number; i++)
+        {
+            Vector2 startPosition = new Vector2(
+                Mathf.Sin(((angle * Mathf.PI) / 180) + transformUpAngle),
+                Mathf.Cos(((angle * Mathf.PI) / 180) + transformUpAngle)
+            );
 
+            Vector2 relativeStartPosition = (Vector2)originPoint + startPosition * attackData.Radius;
+            float rotationZ = (360 - angle) - (angle * PIx2 + transformUpAngle) * Mathf.Rad2Deg;
+            Vector2 shotMovementVector = (relativeStartPosition - (Vector2)originPoint).normalized * attackData.Speed;
+
+            Vector2 relativeCurrentStartPosition = (Vector2)transform.position + startPosition * attackData.Radius;
+            Vector2 shotCurrentMovementVector = (relativeCurrentStartPosition - (Vector2)transform.position).normalized * attackData.Speed;
+
+            GameObject shot = Instantiate(
+                attackData.Prefab,
+                attackData.Delay == 0 ? relativeStartPosition : relativeCurrentStartPosition,
+                Quaternion.Euler(0, 0, rotationZ),
+                _projectileContainer);
+            shot.tag = "Enemy Projectile";
+            shot.GetComponent<Rigidbody2D>().velocity = attackData.Delay == 0 ? shotMovementVector : shotCurrentMovementVector;
+
+            angle += angleStep;
+
+            if (attackData.Delay > 0)
+            {
+                if (attackData.Delay >= 0.1f && _audioSource && attackData.AudioClip)
+                    _audioSource.PlayOneShot(attackData.AudioClip);
+                yield return new WaitForSeconds(attackData.Delay);
+            }
+        }
+
+        if (attackData.Delay < 0.1f && _audioSource && attackData.AudioClip)
+            _audioSource.PlayOneShot(attackData.AudioClip);
         StartCoroutine(ShotCooldown());
     }
 
-    private void ShootALaserBolt(Vector2 origin, Transform parent, Vector2 direction)
+    private void CheckShootBackwards()
     {
-        Instantiate(_pfLaser, origin, Quaternion.identity, parent)
-            .GetComponent<LaserMovement>().SetMovementDirection(direction);
+        if (_backwardsShotTimer <= 0)
+        {
+            bool isPlayerAboveThis =
+                transform.position.y < _player.position.y &&
+                _player.transform.position.x > transform.position.x - 1 &&
+                _player.transform.position.x < transform.position.x + 1;
+
+            if (isPlayerAboveThis)
+                StartCoroutine(MakeAnAttack(AttackLibrary.OneForward(), true));
+
+            _backwardsShotTimer = 1f;
+        }
+        else
+            _backwardsShotTimer -= Time.deltaTime;
     }
 
     private IEnumerator ShotCooldown()
@@ -120,7 +156,7 @@ public class EnemyGun : MonoBehaviour
     #region Basic Anti-Item Laser
     public void ShootBasicAntiItemLaser()
     {
-        if (Random.Range(0, 10) > _activationChance)
+        if (Random.Range(0, 10) > _AAIActivationChance)
             return;
 
         if (_antiItemTimer < 1f)
@@ -129,27 +165,27 @@ public class EnemyGun : MonoBehaviour
         {
             _antiItemTimer = 0;
 
-            RaycastHit2D hit1 = Physics2D.Raycast((Vector2)transform.position + _shotPoint1, Vector2.down);
+            RaycastHit2D hit1 = Physics2D.Raycast((Vector2)transform.position, Vector2.down);
             if (hit1)
             {
                 if (hit1.transform.CompareTag("Powerup"))
                 {
-                    ShootALaserBolt((Vector2)transform.position + _shotPoint1, _projectileContainer, _laserSpeed);
+                    StartCoroutine(MakeAnAttack(AttackLibrary.OneForward()));
 
-                    if (_asrc && _laserAudioClip)
-                        _asrc.PlayOneShot(_laserAudioClip);
+                    if (_audioSource && _AAIAudioClip)
+                        _audioSource.PlayOneShot(_AAIAudioClip);
                 }
             }
 
-            RaycastHit2D hit2 = Physics2D.Raycast((Vector2)transform.position + _shotPoint2, Vector2.down);
+            RaycastHit2D hit2 = Physics2D.Raycast((Vector2)transform.position, Vector2.down);
             if (hit2)
             {
                 if (hit2.transform.CompareTag("Powerup"))
                 {
-                    ShootALaserBolt((Vector2)transform.position + _shotPoint2, _projectileContainer, _laserSpeed);
+                    StartCoroutine(MakeAnAttack(AttackLibrary.OneForward()));
 
-                    if (_asrc && _laserAudioClip)
-                        _asrc.PlayOneShot(_laserAudioClip);
+                    if (_audioSource && _AAIAudioClip)
+                        _audioSource.PlayOneShot(_AAIAudioClip);
                 }
             }
         }
@@ -159,7 +195,7 @@ public class EnemyGun : MonoBehaviour
     #region Advanced Anti-Item Laser
     public void ShootAdvAntiItemLaser()
     {
-        if (Random.Range(0, 10) <= _activationChance)
+        if (Random.Range(0, 10) <= _AAIActivationChance)
             StartCoroutine(ShootAdvancedAntiItemLaser());
     }
 
@@ -198,19 +234,9 @@ public class EnemyGun : MonoBehaviour
         return closestTarget;
     }
 
-    private Vector2 GetClosestGun(Vector2 targetPosition)
-    {
-        Vector2 activeShotPoint;
-        if (Vector2.Distance(_shotPoint1, targetPosition) < Vector2.Distance(_shotPoint2, targetPosition))
-            activeShotPoint = _shotPoint1 + new Vector2(0, 0.15f);
-        else
-            activeShotPoint = _shotPoint2 + new Vector2(0, 0.15f);
-        return activeShotPoint;
-    }
-
     private IEnumerator ShootAdvancedAntiItemLaser()
     {
-        yield return new WaitForSeconds(_shotDelay);
+        yield return new WaitForSeconds(_AAIShotDelay);
 
         Transform target = GetClosestItem();
         if (target == null)
@@ -219,13 +245,13 @@ public class EnemyGun : MonoBehaviour
         _antiItemLaserRenderer.enabled = true;
 
         float timer = 0;
-        while (timer < _shotDuration)
+        while (timer < _AAIShotDuration)
         {
             if (target == null)
-                timer = _shotDuration;
+                timer = _AAIShotDuration;
             else
             {
-                _antiItemLaserRenderer.SetPosition(0, transform.position + (Vector3)GetClosestGun(target.position));
+                _antiItemLaserRenderer.SetPosition(0, transform.position - (transform.up * 0.5f));
                 _antiItemLaserRenderer.SetPosition(1, target.position);
                 timer += Time.deltaTime;
                 yield return new WaitForEndOfFrame();
@@ -240,12 +266,4 @@ public class EnemyGun : MonoBehaviour
         }
     }
     #endregion
-
-
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.white;
-        Gizmos.DrawSphere(transform.position + (Vector3)_shotPoint1, 0.02f);
-        Gizmos.DrawSphere(transform.position + (Vector3)_shotPoint2, 0.02f);
-    }
 }

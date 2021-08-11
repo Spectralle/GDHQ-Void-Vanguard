@@ -11,6 +11,8 @@ public class UIManager : MonoBehaviour
     [Space]
     [SerializeField] private TextMeshProUGUI _playerScore;
     [Space]
+    [SerializeField] private TextMeshProUGUI _waveNumber;
+    [Space]
     [SerializeField] private Image _playerAmmoFill;
     [SerializeField] private TextMeshProUGUI _playerAmmoText;
     [SerializeField] private RectTransform[] _playerAmmoIcons;
@@ -42,11 +44,14 @@ public class UIManager : MonoBehaviour
 
         ChangeScore(0);
         ChangeKills(0);
+        ChangeWave(0);
     }
 
     public void ChangeKills(int value) => _enemiesKilled.SetText($"Kills: {_kills += value}");
 
     public void ChangeScore(int value) => _playerScore.SetText($"Score: {_score += value}");
+
+    public void ChangeWave(int value) => _waveNumber.SetText($"Wave: {(value == 0 ? "#" : value.ToString())}");
 
     public void ChangeAmmo(float value, float max)
     {

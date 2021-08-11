@@ -19,7 +19,7 @@ public class UIHider : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.CompareTag("Player") && gameObject.activeSelf)
+        if (other.CompareTag("Player") && gameObject.activeInHierarchy)
             StartCoroutine(ChangeUICanvasAlpha(1f));
     }
 
@@ -29,7 +29,7 @@ public class UIHider : MonoBehaviour
 
         if (isRaising)
         {
-            while (_canvasGroup.alpha < endValue)
+            while (gameObject.activeSelf && _canvasGroup.alpha < endValue)
             {
                 _canvasGroup.alpha += (Time.deltaTime * 3f);
                 yield return new WaitForEndOfFrame();
@@ -37,7 +37,7 @@ public class UIHider : MonoBehaviour
         }
         else
         {
-            while (_canvasGroup.alpha > endValue)
+            while (gameObject.activeSelf && _canvasGroup.alpha > endValue)
             {
                 _canvasGroup.alpha -= (Time.deltaTime * 3f);
                 yield return new WaitForEndOfFrame();

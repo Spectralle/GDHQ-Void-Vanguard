@@ -9,14 +9,11 @@ public class PlayerGun : MonoBehaviour
     [SerializeField] private int _ammoCount = 15;
     [SerializeField] private float _shotCooldown = 0.4f;
     [Space]
-    [SerializeField] private Vector2 _shotPoint1 = new Vector2(0, 0.75f);
-    [SerializeField] private Vector2 _shotPoint2 = new Vector2(-0.785f, -0.61f);
-    [SerializeField] private Vector2 _shotPoint3 = new Vector2(0.785f, -0.61f);
-    [Space]
     [Header("Weapons")]
     [SerializeField] private GameObject _pfLaser;
     [SerializeField] private GameObject _pfMissile;
-    [SerializeField] private Vector2 _laserSpeed = new Vector2(0, 8f);
+    [SerializeField] private float _laserSpeed = 20;
+    [SerializeField] private Vector2 _laserDirection = new Vector2(0, 1f);
     [SerializeField] private AudioClip _laserAudioClip;
     [SerializeField] private AudioClip _laserFailedAudioClip;
     [SerializeField] private DynamicLaser _dynalaser;
@@ -57,40 +54,71 @@ public class PlayerGun : MonoBehaviour
             if (_isDynaLaserActive)
                 ShootDynaLaser();
             else if (_isHomingMissileActive)
-                ShootHomingMissile();
+                StartCoroutine(MakeAnAttack(AttackLibrary.OneMissileForward()));
+            else if (_isTripleShotActive)
+                StartCoroutine(MakeAnAttack(AttackLibrary.ThreeForward_Free()));
             else
-                ShootLaser();
+                StartCoroutine(MakeAnAttack(AttackLibrary.OneForward()));
         }
     }
 
-    public void ShootLaser()
+    private IEnumerator MakeAnAttack(AttackTemplate attackData)
     {
-        if (_currentAmmo == 0)
+        if (attackData.AmmoCost > 0)
         {
-            _audioSource.PlayOneShot(_laserFailedAudioClip);
-            _canFire = false;
-            StartCoroutine(ShotCooldown());
-            return;
+            if (_currentAmmo < attackData.AmmoCost)
+            {
+                _audioSource.PlayOneShot(attackData.FailedAudioClip);
+                _canFire = false;
+                StartCoroutine(ShotCooldown());
+                yield break;
+            }
         }
 
         _canFire = false;
-        _currentAmmo--;
+        _currentAmmo -= attackData.AmmoCost;
         UIManager.i.ChangeAmmo(_currentAmmo, _ammoCount);
-        if (!_isTripleShotActive)
-            Instantiate(_pfLaser, GetShotSpawnPoint(1), Quaternion.identity, _projectileContainer)
-                .GetComponent<LaserMovement>().SetMovementDirection(_laserSpeed);
-        else
+
+        float angleStep = attackData.Degrees / attackData.Number;
+        float angle = attackData.Degrees != 360 ? -(attackData.Degrees - angleStep) / 2 : 0f;
+        float transformUpAngle = Mathf.Atan2(transform.up.x, transform.up.y);
+        float PIx2 = Mathf.PI * 2;
+        Vector3 originPoint = transform.position;
+
+        for (int i = 0; i < attackData.Number; i++)
         {
-            Instantiate(_pfLaser, GetShotSpawnPoint(1), Quaternion.identity, _projectileContainer)
-                .GetComponent<LaserMovement>().SetMovementDirection(_laserSpeed);
-            Instantiate(_pfLaser, GetShotSpawnPoint(2), Quaternion.identity, _projectileContainer)
-                .GetComponent<LaserMovement>().SetMovementDirection(_laserSpeed);
-            Instantiate(_pfLaser, GetShotSpawnPoint(3), Quaternion.identity, _projectileContainer)
-                .GetComponent<LaserMovement>().SetMovementDirection(_laserSpeed);
+            Vector2 startPosition = new Vector2(
+                Mathf.Sin(((angle * Mathf.PI) / 180) + transformUpAngle),
+                Mathf.Cos(((angle * Mathf.PI) / 180) + transformUpAngle)
+            );
+
+            Vector2 relativeStartPosition = (Vector2)originPoint + startPosition * attackData.Radius;
+            float rotationZ = (360 - angle) - (angle * PIx2 + transformUpAngle) * Mathf.Rad2Deg;
+            Vector2 shotMovementVector = (relativeStartPosition - (Vector2)originPoint).normalized * attackData.Speed;
+            
+            Vector2 relativeCurrentStartPosition = (Vector2)transform.position + startPosition * attackData.Radius;
+            Vector2 shotCurrentMovementVector = (relativeCurrentStartPosition - (Vector2)transform.position).normalized * attackData.Speed;
+
+            GameObject shot = Instantiate(
+                attackData.Prefab,
+                attackData.Delay == 0 ? relativeStartPosition : relativeCurrentStartPosition,
+                Quaternion.Euler(0, 0, rotationZ),
+                _projectileContainer);
+            shot.tag = "Player Projectile";
+            shot.GetComponent<Rigidbody2D>().velocity = attackData.Delay == 0 ? shotMovementVector : shotCurrentMovementVector;
+
+            angle += angleStep;
+
+            if (attackData.Delay > 0)
+            {
+                if (attackData.Delay >= 0.1f && _audioSource && attackData.AudioClip)
+                    _audioSource.PlayOneShot(attackData.AudioClip);
+                yield return new WaitForSeconds(attackData.Delay);
+            }
         }
-        
-        if (_audioSource && _laserAudioClip)
-            _audioSource.PlayOneShot(_laserAudioClip);
+
+        if (attackData.Delay < 0.1f && _audioSource && attackData.AudioClip)
+            _audioSource.PlayOneShot(attackData.AudioClip);
         StartCoroutine(ShotCooldown());
     }
 
@@ -101,27 +129,6 @@ public class PlayerGun : MonoBehaviour
         if (_audioSource && _laserAudioClip)
             _audioSource.PlayOneShot(_dynaLaserAudioClip);
         StartCoroutine(ShotCooldown());
-    }
-
-    public void ShootHomingMissile()
-    {
-        _canFire = false;
-        Instantiate(_pfMissile, GetShotSpawnPoint(1), Quaternion.identity, _projectileContainer);
-
-        if (_audioSource && _missileAudioClip)
-            _audioSource.PlayOneShot(_missileAudioClip);
-        StartCoroutine(ShotCooldown());
-    }
-
-    private Vector3 GetShotSpawnPoint(int pointIndex)
-    {
-        switch (pointIndex)
-        {
-            default:
-            case 1: return (Vector2)transform.position + _shotPoint1;
-            case 2: return (Vector2)transform.position + _shotPoint2;
-            case 3: return (Vector2)transform.position + _shotPoint3;
-        }
     }
 
     private IEnumerator ShotCooldown()
@@ -193,16 +200,5 @@ public class PlayerGun : MonoBehaviour
                 _isAnyPowerupActive = false;
                 break;
         }
-    }
-
-
-    private void OnDrawGizmosSelected()
-    {
-        Color c = Color.red;
-        c.a = 0.5f;
-        Gizmos.color = c;
-        Gizmos.DrawSphere(transform.position + (Vector3)_shotPoint1, 0.02f);
-        Gizmos.DrawSphere(transform.position + (Vector3)_shotPoint2, 0.02f);
-        Gizmos.DrawSphere(transform.position + (Vector3)_shotPoint3, 0.02f);
     }
 }

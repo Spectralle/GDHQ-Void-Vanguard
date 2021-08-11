@@ -47,6 +47,7 @@ public class SpawnManager : MonoBehaviour
 
     private Vector3 directionToPlayer = Vector3.zero;
     private static int _waveNumber = 1;
+    public static int GetCurrentWave() => _waveNumber;
     private static bool _allEnemiesSpawned = false;
     #pragma warning restore CS0414
 
@@ -70,11 +71,21 @@ public class SpawnManager : MonoBehaviour
     }
 
     #region Manage spawning
+    public static void Reset()
+    {
+        i.StopAllCoroutines();
+        EnemyList.Clear();
+        ItemList.Clear();
+        _waveNumber = 1;
+    }
+
     public static void StartSpawningNextWave()
     {
         if (i._player)
         {
             i.CanSpawn = true;
+
+            UIManager.i.ChangeWave(_waveNumber);
 
             int numberOfEnemiesThisWave = Mathf.RoundToInt(i._enemiesEachWave.Evaluate(_waveNumber - 1));
 

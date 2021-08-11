@@ -1,6 +1,1 @@
-using UnityEngine;
-
-public class LaserMovement : WeaponInstanceMovement
-{
-    
-}
+public class LaserMovement : WeaponInstanceMovement { }

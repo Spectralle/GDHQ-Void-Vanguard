@@ -64,9 +64,9 @@ public class Powerup : MonoBehaviour, IPickup
                         playerGun2.ActivatePowerup(_type, _duration);
                     break;
                 case PowerupType.Shield:
-                    collision.TryGetComponent(out PlayerShield playerShield);
+                    collision.TryGetComponent(out UnitShield playerShield);
                     if (playerShield)
-                        playerShield.ActivatePowerup(_type, _duration);
+                        playerShield.ActivateShieldAsPowerup(_duration);
                     break;
                 case PowerupType.DynamicLaser:
                     collision.TryGetComponent(out PlayerGun playerGun3);

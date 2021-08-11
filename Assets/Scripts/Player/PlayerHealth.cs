@@ -10,7 +10,7 @@ public class PlayerHealth : MonoBehaviour
     [Space]
     [SerializeField] private GameObject _explosionPrefab;
 
-    private PlayerShield _shield;
+    private UnitShield _shield;
 
 
     private void Awake()
@@ -20,18 +20,6 @@ public class PlayerHealth : MonoBehaviour
 
         TryGetComponent(out _shield);
     }
-
-#if UNITY_EDITOR
-    // DEBUG COMMANDS
-    private void Update()
-    {
-        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftAlt) && _currentLives > 0)
-            Die();
-
-        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Z) && _currentLives > 0)
-            Damage();
-    }
-#endif
 
     public void Damage() => Damage(1);
 

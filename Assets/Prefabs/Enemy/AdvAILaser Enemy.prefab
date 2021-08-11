@@ -8,16 +8,44 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -6422748477226092474, guid: a328951309050b0458f1035b0c0536a8, type: 3}
+      propertyPath: AILaserType
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -6422748477226092474, guid: a328951309050b0458f1035b0c0536a8, type: 3}
+      propertyPath: _attackStyle
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -6422748477226092474, guid: a328951309050b0458f1035b0c0536a8, type: 3}
       propertyPath: AntiPowerupType
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -6422748477226092474, guid: a328951309050b0458f1035b0c0536a8, type: 3}
+      propertyPath: AntiItemLaserType
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -6422748477226092474, guid: a328951309050b0458f1035b0c0536a8, type: 3}
       propertyPath: _activationChance
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 440130907862965031, guid: a328951309050b0458f1035b0c0536a8, type: 3}
+      propertyPath: _evadeChance
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3487513869064321261, guid: a328951309050b0458f1035b0c0536a8, type: 3}
+      propertyPath: m_Color.b
+      value: 0.8254717
+      objectReference: {fileID: 0}
+    - target: {fileID: 3487513869064321261, guid: a328951309050b0458f1035b0c0536a8, type: 3}
+      propertyPath: m_Color.g
+      value: 0.8418389
+      objectReference: {fileID: 0}
+    - target: {fileID: 3487513869064321261, guid: a328951309050b0458f1035b0c0536a8, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7709881818554600201, guid: a328951309050b0458f1035b0c0536a8, type: 3}
       propertyPath: m_Name
-      value: Enemy DynamicAILaser Variant
+      value: AdvAILaser Enemy
       objectReference: {fileID: 0}
     - target: {fileID: 7709881818554600205, guid: a328951309050b0458f1035b0c0536a8, type: 3}
       propertyPath: m_RootOrder

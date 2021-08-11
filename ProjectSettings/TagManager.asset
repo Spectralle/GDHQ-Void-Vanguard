@@ -10,6 +10,7 @@ TagManager:
   - Player Shield
   - Powerup
   - Asteroid
+  - Enemy Shield
   layers:
   - Default
   - TransparentFX
@@ -19,9 +20,9 @@ TagManager:
   - UI
   - Post Processing
   - Post Processing UI
-  - Player Shield
+  - Shield
   - Player Shield Bypass
-  - 
+  - Projectile
   - 
   - 
   - 
