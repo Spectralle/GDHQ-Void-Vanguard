@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4812949710762776319}
   - component: {fileID: 4812949710762776314}
   - component: {fileID: 3143975274989836322}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Player Homing Missile
   m_TagString: Player Projectile
   m_Icon: {fileID: 0}
@@ -101,7 +101,6 @@ MonoBehaviour:
   _turnSpeed: 4
   _lifetime: 5
   _explosionPrefab: {fileID: 5901384970640918411, guid: 0bfc6987dd1f45e42952cf904a763407, type: 3}
-  _target: {fileID: 0}
 --- !u!50 &4812949710762776314
 Rigidbody2D:
   serializedVersion: 4

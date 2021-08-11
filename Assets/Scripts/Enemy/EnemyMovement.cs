@@ -6,49 +6,74 @@ public class EnemyMovement : MonoBehaviour
 {
     [SerializeField] private float _moveSpeed = 5;
     [SerializeField, Range(0, 10)] private float _evadeChance = 3;
-    [SerializeField, Range(0, 2)] private float _sineMoveScale = 0.5f;
+    [SerializeField, Range(0, 10)] private float _evadeDistance = 2.5f;
+    [SerializeField, Range(0, 2)] private float _sineXMoveScale = 0.5f;
+    [SerializeField, Range(0, 2)] private float _sineYMoveScale = 0.5f;
     [SerializeField] private AudioClip _explosionAudioClip;
 
     private Animator _anim;
     private EnemyGun _gun;
     private bool _isDestroyed;
     public bool IsDestroyed => _isDestroyed;
-    private float _originX = 0;
-    private bool _canSine = true;
+    private Vector2 _origin = Vector2.zero;
     private Vector3 _baseMovementDirection = Vector3.down;
     private int _damageAmount = 1;
     private bool _isShootingAsteroid;
+    private int _sineDirection = 1;
+    private int _randomSineStarter;
 
 
     private void Awake()
     {
         TryGetComponent(out _gun);
-        SetOriginX(transform.position.x);
+        SetOrigin(transform.position.x, transform.position.y);
+
+        if (Random.Range(0, 2) == 0)
+            _sineDirection = -1;
+
+        _randomSineStarter = Random.Range(1, 500);
     }
 
-    private void SetOriginX(float X) => _originX = X;
+    private void SetOrigin(float X, float Y) => _origin = new Vector2(X, Y);
+
     public void SetMovementDirection(Vector3 dir) => _baseMovementDirection = dir;
     public void SetDamageAmount(int amount) => _damageAmount = amount;
     public void SetAsAsteroid() => _isShootingAsteroid = true;
 
     private void Update()
     {
-        if (_canSine && _sineMoveScale > 0 && _moveSpeed > 0)
+        if (!_isShootingAsteroid)
         {
-            float X = _originX + (Mathf.Sin(transform.position.y) * _sineMoveScale);
-            transform.position = new Vector3(X, transform.position.y);
+            _origin += (Vector2)_baseMovementDirection * _moveSpeed * Time.deltaTime;
+
+            float X = 0;
+            if (_sineXMoveScale > 0)
+                X = Mathf.Sin((Time.timeSinceLevelLoad + _randomSineStarter) * _sineDirection * 5) * _sineXMoveScale;
+            float Y = 0;
+            if (_sineYMoveScale > 0)
+                Y = Mathf.Cos((Time.timeSinceLevelLoad + _randomSineStarter) * _sineDirection * 5) * _sineYMoveScale;
+
+            transform.position = _origin + new Vector2(X, Y);
+        }
+        else
+        {
+            transform.Translate(_baseMovementDirection * _moveSpeed * Time.deltaTime);
+            transform.Rotate(Vector3.forward * 4 * Time.deltaTime);
         }
 
-        transform.Translate(_baseMovementDirection * _moveSpeed * Time.deltaTime);
+        CheckForReposition();
+    }
 
+    private void CheckForReposition()
+    {
         if (!_isDestroyed && transform.position.y < LevelBoundary.D(-2))
         {
             if (SpawnManager.i.CanSpawn && !_isShootingAsteroid)
             {
                 StopCoroutine(Evade());
                 transform.position = SpawnManager.GetEnemySpawnPosition();
-                SetOriginX(transform.position.x);
-                if (_gun.AntiPowerupType == EnemyGun.APType.Advanced)
+                SetOrigin(transform.position.x, transform.position.y);
+                if (_gun.AILaserType == EnemyGun.AILType.Advanced)
                     _gun.ShootAdvAntiItemLaser();
             }
             else
@@ -90,28 +115,32 @@ public class EnemyMovement : MonoBehaviour
     #region Evade
     private IEnumerator Evade()
     {
-        _canSine = false;
+        float _sineX = _sineXMoveScale;
+        _sineXMoveScale = 0;
+        float _sineY = _sineYMoveScale;
+        _sineYMoveScale = 0;
 
-        float X = 2.5f;
+        float X = _evadeDistance;
         int leftOrRight = Random.Range(0, 2);
         if (leftOrRight == 0)
             X = -X;
 
-        _originX = _originX + X;
+        _origin.x += X;
 
-        if (_originX < LevelBoundary.L(2) || _originX > LevelBoundary.R(2))
+        if (_origin.x < LevelBoundary.L(2) || _origin.x > LevelBoundary.R(2))
         {
             X = -X;
-            _originX = transform.position.x + X;
+            _origin.x = transform.position.x + X;
         }
 
-        while (transform.position.x != X)
+        while (leftOrRight == 0 ? transform.position.x > X : transform.position.x < X)
         {
-            transform.position = Vector3.Lerp(transform.position, new Vector2(_originX, transform.position.y), Time.deltaTime * 4.5f);
+            transform.position = Vector3.Lerp(transform.position, _origin, Time.deltaTime * 4.5f);
             yield return new WaitForEndOfFrame();
         }
 
-        _canSine = true;
+        _sineXMoveScale = _sineX;
+        _sineYMoveScale = _sineY;
     }
     #endregion
 
@@ -147,6 +176,8 @@ public class EnemyMovement : MonoBehaviour
         while (_moveSpeed > 0.00f)
         {
             _moveSpeed = Mathf.Lerp(_moveSpeed, 0, Time.deltaTime * 1.5f);
+            _sineXMoveScale = Mathf.Lerp(_sineXMoveScale, 0, Time.deltaTime * 1.5f);
+            _sineYMoveScale = Mathf.Lerp(_sineYMoveScale, 0, Time.deltaTime * 1.5f);
             yield return new WaitForEndOfFrame();
         }
     }

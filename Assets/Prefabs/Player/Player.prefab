@@ -335,10 +335,10 @@ GameObject:
   m_Component:
   - component: {fileID: 4324513220140325426}
   - component: {fileID: 3935534797363244126}
-  - component: {fileID: 5879198406169825202}
   - component: {fileID: 4030032297436371344}
+  - component: {fileID: 7634036465474984798}
   m_Layer: 8
-  m_Name: Player Shield
+  m_Name: Shield
   m_TagString: Player Shield
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -398,8 +398,8 @@ SpriteRenderer:
   m_SortingLayerID: -234450217
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 333b0196b7a764df5a7768ead9b69dbc, type: 3}
-  m_Color: {r: 0.5058824, g: 0.8509804, b: 1, a: 1}
+  m_Sprite: {fileID: 21300000, guid: c6c08820bbd563249adfb42becd46556, type: 3}
+  m_Color: {r: 0, g: 0.64705884, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -409,25 +409,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!95 &5879198406169825202
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5926066313271752043}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 0bc2578484872ba47991bea891ab1269, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!58 &4030032297436371344
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -444,6 +425,18 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 1.52
+--- !u!114 &7634036465474984798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5926066313271752043}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aaa82075f320c694f866f2a685e88656, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5930845461788786661
 GameObject:
   m_ObjectHideFlags: 0
@@ -689,7 +682,7 @@ GameObject:
   - component: {fileID: 7301104699138058897}
   - component: {fileID: 6858344343892727150}
   - component: {fileID: 2207040055764492020}
-  - component: {fileID: 8413316032799347752}
+  - component: {fileID: 3364098437893724815}
   - component: {fileID: 8206715953121109153}
   - component: {fileID: 4884510422514310309}
   - component: {fileID: 5717434180372067311}
@@ -816,12 +809,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _ammoCount: 15
   _shotCooldown: 0.3
-  _shotPoint1: {x: 0, y: 0.75}
-  _shotPoint2: {x: -0.785, y: -0.61}
-  _shotPoint3: {x: 0.785, y: -0.61}
   _pfLaser: {fileID: 7759052408972298117, guid: 35a56cba45ca7994481fab06dc589632, type: 3}
   _pfMissile: {fileID: 4812949710762776318, guid: 83417f210883fe049ac19b8e508c818e, type: 3}
-  _laserSpeed: {x: 0, y: 20}
+  _laserSpeed: 20
+  _laserDirection: {x: 0, y: 1}
   _laserAudioClip: {fileID: 8300000, guid: 75676f361bdfeaf41a46623e95df3dbc, type: 3}
   _laserFailedAudioClip: {fileID: 8300000, guid: 96f1050786f504f4684d1d2327e1921f, type: 3}
   _dynalaser: {fileID: 2075095349}
@@ -843,7 +834,7 @@ MonoBehaviour:
   _damage2LivesLeft: {fileID: 5661705165425011922}
   _damage1LifeLeft: {fileID: 2168894622898438699}
   _explosionPrefab: {fileID: 5901384970640918411, guid: 0bfc6987dd1f45e42952cf904a763407, type: 3}
---- !u!114 &8413316032799347752
+--- !u!114 &3364098437893724815
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -852,12 +843,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 6858344343892727124}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e1994403c69d6f46b32cadc156a578c, type: 3}
+  m_Script: {fileID: 11500000, guid: 1832279a022ad9b4a9f9993d7192ed60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _fullShield: {r: 0.5058824, g: 0.8509804, b: 1, a: 1}
-  _twoThirdsShield: {r: 0, g: 0.49019608, b: 1, a: 1}
-  _oneThirdShield: {r: 0, g: 0.19607843, b: 0.7372549, a: 0.8784314}
+  _shieldLevelColors:
+  - {r: 0, g: 0.19215687, b: 0.7372549, a: 0.8784314}
+  - {r: 0, g: 0.26666668, b: 1, a: 1}
+  - {r: 0, g: 0.64705884, b: 1, a: 1}
 --- !u!114 &8206715953121109153
 MonoBehaviour:
   m_ObjectHideFlags: 0
