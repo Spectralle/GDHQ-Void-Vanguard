@@ -79,6 +79,38 @@ PrefabInstance:
       propertyPath: _shieldLevelColors.Array.data[0].r
       value: 0.7058824
       objectReference: {fileID: 0}
+    - target: {fileID: 4050128062706333948, guid: a328951309050b0458f1035b0c0536a8, type: 3}
+      propertyPath: _shieldLevelColors.Array.data[1].a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4050128062706333948, guid: a328951309050b0458f1035b0c0536a8, type: 3}
+      propertyPath: _shieldLevelColors.Array.data[1].b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4050128062706333948, guid: a328951309050b0458f1035b0c0536a8, type: 3}
+      propertyPath: _shieldLevelColors.Array.data[1].g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4050128062706333948, guid: a328951309050b0458f1035b0c0536a8, type: 3}
+      propertyPath: _shieldLevelColors.Array.data[1].r
+      value: 0.65624416
+      objectReference: {fileID: 0}
+    - target: {fileID: 4050128062706333948, guid: a328951309050b0458f1035b0c0536a8, type: 3}
+      propertyPath: _shieldLevelColors.Array.data[2].a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4050128062706333948, guid: a328951309050b0458f1035b0c0536a8, type: 3}
+      propertyPath: _shieldLevelColors.Array.data[2].b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4050128062706333948, guid: a328951309050b0458f1035b0c0536a8, type: 3}
+      propertyPath: _shieldLevelColors.Array.data[2].g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4050128062706333948, guid: a328951309050b0458f1035b0c0536a8, type: 3}
+      propertyPath: _shieldLevelColors.Array.data[2].r
+      value: 0.65624416
+      objectReference: {fileID: 0}
     - target: {fileID: 6923490796704429643, guid: a328951309050b0458f1035b0c0536a8, type: 3}
       propertyPath: m_RootOrder
       value: 1

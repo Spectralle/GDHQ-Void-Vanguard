@@ -4,29 +4,44 @@ using UnityEngine;
 [RequireComponent(typeof(AudioSource))]
 public class EnemyMovement : MonoBehaviour
 {
-    [SerializeField] private float _moveSpeed = 5;
-    [SerializeField, Range(0, 10)] private float _evadeChance = 3;
-    [SerializeField, Range(0, 10)] private float _evadeDistance = 2.5f;
+    [Header("Movement:")]
+    [SerializeField, Range(0, 12)] private float _moveSpeed = 5;
     [SerializeField, Range(0, 2)] private float _sineXMoveScale = 0.5f;
     [SerializeField, Range(0, 2)] private float _sineYMoveScale = 0.5f;
+    [Header("Evasion:")]
+    [SerializeField, Range(0, 10)] private int _evadeChance = 3;
+    [SerializeField, Range(0, 10)] private float _evadeDistance = 2.5f;
+    [Header("Ramming:")]
+    [SerializeField] private bool _canRamPlayer;
+    [SerializeField, Range(1, 4)] private float _ramRadius = 3;
+    [SerializeField, Range(1, 10)] private float _ramSpeed = 8;
+    [SerializeField, Range(0.2f, 5)] private float _ramRotateSpeed;
+    [SerializeField] private GameObject _trails;
+    [Header("Other:")]
     [SerializeField] private AudioClip _explosionAudioClip;
+    public bool IsDestroyed => _isDestroyed;
 
+    private Transform _player;
     private Animator _anim;
     private EnemyGun _gun;
     private bool _isDestroyed;
-    public bool IsDestroyed => _isDestroyed;
-    private Vector2 _origin = Vector2.zero;
+    private Vector2 _originalPosition = Vector2.zero;
+    private Quaternion _originalRotation = Quaternion.identity;
     private Vector3 _baseMovementDirection = Vector3.down;
     private int _damageAmount = 1;
     private bool _isShootingAsteroid;
     private int _sineDirection = 1;
     private int _randomSineStarter;
+    private const float _ramMinDistance = 1f;
 
 
     private void Awake()
     {
+        _player = FindObjectOfType<PlayerMovement>().transform;
         TryGetComponent(out _gun);
-        SetOrigin(transform.position.x, transform.position.y);
+        SetOrigins();
+        if (_trails)
+            _trails.SetActive(true);
 
         if (Random.Range(0, 2) == 0)
             _sineDirection = -1;
@@ -34,7 +49,11 @@ public class EnemyMovement : MonoBehaviour
         _randomSineStarter = Random.Range(1, 500);
     }
 
-    private void SetOrigin(float X, float Y) => _origin = new Vector2(X, Y);
+    private void SetOrigins()
+    {
+        _originalPosition = transform.position;
+        _originalRotation = transform.rotation;
+    }
 
     public void SetMovementDirection(Vector3 dir) => _baseMovementDirection = dir;
     public void SetDamageAmount(int amount) => _damageAmount = amount;
@@ -44,24 +63,57 @@ public class EnemyMovement : MonoBehaviour
     {
         if (!_isShootingAsteroid)
         {
-            _origin += (Vector2)_baseMovementDirection * _moveSpeed * Time.deltaTime;
+            DoShipMovement();
 
-            float X = 0;
-            if (_sineXMoveScale > 0)
-                X = Mathf.Sin((Time.timeSinceLevelLoad + _randomSineStarter) * _sineDirection * 5) * _sineXMoveScale;
-            float Y = 0;
-            if (_sineYMoveScale > 0)
-                Y = Mathf.Cos((Time.timeSinceLevelLoad + _randomSineStarter) * _sineDirection * 5) * _sineYMoveScale;
-
-            transform.position = _origin + new Vector2(X, Y);
+            if (_canRamPlayer && !_isDestroyed)
+                CheckForRamChance();
         }
         else
-        {
-            transform.Translate(_baseMovementDirection * _moveSpeed * Time.deltaTime);
-            transform.Rotate(Vector3.forward * 4 * Time.deltaTime);
-        }
+            DoAsteroidMovement();
 
         CheckForReposition();
+    }
+
+    private void DoShipMovement()
+    {
+        _originalPosition += (Vector2)_baseMovementDirection * _moveSpeed * Time.deltaTime;
+
+        float X = 0;
+        if (_sineXMoveScale > 0)
+            X = Mathf.Sin((Time.timeSinceLevelLoad + _randomSineStarter) * _sineDirection * 5) * _sineXMoveScale;
+        float Y = 0;
+        if (_sineYMoveScale > 0)
+            Y = Mathf.Cos((Time.timeSinceLevelLoad + _randomSineStarter) * _sineDirection * 5) * _sineYMoveScale;
+
+        transform.position = _originalPosition + new Vector2(X, Y);
+    }
+
+    private void DoAsteroidMovement()
+    {
+        transform.Translate(_baseMovementDirection * _moveSpeed * Time.deltaTime);
+        transform.Rotate(Vector3.forward * 4 * Time.deltaTime);
+    }
+
+    private void CheckForRamChance()
+    {
+        float distance = Vector2.Distance(transform.position, _player.position);
+        if (distance < _ramRadius && distance > 0.6f)
+            RamInPlayersDirection();
+        else
+        {
+            if (transform.rotation != _originalRotation)
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.identity, Time.deltaTime * _ramRotateSpeed);
+        }
+    }
+
+    private void RamInPlayersDirection()
+    {
+        Vector3 directionToPlayer = -(_player.position - transform.position).normalized;
+        float angle = Mathf.Atan2(directionToPlayer.y, directionToPlayer.x) * Mathf.Rad2Deg - 90;
+        Quaternion rotateToPlayer = Quaternion.AngleAxis(angle, Vector3.forward);
+        transform.rotation = Quaternion.Slerp(transform.rotation, rotateToPlayer, Time.deltaTime * _ramRotateSpeed);
+
+        _originalPosition += -(Vector2)transform.up * _ramSpeed * Time.deltaTime;
     }
 
     private void CheckForReposition()
@@ -70,11 +122,16 @@ public class EnemyMovement : MonoBehaviour
         {
             if (SpawnManager.i.CanSpawn && !_isShootingAsteroid)
             {
+                if (_trails)
+                    _trails.SetActive(false);
                 StopCoroutine(Evade());
                 transform.position = SpawnManager.GetEnemySpawnPosition();
-                SetOrigin(transform.position.x, transform.position.y);
+                transform.rotation = Quaternion.identity;
+                SetOrigins();
                 if (_gun.AILaserType == EnemyGun.AILType.Advanced)
                     _gun.ShootAdvAntiItemLaser();
+                if (_trails)
+                    _trails.SetActive(true);
             }
             else
                 Destroy(gameObject);
@@ -125,17 +182,17 @@ public class EnemyMovement : MonoBehaviour
         if (leftOrRight == 0)
             X = -X;
 
-        _origin.x += X;
+        _originalPosition.x += X;
 
-        if (_origin.x < LevelBoundary.L(2) || _origin.x > LevelBoundary.R(2))
+        if (_originalPosition.x < LevelBoundary.L(2) || _originalPosition.x > LevelBoundary.R(2))
         {
             X = -X;
-            _origin.x = transform.position.x + X;
+            _originalPosition.x = transform.position.x + X;
         }
 
         while (leftOrRight == 0 ? transform.position.x > X : transform.position.x < X)
         {
-            transform.position = Vector3.Lerp(transform.position, _origin, Time.deltaTime * 4.5f);
+            transform.position = Vector3.Lerp(transform.position, _originalPosition, Time.deltaTime * 4.5f);
             yield return new WaitForEndOfFrame();
         }
 
@@ -153,6 +210,12 @@ public class EnemyMovement : MonoBehaviour
             yield break;
 
         _isDestroyed = true;
+
+        foreach (Transform child in transform.GetComponentsInChildren<Transform>())
+        {
+            if (child != transform)
+                child.gameObject.SetActive(false);
+        }
 
         SpawnManager.ChangeEnemiesAlive(transform);
 

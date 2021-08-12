@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5828141638978832318}
   - component: {fileID: 3659744475965234888}
   m_Layer: 0
-  m_Name: Flying Asteroid
+  m_Name: Shooting Asteroid
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -194,8 +194,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _moveSpeed: 6
+  _sineXMoveScale: 0.5
+  _sineYMoveScale: 0.5
   _evadeChance: 0
-  _sineMoveScale: 0
+  _evadeDistance: 2.5
+  _canRamPlayer: 0
+  _ramRadius: 3
+  _ramRotateSpeed: 1
   _explosionAudioClip: {fileID: 8300000, guid: a885c043fab7e46438bba03ba9dab6bc, type: 3}
 --- !u!58 &3659744475965234888
 CircleCollider2D:
