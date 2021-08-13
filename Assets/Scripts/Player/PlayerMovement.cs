@@ -15,14 +15,13 @@ public class PlayerMovement : MonoBehaviour
     private float _speedMultiplier = 1;
     private Vector3 _thrusterOriginalScale = Vector3.one;
     private Animator _anim;
-    private PlayerThruster _playerThruster;
     private bool _restrictInBoundary;
+    private bool _isHorizontalPressed;
 
 
     private void Awake()
     {
         TryGetComponent(out _anim);
-        TryGetComponent(out _playerThruster);
         transform.position = _startPosition;
         _thrusterOriginalScale = _thruster.transform.localScale;
 
@@ -34,6 +33,7 @@ public class PlayerMovement : MonoBehaviour
         if (_canControlMovement)
         {
             _keyboardInput = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0);
+            _isHorizontalPressed = Input.GetButton("Horizontal");
             transform.Translate(_keyboardInput * (_movementSpeed * _speedMultiplier) * Time.deltaTime);
         }
 
@@ -65,21 +65,16 @@ public class PlayerMovement : MonoBehaviour
             return;
 
         _anim.SetFloat("VelocityX", _keyboardInput.x);
-        if (Input.GetKey(KeyCode.A))
-            _anim.SetBool("AHeldDown", true);
-        else
-        {
-            if (!Input.GetKey(KeyCode.A))
-                _anim.SetBool("AHeldDown", false);
-        }
 
-        if (Input.GetKey(KeyCode.D))
-            _anim.SetBool("DHeldDown", true);
+        if (_isHorizontalPressed && _keyboardInput.x < 0)
+            _anim.SetBool("LeftHeldDown", true);
         else
-        {
-            if (!Input.GetKey(KeyCode.D))
-                _anim.SetBool("DHeldDown", false);
-        }
+            _anim.SetBool("LeftHeldDown", false);
+
+        if (_isHorizontalPressed && _keyboardInput.x > 0)
+            _anim.SetBool("RightHeldDown", true);
+        else
+            _anim.SetBool("RightHeldDown", false);
     }
 
     public void ActivateBoost(float speedMultiplier, float thrusterScaleUpX, float thrusterScaleUpY)

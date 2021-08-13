@@ -36,7 +36,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 2
-    m_ConditionEvent: AHeldDown
+    m_ConditionEvent: LeftHeldDown
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 4113200252931862236}
@@ -64,7 +64,7 @@ AnimatorStateTransition:
     m_ConditionEvent: VelocityX
     m_EventTreshold: 0
   - m_ConditionMode: 1
-    m_ConditionEvent: DHeldDown
+    m_ConditionEvent: RightHeldDown
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 3149152403128721165}
@@ -181,19 +181,19 @@ AnimatorController:
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
-  - m_Name: AHeldDown
+    m_Controller: {fileID: 0}
+  - m_Name: LeftHeldDown
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
-  - m_Name: DHeldDown
+    m_Controller: {fileID: 0}
+  - m_Name: RightHeldDown
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -216,7 +216,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 2
-    m_ConditionEvent: DHeldDown
+    m_ConditionEvent: RightHeldDown
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 6260414688450878300}
@@ -241,7 +241,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: AHeldDown
+    m_ConditionEvent: LeftHeldDown
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 8826607266227467630}
@@ -266,7 +266,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: DHeldDown
+    m_ConditionEvent: RightHeldDown
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -7655597069258384447}
@@ -291,7 +291,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 2
-    m_ConditionEvent: DHeldDown
+    m_ConditionEvent: RightHeldDown
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 6260414688450878300}
@@ -570,7 +570,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 2
-    m_ConditionEvent: AHeldDown
+    m_ConditionEvent: LeftHeldDown
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 4113200252931862236}
@@ -674,7 +674,7 @@ AnimatorStateTransition:
     m_ConditionEvent: VelocityX
     m_EventTreshold: 0
   - m_ConditionMode: 1
-    m_ConditionEvent: AHeldDown
+    m_ConditionEvent: LeftHeldDown
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 4922674814361603040}

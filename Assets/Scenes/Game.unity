@@ -5828,6 +5828,8 @@ MonoBehaviour:
       Chance: 90
     - Object: {fileID: 2141090966021614844, guid: 0eca933eeff49324a817dffdb736927f, type: 3}
       Chance: 60
+    - Object: {fileID: 3067141462033043992, guid: efa61abc300373141b5bbd3d233b6ace, type: 3}
+      Chance: 60
     - Object: {fileID: 8264708703011907058, guid: c441618b349b8a54c883e4d4b3c9a01b, type: 3}
       Chance: 50
     - Object: {fileID: 4880436895115476670, guid: f502f9352d2c04848ab7ad14eb52ac36, type: 3}

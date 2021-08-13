@@ -15,7 +15,7 @@ public class GameSceneManager : MonoBehaviour
     public static void ResetGame()
     {
         SceneManager.LoadScene(1);
-        Debug.Log("Game restarted");
+        Debug.Log("<color=orange>Game restarted</color>");
 
         if (SpawnManager.i)
             SpawnManager.i.CanSpawn = true;
