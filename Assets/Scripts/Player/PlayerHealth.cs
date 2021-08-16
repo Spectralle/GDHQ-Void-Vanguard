@@ -112,7 +112,6 @@ public class PlayerHealth : MonoBehaviour
         if (other.CompareTag("Enemy Projectile"))
         {
             CameraShaker.StartShaking(.8f, .3f);
-            Destroy(other.gameObject);
             Damage();
         }
     }

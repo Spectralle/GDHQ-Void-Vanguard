@@ -878,10 +878,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 467d42db5f024f644a3d6004a38c67f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _moveSpeed: 4
+  _moveSpeed: 0
   _sineXMoveScale: 0.3
   _sineYMoveScale: 0
-  _evadeChance: 1
+  _evadeChance: 0
   _evadeDistance: 2.5
   _canRamPlayer: 0
   _ramRadius: 3

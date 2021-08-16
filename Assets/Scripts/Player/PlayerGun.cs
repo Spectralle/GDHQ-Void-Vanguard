@@ -54,11 +54,11 @@ public class PlayerGun : MonoBehaviour
             if (_isDynaLaserActive)
                 ShootDynaLaser();
             else if (_isHomingMissileActive)
-                StartCoroutine(MakeAnAttack(AttackLibrary.OneMissileForward()));
+                StartCoroutine(MakeAnAttack(AttackLibrary.Missile.OneForward()));
             else if (_isTripleShotActive)
-                StartCoroutine(MakeAnAttack(AttackLibrary.ThreeForward_Free()));
+                StartCoroutine(MakeAnAttack(AttackLibrary.Laser.Free.ThreeForward30()));
             else
-                StartCoroutine(MakeAnAttack(AttackLibrary.OneForward()));
+                StartCoroutine(MakeAnAttack(AttackLibrary.Ricochet.OneForward()));
         }
     }
 
@@ -106,6 +106,8 @@ public class PlayerGun : MonoBehaviour
                 _projectileContainer);
             shot.tag = "Player Projectile";
             shot.GetComponent<Rigidbody2D>().velocity = attackData.Delay == 0 ? shotMovementVector : shotCurrentMovementVector;
+            shot.TryGetComponent(out RichochetLaserMovement ricochet);
+            ricochet.SetSpeed(attackData.Speed);
 
             angle += angleStep;
 

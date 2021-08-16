@@ -33,6 +33,7 @@ public class EnemyMovement : MonoBehaviour
     private int _sineDirection = 1;
     private int _randomSineStarter;
     private const float _ramMinDistance = 1f;
+    private float _invulnerable;
 
 
     private void Awake()
@@ -61,6 +62,9 @@ public class EnemyMovement : MonoBehaviour
 
     private void Update()
     {
+        if (_invulnerable >= 0f)
+            _invulnerable -= Time.deltaTime;
+
         if (!_isShootingAsteroid)
         {
             DoShipMovement();
@@ -151,11 +155,14 @@ public class EnemyMovement : MonoBehaviour
         {
             int evadeChance = Random.Range(1, 10);
             if (evadeChance <= _evadeChance)
+            {
+                _invulnerable = 0.6f;
                 StartCoroutine(Evade());
+            }
             else
             {
-                Destroy(other.gameObject);
-                StartCoroutine(Explode());
+                if (_invulnerable <= 0f)
+                    StartCoroutine(Explode());
             }
         }
 

@@ -5972,6 +5972,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prefab_Default: {fileID: 7759052408972298117, guid: 35a56cba45ca7994481fab06dc589632, type: 3}
+  Prefab_Ricochet: {fileID: 3612040966658697301, guid: f63f3db0748be6a4f8c6c7581b22c857, type: 3}
   Prefab_HomingMissile: {fileID: 4812949710762776318, guid: 83417f210883fe049ac19b8e508c818e, type: 3}
   Audio_Default: {fileID: 8300000, guid: 75676f361bdfeaf41a46623e95df3dbc, type: 3}
   Audio_DefaultFailed: {fileID: 8300000, guid: 96f1050786f504f4684d1d2327e1921f, type: 3}

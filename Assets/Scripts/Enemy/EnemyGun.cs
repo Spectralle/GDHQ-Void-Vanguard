@@ -65,13 +65,13 @@ public class EnemyGun : MonoBehaviour
             switch (_attackStyle)
             {
                 case AttackStyle.OneForward:
-                    StartCoroutine(MakeAnAttack(AttackLibrary.OneForward()));
+                    StartCoroutine(MakeAnAttack(AttackLibrary.Laser.OneForward()));
                     break;
                 case AttackStyle.ThreeForward20:
-                    StartCoroutine(MakeAnAttack(AttackLibrary.ThreeForward20()));
+                    StartCoroutine(MakeAnAttack(AttackLibrary.Laser.ThreeForward20()));
                     break;
                 case AttackStyle.FiveForward30:
-                    StartCoroutine(MakeAnAttack(AttackLibrary.FiveForward30()));
+                    StartCoroutine(MakeAnAttack(AttackLibrary.Laser.FiveForward30()));
                     break;
             }
         }
@@ -138,7 +138,7 @@ public class EnemyGun : MonoBehaviour
                 _player.transform.position.x < transform.position.x + 1;
 
             if (isPlayerAboveThis)
-                StartCoroutine(MakeAnAttack(AttackLibrary.OneForward(), true));
+                StartCoroutine(MakeAnAttack(AttackLibrary.Laser.OneForward(), true));
 
             _backwardsShotTimer = 1f;
         }
@@ -170,19 +170,7 @@ public class EnemyGun : MonoBehaviour
             {
                 if (hit1.transform.CompareTag("Powerup"))
                 {
-                    StartCoroutine(MakeAnAttack(AttackLibrary.OneForward()));
-
-                    if (_audioSource && _AAIAudioClip)
-                        _audioSource.PlayOneShot(_AAIAudioClip);
-                }
-            }
-
-            RaycastHit2D hit2 = Physics2D.Raycast((Vector2)transform.position, Vector2.down);
-            if (hit2)
-            {
-                if (hit2.transform.CompareTag("Powerup"))
-                {
-                    StartCoroutine(MakeAnAttack(AttackLibrary.OneForward()));
+                    StartCoroutine(MakeAnAttack(AttackLibrary.Laser.OneForward()));
 
                     if (_audioSource && _AAIAudioClip)
                         _audioSource.PlayOneShot(_AAIAudioClip);
