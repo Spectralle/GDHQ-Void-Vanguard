@@ -58,7 +58,7 @@ public class PlayerGun : MonoBehaviour
             else if (_isTripleShotActive)
                 StartCoroutine(MakeAnAttack(AttackLibrary.Laser.Free.ThreeForward30()));
             else
-                StartCoroutine(MakeAnAttack(AttackLibrary.Ricochet.OneForward()));
+                StartCoroutine(MakeAnAttack(AttackLibrary.Laser.OneForward()));
         }
     }
 
