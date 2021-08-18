@@ -69,6 +69,18 @@ public static class AttackLibrary
                 failedAudioClip: _defaultProjectileFailedAudio
             );
 
+            public static AttackTemplate EightForward100() => new AttackTemplate(
+                projectilePrefab: _defaultProjectilePrefab,
+                numberOfProjectiles: 8,
+                ammoCost: 0,
+                projectileSpeed: 6f,
+                spawnDelay: 0f,
+                spawnDegreesIn360: 100,
+                spawnRadius: 1f,
+                audioClip: _defaultProjectileAudio,
+                failedAudioClip: _defaultProjectileFailedAudio
+            );
+
             public static AttackTemplate Ten90() => new AttackTemplate(
                 projectilePrefab: _defaultProjectilePrefab,
                 numberOfProjectiles: 10,
@@ -161,6 +173,18 @@ public static class AttackLibrary
             projectileSpeed: 9f,
             spawnDelay: 0f,
             spawnDegreesIn360: 30,
+            spawnRadius: 1f,
+            audioClip: _defaultProjectileAudio,
+            failedAudioClip: _defaultProjectileFailedAudio
+        );
+
+        public static AttackTemplate FiveForward20() => new AttackTemplate(
+            projectilePrefab: _defaultProjectilePrefab,
+            numberOfProjectiles: 5,
+            ammoCost: 1,
+            projectileSpeed: 9f,
+            spawnDelay: 0f,
+            spawnDegreesIn360: 20,
             spawnRadius: 1f,
             audioClip: _defaultProjectileAudio,
             failedAudioClip: _defaultProjectileFailedAudio
