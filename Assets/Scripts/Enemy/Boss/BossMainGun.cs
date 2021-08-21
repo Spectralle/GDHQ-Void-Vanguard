@@ -1,12 +1,11 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BossMainGun : MonoBehaviour
 {
     [SerializeField, Min(0.1f)] private float _attackFrequency;
-    [SerializeField] private Transform _projectileContainer;
 
+    private Transform _projectileContainer;
     private bool _readyToShoot;
     private AudioSource _audioSource;
 
@@ -15,11 +14,12 @@ public class BossMainGun : MonoBehaviour
     {
         _audioSource = transform.parent.GetComponent<AudioSource>();
         _projectileContainer = GameObject.Find("Projectile Container").transform;
+        transform.parent.GetComponent<BossFightManager>().SetMainGun(this);
     }
 
     void Update()
     {
-        if (_readyToShoot)
+        if (BossFightManager._canMainShoot && _readyToShoot)
             StartCoroutine(MakeAnAttack(AttackLibrary.Laser.Free.FiveForward30()));
     }
 

@@ -6,14 +6,19 @@ public class BossSentryManager : MonoBehaviour
     public bool allSentriesDestroyed() => _childSentries.Count == 0;
 
     [SerializeField] private GameObject _sentryPrefab;
+    [SerializeField] private Transform _sentryParent;
     [SerializeField, Range(1, 20)] private int _sentriesToSpawn = 2;
     [SerializeField, Range(0.5f, 5)] private float _spawnRadius = 2f;
+
     private List<Transform> _childSentries = new List<Transform>();
     private List<float> _childSentryAngles = new List<float>();
-
     private float _angleStep;
     private float _worldUpAngle;
+    private bool complete;
+    private BossFightManager _bfm;
 
+
+    private void Awake() => _bfm = GetComponent<BossFightManager>();
 
     void Start()
     {
@@ -31,19 +36,41 @@ public class BossSentryManager : MonoBehaviour
 
             _startPosition *= _spawnRadius;
 
-            GameObject generator = Instantiate(_sentryPrefab, (Vector2)transform.position + _startPosition, Quaternion.Euler(0, 0, 180), transform);
+            GameObject generator = Instantiate(
+                _sentryPrefab,
+                (Vector2)transform.position + _startPosition,
+                Quaternion.Euler(0, 0, 180),
+                _sentryParent
+            );
 
             _childSentries.Add(generator.transform);
             _childSentryAngles.Add(_angle);
 
             _angle += _angleStep;
         }
+
+        _bfm.LoadSentryGunList(_childSentries);
     }
 
-    public void SentryDestroyed(Transform gen)
+    private void Update()
     {
-        if (_childSentries.Contains(gen))
-            _childSentries.Remove(gen);
+        if (complete)
+            return;
+
+        if (allSentriesDestroyed())
+        {
+            complete = true;
+            BossDefenceShieldManager.i.SentriesDestroyed();
+            BossFightManager.MoveToMainPhase();
+        }
+    }
+
+    public void SentryDestroyed(Transform sentry)
+    {
+        if (_childSentries.Contains(sentry))
+            _childSentries.Remove(sentry);
+
+        _bfm.RemoveFromSentryGunList(sentry);
     }
 
     private void OnDrawGizmos()

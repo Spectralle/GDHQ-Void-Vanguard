@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BossHealth : MonoBehaviour
@@ -33,7 +31,10 @@ public class BossHealth : MonoBehaviour
                     if (_generatorManager.allGeneratorsDestroyed() && _sentryManager.allSentriesDestroyed())
                         _healthPoints--;
                     if (_healthPoints <= 0)
+                    {
+                        GameConclusionHandler.i.Victory();
                         Die();
+                    }
                     break;
                 case partType.Sentry:
                     if (_generatorManager.allGeneratorsDestroyed())
@@ -50,10 +51,7 @@ public class BossHealth : MonoBehaviour
         }
     }
 
-    private void Die()
-    {
-        Destroy(gameObject);
-    }
+    private void Die() => Destroy(gameObject);
 
     private void OnDestroy()
     {

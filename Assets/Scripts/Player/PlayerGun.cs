@@ -10,15 +10,9 @@ public class PlayerGun : MonoBehaviour
     [SerializeField] private float _shotCooldown = 0.4f;
     [Space]
     [Header("Weapons")]
-    [SerializeField] private GameObject _pfLaser;
-    [SerializeField] private GameObject _pfMissile;
-    [SerializeField] private float _laserSpeed = 20;
-    [SerializeField] private Vector2 _laserDirection = new Vector2(0, 1f);
     [SerializeField] private AudioClip _laserAudioClip;
-    [SerializeField] private AudioClip _laserFailedAudioClip;
     [SerializeField] private DynamicLaser _dynalaser;
     [SerializeField] private AudioClip _dynaLaserAudioClip;
-    [SerializeField] private AudioClip _missileAudioClip;
 
     public int CurrentAmmo => _currentAmmo;
     private int _currentAmmo;
@@ -107,7 +101,7 @@ public class PlayerGun : MonoBehaviour
             shot.tag = "Player Projectile";
             shot.GetComponent<Rigidbody2D>().velocity = attackData.Delay == 0 ? shotMovementVector : shotCurrentMovementVector;
             shot.TryGetComponent(out RichochetLaserMovement ricochet);
-            ricochet.SetSpeed(attackData.Speed);
+            ricochet?.SetSpeed(attackData.Speed);
 
             angle += angleStep;
 

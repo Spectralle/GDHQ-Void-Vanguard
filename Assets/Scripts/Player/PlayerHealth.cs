@@ -21,6 +21,8 @@ public class PlayerHealth : MonoBehaviour
         TryGetComponent(out _shield);
     }
 
+    private void Start() => UIManager.i.ChangeLives(_currentLives);
+
     public void Damage() => Damage(1);
 
     public void Damage(int livesLost)

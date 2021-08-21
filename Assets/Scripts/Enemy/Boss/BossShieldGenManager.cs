@@ -6,20 +6,25 @@ public class BossShieldGenManager : MonoBehaviour
     public bool allGeneratorsDestroyed() => _childGenerators.Count == 0;
 
     [SerializeField] private GameObject _generatorPrefab;
-    [SerializeField] private GameObject _shieldObject;
     [SerializeField] private Transform _generatorRotator;
     [SerializeField, Range(1, 20)] private int _generatorsToSpawn = 3;
     [SerializeField, Range(0.5f, 5)] private float _spawnRadius = 2f;
-    [SerializeField, Range(0.05f, 1f)] private float _moveSpeed = 0.4f;
+    [SerializeField, Range(20f, 70f)] private float _moveSpeed = 40f;
 
     private List<Transform> _childGenerators = new List<Transform>();
     private List<float> _childGeneratorAngles = new List<float>();
     private float _angleStep;
     private float _worldUpAngle;
+    private bool complete;
+    private BossFightManager _bfm;
 
+
+    private void Awake() => _bfm = GetComponent<BossFightManager>();
 
     void Start()
     {
+        BossDefenceShieldManager.i.ActivateShield();
+
         float _angle = 0;
         _angleStep = 360 / _generatorsToSpawn;
         _worldUpAngle = Mathf.Atan2(transform.up.x, transform.up.y);
@@ -46,20 +51,31 @@ public class BossShieldGenManager : MonoBehaviour
 
             _angle += _angleStep;
         }
+
+        _bfm.LoadGenGunList(_childGenerators);
     }
 
     void Update()
     {
-        _generatorRotator.Rotate(new Vector3(0, 0, _moveSpeed));
+        if (complete)
+            return;
+
+        _generatorRotator.Rotate(new Vector3(0, 0, _moveSpeed * Time.deltaTime));
 
         if (allGeneratorsDestroyed())
-            Destroy(_shieldObject);
+        {
+            complete = true;
+            BossDefenceShieldManager.i.GeneratorsDestroyed();
+            BossFightManager.MoveToSentryPhase();
+        }
     }
 
     public void GeneratorDestroyed(Transform gen)
     {
         if (_childGenerators.Contains(gen))
             _childGenerators.Remove(gen);
+
+        _bfm.RemoveFromGenGunList(gen);
     }
 
     private void OnDrawGizmos()

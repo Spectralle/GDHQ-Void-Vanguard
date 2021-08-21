@@ -14,7 +14,7 @@ public class EnemyGun : MonoBehaviour
     public enum AttackStyle
     {
         OneForward,
-        ThreeForward20,
+        TwoForward20,
         FiveForward30
     }
     [Space]
@@ -65,13 +65,13 @@ public class EnemyGun : MonoBehaviour
             switch (_attackStyle)
             {
                 case AttackStyle.OneForward:
-                    StartCoroutine(MakeAnAttack(AttackLibrary.Laser.OneForward()));
+                    StartCoroutine(MakeAnAttack(AttackLibrary.Laser.Free.OneForward()));
                     break;
-                case AttackStyle.ThreeForward20:
-                    StartCoroutine(MakeAnAttack(AttackLibrary.Laser.ThreeForward20()));
+                case AttackStyle.TwoForward20:
+                    StartCoroutine(MakeAnAttack(AttackLibrary.Laser.Free.TwoForward20()));
                     break;
                 case AttackStyle.FiveForward30:
-                    StartCoroutine(MakeAnAttack(AttackLibrary.Laser.FiveForward30()));
+                    StartCoroutine(MakeAnAttack(AttackLibrary.Laser.Free.FiveForward30()));
                     break;
             }
         }

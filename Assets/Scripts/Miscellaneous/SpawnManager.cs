@@ -11,6 +11,7 @@ public class SpawnManager : MonoBehaviour
 
     [HideInInspector] public bool CanSpawn = true;
     [SerializeField] private GameObject _player;
+    [SerializeField, Range(1, 10)] private int _startWave = 1;
 
     [Header("Wave Spawning:")]
     [SerializeField] private AnimationCurve _enemiesEachWave;
@@ -22,6 +23,7 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] private bool _spawnEnemies = true;
     [SerializeField] private Transform _enemyContainer;
     [SerializeField] private Vector2 _enemySpawnDelay = new Vector2(2.5f, 5);
+    [SerializeField] private GameObject _bossPrefab;
     [SerializeField] private WeightedSpawnTable _enemies;
     [Header("Asteroids:")]
     [SerializeField] private bool _spawnAsteroids = true;
@@ -49,10 +51,14 @@ public class SpawnManager : MonoBehaviour
     private static int _waveNumber = 1;
     public static int GetCurrentWave() => _waveNumber;
     private static bool _allEnemiesSpawned = false;
-    #pragma warning restore CS0414
+#pragma warning restore CS0414
 
 
-    private void Awake() => i = this;
+    private void Awake()
+    {
+        i = this;
+        _waveNumber = _startWave;
+    }
 
     private void Update()
     {
@@ -102,18 +108,21 @@ public class SpawnManager : MonoBehaviour
             {
                 if (i._enemyContainer && i._enemies.HasArrayEntries())
                     i.StartCoroutine(ManageEnemySpawning(numberOfEnemiesThisWave));
+
+                if (i._asteroidContainer && i._asteroids.HasArrayEntries())
+                    i.StartCoroutine(ManageAsteroidSpawning());
+
+                if (i._powerupContainer && i._powerups.HasArrayEntries() && i._refills.HasArrayEntries())
+                    i.StartCoroutine(ManagePowerupSpawning());
             }
             else if (numberOfEnemiesThisWave == -1)
             {
-                i._waveText.SetText("<color=red>Boss wave reached,\n but it's not implemented yet!</color>");
-                // Spawn the boss
+                Debug.Log("<color=orange>Boss wave!</color>");
+                SpawnBoss();
+
+                if (i._powerupContainer && i._powerups.HasArrayEntries() && i._refills.HasArrayEntries())
+                    i.StartCoroutine(ManagePowerupSpawning());
             }
-
-            if (i._asteroidContainer && i._asteroids.HasArrayEntries())
-                i.StartCoroutine(ManageAsteroidSpawning());
-
-            if (i._powerupContainer && i._powerups.HasArrayEntries() && i._refills.HasArrayEntries())
-                i.StartCoroutine(ManagePowerupSpawning());
         }
         else
         {
@@ -186,15 +195,23 @@ public class SpawnManager : MonoBehaviour
 
     private static IEnumerator BetweenWaveBuffer()
     {
-        int seconds = i._waveRecoveryBuffer / 1;
+        bool isBossWave = i._enemiesEachWave.Evaluate(_waveNumber - 1) == -1;
+        int seconds = (isBossWave ? i._waveRecoveryBuffer + 1 : i._waveRecoveryBuffer) / 1;
         for (int s = seconds; s >= 0; s--)
         {
             yield return new WaitForSeconds(1);
-            i._waveText.SetText(s == seconds || s == (seconds - 1) ? "Next wave \nincoming!" : s.ToString());
+            bool showText = s <= seconds & s >= (seconds - (isBossWave ? 2 : 1));
+            i._waveText.SetText(showText ? (!isBossWave ? "Next wave \nincoming!" : "BOSS WAVE \nINCOMING!") : s.ToString());
         }
         i._waveText.SetText(string.Empty);
 
         StartSpawningNextWave();
+    }
+
+    private static void SpawnBoss()
+    {
+        Transform boss = Instantiate(i._bossPrefab, new Vector3(0, 12, 0), Quaternion.identity, i._enemyContainer).transform;
+        ChangeEnemiesAlive(boss);
     }
 
     public static Vector2 GetEnemySpawnPosition() => GetEnemySpawnPosition(0);

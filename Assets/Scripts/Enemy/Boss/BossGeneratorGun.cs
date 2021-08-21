@@ -5,8 +5,8 @@ using UnityEngine;
 public class BossGeneratorGun : MonoBehaviour
 {
     [SerializeField, Min(0.1f)] private float _attackFrequency;
-    [SerializeField] private Transform _projectileContainer;
 
+    private Transform _projectileContainer;
     private bool _readyToShoot;
     private AudioSource _audioSource;
 
@@ -22,7 +22,7 @@ public class BossGeneratorGun : MonoBehaviour
     {
         transform.rotation = Quaternion.Euler(0, 0, 180);
 
-        if (_readyToShoot)
+        if (BossFightManager._canGensShoot && _readyToShoot)
             StartCoroutine(MakeAnAttack(AttackLibrary.Laser.Free.ThreeForward30()));
     }
 

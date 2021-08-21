@@ -8,6 +8,7 @@ public struct AttackTemplate
     public int AmmoCost;
     public float Speed;
     public float Delay;
+    public bool Loop;
     public int Degrees;
     public float Radius;
     public AudioClip AudioClip;
@@ -20,6 +21,7 @@ public struct AttackTemplate
         int ammoCost = 1,
         float projectileSpeed = 10f,
         float spawnDelay = 0f,
+        bool attackLoop = false,
         int spawnDegreesIn360 = 360,
         float spawnRadius = 0.2f,
         AudioClip audioClip = null,
@@ -30,6 +32,7 @@ public struct AttackTemplate
         AmmoCost = ammoCost;
         Speed = projectileSpeed;
         Delay = spawnDelay;
+        Loop = attackLoop;
         Degrees = spawnDegreesIn360;
         Radius = spawnRadius;
         AudioClip = audioClip;
