@@ -3,12 +3,15 @@ using UnityEngine;
 public class PlayerHealth : MonoBehaviour
 {
     public int CurrentLives => _currentLives;
+    public void OverrideLives(int amount) => _currentLives = amount;
+    #pragma warning disable CS0649
     [SerializeField] private int _currentLives = 3;
     [Space]
     [SerializeField] private GameObject _damage2LivesLeft;
     [SerializeField] private GameObject _damage1LifeLeft;
     [Space]
     [SerializeField] private GameObject _explosionPrefab;
+    #pragma warning restore CS0649
 
     private UnitShield _shield;
 
@@ -20,6 +23,8 @@ public class PlayerHealth : MonoBehaviour
 
         TryGetComponent(out _shield);
     }
+
+    private void Start() => UIManager.i.ChangeLives(_currentLives);
 
     public void Damage() => Damage(1);
 
@@ -112,7 +117,6 @@ public class PlayerHealth : MonoBehaviour
         if (other.CompareTag("Enemy Projectile"))
         {
             CameraShaker.StartShaking(.8f, .3f);
-            Destroy(other.gameObject);
             Damage();
         }
     }

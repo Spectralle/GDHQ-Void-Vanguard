@@ -15,6 +15,10 @@ PrefabInstance:
       propertyPath: _canShootBackwards
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 142758494439708503, guid: a328951309050b0458f1035b0c0536a8, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.x
+      value: 0.97
+      objectReference: {fileID: 0}
     - target: {fileID: 440130907862965031, guid: a328951309050b0458f1035b0c0536a8, type: 3}
       propertyPath: _evadeChance
       value: 2
@@ -31,17 +35,37 @@ PrefabInstance:
       propertyPath: _sineYMoveScale
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 3047014566842629617, guid: a328951309050b0458f1035b0c0536a8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.37
+      objectReference: {fileID: 0}
+    - target: {fileID: 3047014566842629617, guid: a328951309050b0458f1035b0c0536a8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.533
+      objectReference: {fileID: 0}
+    - target: {fileID: 3487513869064321261, guid: a328951309050b0458f1035b0c0536a8, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 970bc5819cddbff43bbb66076ce79ec8, type: 3}
     - target: {fileID: 3487513869064321261, guid: a328951309050b0458f1035b0c0536a8, type: 3}
       propertyPath: m_Color.b
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3487513869064321261, guid: a328951309050b0458f1035b0c0536a8, type: 3}
       propertyPath: m_Color.g
-      value: 0.94700813
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3487513869064321261, guid: a328951309050b0458f1035b0c0536a8, type: 3}
       propertyPath: m_Color.r
-      value: 0.8066038
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6923490796704429643, guid: a328951309050b0458f1035b0c0536a8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.37
+      objectReference: {fileID: 0}
+    - target: {fileID: 6923490796704429643, guid: a328951309050b0458f1035b0c0536a8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.533
       objectReference: {fileID: 0}
     - target: {fileID: 7709881818554600201, guid: a328951309050b0458f1035b0c0536a8, type: 3}
       propertyPath: m_Name

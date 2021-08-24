@@ -44,9 +44,10 @@ public class StarterAsteroid : MonoBehaviour
 
         GetComponent<SpriteRenderer>().enabled = false;
 
-        yield return new WaitForSeconds(2.6f);
+        //yield return new WaitForSeconds(2.6f);
 
-        SpawnManager.StartSpawningNextWave();
+        //SpawnManager.StartSpawningNextWave();
+        SpawnManager.StartWaves();
 
         Destroy(gameObject);
     }

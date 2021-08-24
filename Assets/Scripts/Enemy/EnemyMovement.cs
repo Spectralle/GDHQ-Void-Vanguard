@@ -18,11 +18,10 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField, Range(0.2f, 5)] private float _ramRotateSpeed;
     [SerializeField] private GameObject _trails;
     [Header("Other:")]
-    [SerializeField] private AudioClip _explosionAudioClip;
+    [SerializeField] private GameObject _explosionPrefab;
     public bool IsDestroyed => _isDestroyed;
 
     private Transform _player;
-    private Animator _anim;
     private EnemyGun _gun;
     private bool _isDestroyed;
     private Vector2 _originalPosition = Vector2.zero;
@@ -33,6 +32,7 @@ public class EnemyMovement : MonoBehaviour
     private int _sineDirection = 1;
     private int _randomSineStarter;
     private const float _ramMinDistance = 1f;
+    private float _invulnerable;
 
 
     private void Awake()
@@ -61,6 +61,9 @@ public class EnemyMovement : MonoBehaviour
 
     private void Update()
     {
+        if (_invulnerable >= 0f)
+            _invulnerable -= Time.deltaTime;
+
         if (!_isShootingAsteroid)
         {
             DoShipMovement();
@@ -151,11 +154,14 @@ public class EnemyMovement : MonoBehaviour
         {
             int evadeChance = Random.Range(1, 10);
             if (evadeChance <= _evadeChance)
+            {
+                _invulnerable = 0.6f;
                 StartCoroutine(Evade());
+            }
             else
             {
-                Destroy(other.gameObject);
-                StartCoroutine(Explode());
+                if (_invulnerable <= 0f)
+                    StartCoroutine(Explode());
             }
         }
 
@@ -222,27 +228,18 @@ public class EnemyMovement : MonoBehaviour
         UIManager.i.ChangeKills(1);
         UIManager.i.ChangeScore(10);
 
-        TryGetComponent(out _anim);
-        if (_anim)
-            _anim.SetTrigger("OnEnemyDeath");
-
-        TryGetComponent(out AudioSource _asrc);
-        if (_asrc)
-            _asrc.PlayOneShot(_explosionAudioClip, 0.9f);
+        Transform exp = Instantiate(_explosionPrefab, transform.position, Quaternion.identity, GameObject.Find("Game Handler/Scene").transform).transform;
+        exp.localScale *= 0.7f;
 
         TryGetComponent(out Collider2D _c2d);
         if (_c2d)
             _c2d.enabled = false;
 
-        Destroy(gameObject, 2.5f);
+        _moveSpeed = 0;
+        _sineXMoveScale = 0;
+        _sineYMoveScale = 0;
 
-        while (_moveSpeed > 0.00f)
-        {
-            _moveSpeed = Mathf.Lerp(_moveSpeed, 0, Time.deltaTime * 1.5f);
-            _sineXMoveScale = Mathf.Lerp(_sineXMoveScale, 0, Time.deltaTime * 1.5f);
-            _sineYMoveScale = Mathf.Lerp(_sineYMoveScale, 0, Time.deltaTime * 1.5f);
-            yield return new WaitForEndOfFrame();
-        }
+        Destroy(gameObject, 0.5f);
     }
     #endregion
 }

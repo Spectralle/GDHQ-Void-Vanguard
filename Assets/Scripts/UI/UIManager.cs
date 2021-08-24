@@ -79,8 +79,12 @@ public class UIManager : MonoBehaviour
     public void ChangeLives(int value)
     {
         _playerLives.SetText($"Lives: {value}");
-        _playerLivesImage.sprite = LivesSprites[value];
+        _playerLivesImage.sprite = LivesSprites[Mathf.Clamp(value, 0, LivesSprites.Length - 1)];
     }
+
+    public void EnableHealthSprites() => _playerLivesImage.enabled = true;
+
+    public void DisableHealthSprites() => _playerLivesImage.enabled = false;
 
 
     private IEnumerator SmoothChangeAmmoFillAmount(float value)

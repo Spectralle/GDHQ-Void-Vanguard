@@ -10,18 +10,14 @@ public class PlayerGun : MonoBehaviour
     [SerializeField] private float _shotCooldown = 0.4f;
     [Space]
     [Header("Weapons")]
-    [SerializeField] private GameObject _pfLaser;
-    [SerializeField] private GameObject _pfMissile;
-    [SerializeField] private float _laserSpeed = 20;
-    [SerializeField] private Vector2 _laserDirection = new Vector2(0, 1f);
     [SerializeField] private AudioClip _laserAudioClip;
-    [SerializeField] private AudioClip _laserFailedAudioClip;
     [SerializeField] private DynamicLaser _dynalaser;
     [SerializeField] private AudioClip _dynaLaserAudioClip;
-    [SerializeField] private AudioClip _missileAudioClip;
 
     public int CurrentAmmo => _currentAmmo;
     private int _currentAmmo;
+    public void InfiniteAmmo(bool value) => _infiniteAmmo = value;
+    private bool _infiniteAmmo;
     private bool _canFire = true;
     private float _cooldownMultiplier = 1;
     private Transform _projectileContainer;
@@ -54,11 +50,11 @@ public class PlayerGun : MonoBehaviour
             if (_isDynaLaserActive)
                 ShootDynaLaser();
             else if (_isHomingMissileActive)
-                StartCoroutine(MakeAnAttack(AttackLibrary.OneMissileForward()));
+                StartCoroutine(MakeAnAttack(AttackLibrary.Missile.OneForward()));
             else if (_isTripleShotActive)
-                StartCoroutine(MakeAnAttack(AttackLibrary.ThreeForward_Free()));
+                StartCoroutine(MakeAnAttack(AttackLibrary.Laser.Free.ThreeForward30()));
             else
-                StartCoroutine(MakeAnAttack(AttackLibrary.OneForward()));
+                StartCoroutine(MakeAnAttack(AttackLibrary.Laser.OneForward()));
         }
     }
 
@@ -66,7 +62,7 @@ public class PlayerGun : MonoBehaviour
     {
         if (attackData.AmmoCost > 0)
         {
-            if (_currentAmmo < attackData.AmmoCost)
+            if (_currentAmmo < attackData.AmmoCost && !_infiniteAmmo)
             {
                 _audioSource.PlayOneShot(attackData.FailedAudioClip);
                 _canFire = false;
@@ -76,8 +72,11 @@ public class PlayerGun : MonoBehaviour
         }
 
         _canFire = false;
-        _currentAmmo -= attackData.AmmoCost;
-        UIManager.i.ChangeAmmo(_currentAmmo, _ammoCount);
+        if (!_infiniteAmmo)
+        {
+            _currentAmmo -= attackData.AmmoCost;
+            UIManager.i.ChangeAmmo(_currentAmmo, _ammoCount);
+        }
 
         float angleStep = attackData.Degrees / attackData.Number;
         float angle = attackData.Degrees != 360 ? -(attackData.Degrees - angleStep) / 2 : 0f;
@@ -106,6 +105,8 @@ public class PlayerGun : MonoBehaviour
                 _projectileContainer);
             shot.tag = "Player Projectile";
             shot.GetComponent<Rigidbody2D>().velocity = attackData.Delay == 0 ? shotMovementVector : shotCurrentMovementVector;
+            shot.TryGetComponent(out RichochetLaserMovement ricochet);
+            ricochet?.SetSpeed(attackData.Speed);
 
             angle += angleStep;
 
