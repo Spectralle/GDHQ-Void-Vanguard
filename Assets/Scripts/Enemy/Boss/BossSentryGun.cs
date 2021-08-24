@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BossSentryGun : MonoBehaviour
 {
-    [SerializeField, Min(0.1f)] private float _attackFrequency;
+    [SerializeField, Min(0.06f)] private float _attackFrequency;
 
     private Transform _projectileContainer;
     private bool _readyToShoot;
@@ -20,10 +20,8 @@ public class BossSentryGun : MonoBehaviour
 
     void Update()
     {
-        transform.rotation = Quaternion.Euler(0, 0, 180);
-
         if (BossFightManager._canSentriesShoot && _readyToShoot)
-            StartCoroutine(MakeAnAttack(AttackLibrary.Laser.Free.TwoForward20()));
+            StartCoroutine(MakeAnAttack(AttackLibrary.Laser.Boss.TwoForward65()));
     }
 
     private IEnumerator MakeAnAttack(AttackTemplate attackData, bool fireBackwards = false)

@@ -60,7 +60,6 @@ public class BossSentryManager : MonoBehaviour
         if (allSentriesDestroyed())
         {
             complete = true;
-            BossDefenceShieldManager.i.SentriesDestroyed();
             BossFightManager.MoveToMainPhase();
         }
     }

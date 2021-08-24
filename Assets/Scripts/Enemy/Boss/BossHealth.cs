@@ -33,7 +33,7 @@ public class BossHealth : MonoBehaviour
                     if (_healthPoints <= 0)
                     {
                         GameConclusionHandler.i.Victory();
-                        Die();
+                        transform.parent.GetComponent<Animator>().Play("Boss_Destruction_anim");
                     }
                     break;
                 case partType.Sentry:

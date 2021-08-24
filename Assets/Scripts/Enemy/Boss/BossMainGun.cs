@@ -3,10 +3,7 @@ using UnityEngine;
 
 public class BossMainGun : MonoBehaviour
 {
-    [SerializeField, Min(0.1f)] private float _attackFrequency;
-
     private Transform _projectileContainer;
-    private bool _readyToShoot;
     private AudioSource _audioSource;
 
 
@@ -17,16 +14,10 @@ public class BossMainGun : MonoBehaviour
         transform.parent.GetComponent<BossFightManager>().SetMainGun(this);
     }
 
-    void Update()
-    {
-        if (BossFightManager._canMainShoot && _readyToShoot)
-            StartCoroutine(MakeAnAttack(AttackLibrary.Laser.Free.FiveForward30()));
-    }
+    public void CallRemoteAttack(AttackTemplate attackData) => StartCoroutine(MakeAnAttack(attackData));
 
     private IEnumerator MakeAnAttack(AttackTemplate attackData, bool fireBackwards = false)
     {
-        _readyToShoot = false;
-
         float angleStep = attackData.Degrees / attackData.Number;
         float angle = attackData.Degrees != 360 ? (fireBackwards ? 0f : 180f) - (attackData.Degrees - angleStep) / 2 : (fireBackwards ? 0f : 180f);
         float transformUpAngle = Mathf.Atan2(transform.up.x, transform.up.y);
@@ -67,13 +58,6 @@ public class BossMainGun : MonoBehaviour
 
         if (attackData.Delay < 0.1f && _audioSource && attackData.AudioClip)
             _audioSource.PlayOneShot(attackData.AudioClip);
-        StartCoroutine(ShotCooldown());
-    }
-
-    private IEnumerator ShotCooldown()
-    {
-        yield return new WaitForSeconds(_attackFrequency);
-        _readyToShoot = true;
     }
 
     private void OnDrawGizmos() => Gizmos.DrawRay(transform.position, -transform.up);

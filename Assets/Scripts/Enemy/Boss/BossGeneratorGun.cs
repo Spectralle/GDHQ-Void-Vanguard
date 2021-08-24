@@ -23,7 +23,7 @@ public class BossGeneratorGun : MonoBehaviour
         transform.rotation = Quaternion.Euler(0, 0, 180);
 
         if (BossFightManager._canGensShoot && _readyToShoot)
-            StartCoroutine(MakeAnAttack(AttackLibrary.Laser.Free.ThreeForward30()));
+            StartCoroutine(MakeAnAttack(AttackLibrary.Laser.Boss.ThreeForward30()));
     }
 
     private IEnumerator MakeAnAttack(AttackTemplate attackData)

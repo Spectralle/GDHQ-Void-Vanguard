@@ -3,12 +3,15 @@ using UnityEngine;
 public class PlayerHealth : MonoBehaviour
 {
     public int CurrentLives => _currentLives;
+    public void OverrideLives(int amount) => _currentLives = amount;
+    #pragma warning disable CS0649
     [SerializeField] private int _currentLives = 3;
     [Space]
     [SerializeField] private GameObject _damage2LivesLeft;
     [SerializeField] private GameObject _damage1LifeLeft;
     [Space]
     [SerializeField] private GameObject _explosionPrefab;
+    #pragma warning restore CS0649
 
     private UnitShield _shield;
 

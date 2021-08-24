@@ -15,14 +15,23 @@ public class BossFightManager : MonoBehaviour
     public bool _moveToMainPhase;
     public static void MoveToMainPhase() => i._moveToMainPhase = true;
 
-    [SerializeField, Range(1f, 30f)] private float _genPhaseTimeOnEachSide = 7f;
-    [SerializeField, Range(1f, 4f)] private float _sentryBeamTime = 4f;
+    [Space]
+    [SerializeField, Range(1f, 30f)] private float _gPTimeOnSide = 7f;
+    [Space]
+    [SerializeField, Range(1f, 4f)] private float _sPFirstBeamTime = 2f;
+    [SerializeField, Range(1f, 4f)] private float _sPSecondBeamTime = 2f;
+    [SerializeField, Range(0.6f, 4f)] private float _sPBeamPause = 1f;
 
     private Animator _anim;
     private List<BossGeneratorGun> _genGuns = new List<BossGeneratorGun>(); 
     private List<BossSentryGun> _sentryGuns = new List<BossSentryGun>();
     private BossMainGun _mainGun;
     private List<Vector3> _sentryOriginalPositions = new List<Vector3>();
+    private List<Vector2> beamPositions = new List<Vector2>();
+    private List<Transform> leftSide = new List<Transform>();
+    private List<Transform> rightSide = new List<Transform>();
+    private int _mainFightLoopNumber = 1;
+    private float _difficultyMultiplier = 1f;
 
 
     private void Awake()
@@ -34,7 +43,7 @@ public class BossFightManager : MonoBehaviour
     #region Generator Phase
     private IEnumerator GenPhaseBehaviourWhileLeft()
     {
-        float timer = _genPhaseTimeOnEachSide;
+        float timer = _gPTimeOnSide;
         while (timer >= 0.0f)
         {
             #region Behaviour
@@ -56,7 +65,7 @@ public class BossFightManager : MonoBehaviour
 
     private IEnumerator GenPhaseBehaviourWhileRight()
     {
-        float timer = _genPhaseTimeOnEachSide;
+        float timer = _gPTimeOnSide;
         while (timer >= 0.0f)
         {
             #region Behaviour
@@ -78,11 +87,16 @@ public class BossFightManager : MonoBehaviour
     #endregion
 
     #region Sentry Phase
-    private void StartSentryBeams() => StartCoroutine(SentryPhaseBehaviour_VerticalBeams());
+    private void StartVerticalSentryBeams()
+    {
+        StopCoroutine(SentryPhaseBehaviour_HorizontalBeams());
+        StartCoroutine(SentryPhaseBehaviour_VerticalBeams());
+    }
 
     private IEnumerator SentryPhaseBehaviour_VerticalBeams()
     {
-        List<Vector2> beamPositions = new List<Vector2>();
+        #region Setup
+        beamPositions.Clear();
         float XStep = 23.6f / _sentryGuns.Count;
 
         for (int s = 0; s < _sentryGuns.Count; s++)
@@ -91,32 +105,54 @@ public class BossFightManager : MonoBehaviour
 
             beamPositions.Add(new Vector2(
                 s < (_sentryGuns.Count / 2) ? XStep / 2 : -(XStep / 2),
-                5.9f
+                5.7f
             ));
 
-            _sentryGuns[s].transform.position = new Vector2(beamPositions[s].x, beamPositions[s].y + 1.5f);
+            _sentryGuns[s].transform.position = new Vector2(beamPositions[s].x, beamPositions[s].y + 2f);
+            _sentryGuns[s].transform.rotation = Quaternion.Euler(0, 0, 180);
 
             StartCoroutine(MoveTransform(_sentryGuns[s].transform, beamPositions[s]));
         }
+        #endregion
 
-        float timer = _sentryBeamTime;
+        #region Behaviour
+        float timer = _sPFirstBeamTime;
         while (timer >= 0.0f)
         {
-            #region Behaviour
             _canSentriesShoot = true;
-            #endregion
 
             timer -= Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
 
-        _canSentriesShoot = false;
+        timer = _sPBeamPause;
+        while (timer >= 0.0f)
+        {
+            _canSentriesShoot = false;
 
+            timer -= Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+
+        timer = _sPSecondBeamTime;
+        while (timer >= 0.0f)
+        {
+            _canSentriesShoot = true;
+
+            timer -= Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+        _canSentriesShoot = false;
+        #endregion
+
+        #region Conclusion
         for (int s = 0; s < _sentryGuns.Count; s++)
-            StartCoroutine(MoveTransform(_sentryGuns[s].transform, beamPositions[s] + new Vector2(0, 1.5f)));
+            StartCoroutine(MoveTransform(_sentryGuns[s].transform, beamPositions[s] + new Vector2(0, 2f)));
+
+        yield return new WaitForSeconds(2.5f);
 
         if (!_moveToMainPhase)
-            StartCoroutine(SentryPhaseBehaviour_HorizontalBeams());
+            StartHorizontalSentryBeams();
         else
         {
             for (int s = 0; s < _sentryGuns.Count; s++)
@@ -125,60 +161,121 @@ public class BossFightManager : MonoBehaviour
             _moveToMainPhase = false;
             _anim.SetBool("SentriesDestroyed", true);
         }
+        #endregion
+    }
+
+    private void StartHorizontalSentryBeams()
+    {
+        StopCoroutine(SentryPhaseBehaviour_VerticalBeams());
+        StartCoroutine(SentryPhaseBehaviour_HorizontalBeams());
     }
 
     private IEnumerator SentryPhaseBehaviour_HorizontalBeams()
     {
-        List<Vector2> beamPositions = new List<Vector2>();
-        float YStep = 22.6f / _sentryGuns.Count;
+        #region Setup
+        float maxDiffBetweenFirstAndLast = 8f;
+        float negativeOffset;
+        float YStep;
+
+        leftSide.Clear();
+        rightSide.Clear();
+        beamPositions.Clear();
 
         for (int s = 0; s < _sentryGuns.Count; s++)
         {
             _sentryOriginalPositions.Add(_sentryGuns[s].transform.position);
 
+            bool isLeft = s < (int)(_sentryGuns.Count / 2f);
+
+            if (isLeft)
+                leftSide.Add(_sentryGuns[s].transform);
+            else
+                rightSide.Add(_sentryGuns[s].transform);
+        }
+
+        for (int s = 0; s < leftSide.Count; s++)
+        {
+            YStep = maxDiffBetweenFirstAndLast / leftSide.Count;
+            negativeOffset = -(maxDiffBetweenFirstAndLast / 2f);
+
             beamPositions.Add(new Vector2(
-                s < (_sentryGuns.Count / 2) ? 11 : -11,
-                s < (_sentryGuns.Count / 2) ? YStep / 2 : -(YStep / 2)
+                -10.5f,
+                (leftSide.Count == 1) ? 0f : negativeOffset + (YStep / 2) + (s * YStep)
             ));
 
-            _sentryGuns[s].transform.position = new Vector2(
-                beamPositions[s].x + (s < (_sentryGuns.Count / 2) ? 1.5f : -1.5f),
-                beamPositions[s].y
-            );
-
-            Debug.Log(beamPositions[s], _sentryGuns[s]);
-
-
-            //StartCoroutine(MoveTransform(_sentryGuns[s].transform, beamPositions[s]));
+            leftSide[s].transform.position = beamPositions[s] - new Vector2(2f, 0);
+            leftSide[s].transform.rotation = Quaternion.Euler(0, 0, -90);
+            
+            StartCoroutine(MoveTransform(leftSide[s].transform, beamPositions[s]));
         }
-        yield break;
 
-        //float timer = _sentryBeamTime;
-        //while (timer >= 0.0f)
-        //{
-        //    #region Behaviour
-        //    _canSentriesShoot = true;
-        //    #endregion
+        for (int s = 0; s < rightSide.Count; s++)
+        {
+            YStep = maxDiffBetweenFirstAndLast / rightSide.Count;
+            negativeOffset = -(maxDiffBetweenFirstAndLast / 2f);
 
-        //    timer -= Time.deltaTime;
-        //    yield return new WaitForEndOfFrame();
-        //}
+            beamPositions.Add(new Vector2(
+                10.5f,
+                (rightSide.Count == 1) ? 0f : negativeOffset + (YStep / 2) + (s * YStep)
+            ));
 
-        //_canSentriesShoot = false;
+            rightSide[s].transform.position = beamPositions[leftSide.Count + s] + new Vector2(2f, 0);
+            rightSide[s].transform.rotation = Quaternion.Euler(0, 0, 90);
 
-        //for (int s = 0; s < _sentryGuns.Count; s++)
-        //    StartCoroutine(MoveTransform(_sentryGuns[s].transform, beamPositions[s] + new Vector2(s < (_sentryGuns.Count / 2) ? 1.5f : -1.5f, 0)));
+            StartCoroutine(MoveTransform(rightSide[s].transform, beamPositions[leftSide.Count + s]));
+        }
+        #endregion
 
-        //if (!_moveToMainPhase)
-        //    StartCoroutine(SentryPhaseBehaviour_VerticalBeams());
-        //else
-        //{
-        //    for (int s = 0; s < _sentryGuns.Count; s++)
-        //        _sentryGuns[s].transform.position = _sentryOriginalPositions[s];
+        #region Behaviour
+        float timer = _sPFirstBeamTime;
+        while (timer >= 0.0f)
+        {
+            _canSentriesShoot = true;
 
-        //    _moveToMainPhase = false;
-        //    _anim.SetBool("SentriesDestroyed", true);
-        //}
+            timer -= Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+
+        timer = _sPBeamPause;
+        while (timer >= 0.0f)
+        {
+            _canSentriesShoot = false;
+
+            timer -= Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+
+        timer = _sPSecondBeamTime;
+        while (timer >= 0.0f)
+        {
+            _canSentriesShoot = true;
+
+            timer -= Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+        _canSentriesShoot = false;
+        #endregion
+
+        #region Conclusion
+        for (int s = 0; s < leftSide.Count; s++)
+            StartCoroutine(MoveTransform(leftSide[s].transform, beamPositions[s] - new Vector2(1.5f, 0)));
+
+        for (int s = 0; s < rightSide.Count; s++)
+            StartCoroutine(MoveTransform(rightSide[s].transform, beamPositions[leftSide.Count + s] + new Vector2(2f, 0)));
+
+        yield return new WaitForSeconds(2.5f);
+
+        if (!_moveToMainPhase)
+            StartVerticalSentryBeams();
+        else
+        {
+            for (int s = 0; s < _sentryGuns.Count; s++)
+                _sentryGuns[s].transform.position = _sentryOriginalPositions[s];
+
+            _moveToMainPhase = false;
+            _anim.SetBool("SentriesDestroyed", true);
+        }
+        #endregion
     }
 
     private IEnumerator MoveTransform(Transform sentry, Vector2 destination)
@@ -188,17 +285,106 @@ public class BossFightManager : MonoBehaviour
             sentry.transform.position = Vector3.Lerp(
                 sentry.transform.position,
                 destination,
-                Time.deltaTime * 5
+                Time.deltaTime * 2f
             );
-
-            Debug.DrawLine(destination + (Vector2.left * 0.3f), destination + (Vector2.right * 0.3f));
-            Debug.DrawLine(destination + (Vector2.up * 0.3f), destination + (Vector2.down * 0.3f));
-
             yield return new WaitForEndOfFrame();
         }
     }
+
+    private void DisableShield() => StartCoroutine(BossDefenceShieldManager.i.Disable());
     #endregion
 
+    #region Main Phase
+    private void StartMainPhase()
+    {
+        StopCoroutine(MainPhaseBehaviour());
+        StartCoroutine(MainPhaseBehaviour());
+    }
+
+    private IEnumerator MainPhaseBehaviour()
+    {
+        yield return new WaitForSeconds(0.5f * _difficultyMultiplier);
+
+        _mainGun.CallRemoteAttack(AttackLibrary.Laser.Boss.Ten360());
+
+        yield return new WaitForSeconds(1.5f * _difficultyMultiplier);
+
+        _mainGun.CallRemoteAttack(AttackLibrary.Laser.Boss.Ten360());
+
+        if (_mainFightLoopNumber > 2)
+        {
+            yield return new WaitForSeconds(0.3f * _difficultyMultiplier);
+
+            _mainGun.CallRemoteAttack(AttackLibrary.Laser.Boss.Ten360());
+
+            if (_mainFightLoopNumber > 5)
+            {
+                if (_mainFightLoopNumber <= 9)
+                {
+                    yield return new WaitForSeconds(1.4f * _difficultyMultiplier);
+
+                    _mainGun.CallRemoteAttack(AttackLibrary.Laser.Boss.Twenty360());
+                }
+
+                if (_mainFightLoopNumber > 7)
+                {
+                    yield return new WaitForSeconds(2f * _difficultyMultiplier);
+
+                    _mainGun.CallRemoteAttack(AttackLibrary.Laser.Boss.ThreeForward100());
+
+                    yield return new WaitForSeconds(0.4f * _difficultyMultiplier);
+
+                    _mainGun.CallRemoteAttack(AttackLibrary.Laser.Boss.ThreeForward100());
+
+                    if (_mainFightLoopNumber > 9)
+                    {
+                        yield return new WaitForSeconds(0.7f * _difficultyMultiplier);
+
+                        _mainGun.CallRemoteAttack(AttackLibrary.Laser.Boss.FiveForward100());
+
+                        if (_mainFightLoopNumber > 11)
+                        {
+                            yield return new WaitForSeconds(0.6f * _difficultyMultiplier);
+
+                            _mainGun.CallRemoteAttack(AttackLibrary.Laser.Boss.FiveForward100());
+
+                            if (_mainFightLoopNumber > 14)
+                            {
+                                if (_mainFightLoopNumber <= 16)
+                                {
+                                    yield return new WaitForSeconds(0.6f * _difficultyMultiplier);
+
+                                    _mainGun.CallRemoteAttack(AttackLibrary.Laser.Boss.EightForward100());
+                                }
+
+                                if (_mainFightLoopNumber > 17)
+                                {
+                                    if (_mainFightLoopNumber <= 20)
+                                    {
+                                        yield return new WaitForSeconds(0.4f * _difficultyMultiplier);
+
+                                        _mainGun.CallRemoteAttack(AttackLibrary.Laser.Boss.EightForward100());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        yield return new WaitForSeconds(1.5f * _difficultyMultiplier);
+
+        _difficultyMultiplier = Mathf.Clamp(_difficultyMultiplier - 0.02f, 0.3f, 1f);
+        _mainFightLoopNumber++;
+        
+        //Debug.Log($"Main Phase, loop {_mainFightLoopNumber}. Difficulty: {(1f - _difficultyMultiplier + 0.3f).ToString("f2")}");
+
+        StartCoroutine(MainPhaseBehaviour());
+    }
+    #endregion
+
+    #region Misc
     public void IsOnLeft()
     {
         _anim.SetBool("isOnLeft", true);
@@ -234,5 +420,12 @@ public class BossFightManager : MonoBehaviour
         BossSentryGun sg = sentry.GetComponent<BossSentryGun>();
         if (_sentryGuns.Contains(sg))
             _sentryGuns.Remove(sg);
+    }
+    #endregion
+
+    private void OnDrawGizmos()
+    {
+        foreach (Vector2 s in beamPositions)
+            Gizmos.DrawSphere(s, 0.5f);
     }
 }

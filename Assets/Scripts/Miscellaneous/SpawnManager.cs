@@ -139,7 +139,7 @@ public class SpawnManager : MonoBehaviour
         while (i.CanSpawn && i._spawnEnemies && spawnedEnemies < numberToSpawn)
         {
             GameObject toSpawn = i._enemies.GetWeightedSpawnable(i._waveEnemyDifficulty.Evaluate(_waveNumber));
-            Transform enemy = Instantiate(toSpawn, GetEnemySpawnPosition(1f), Quaternion.identity, i._enemyContainer).transform;
+            Transform enemy = Instantiate(toSpawn, GetEnemySpawnPosition(1.5f), Quaternion.identity, i._enemyContainer).transform;
             ChangeEnemiesAlive(enemy);
             spawnedEnemies++;
 
@@ -193,15 +193,31 @@ public class SpawnManager : MonoBehaviour
         }
     }
 
+    public static void StartWaves() => i.StartCoroutine(BetweenWaveBuffer());
+
     private static IEnumerator BetweenWaveBuffer()
     {
         bool isBossWave = i._enemiesEachWave.Evaluate(_waveNumber - 1) == -1;
-        int seconds = (isBossWave ? i._waveRecoveryBuffer + 1 : i._waveRecoveryBuffer) / 1;
+        if (isBossWave)
+        {
+            i._player.GetComponent<PlayerHealth>().OverrideLives(20);
+            UIManager.i.DisableHealthSprites();
+        }
+        int seconds = (isBossWave ? i._waveRecoveryBuffer + 3 : i._waveRecoveryBuffer) / 1;
         for (int s = seconds; s >= 0; s--)
         {
             yield return new WaitForSeconds(1);
-            bool showText = s <= seconds & s >= (seconds - (isBossWave ? 2 : 1));
-            i._waveText.SetText(showText ? (!isBossWave ? "Next wave \nincoming!" : "BOSS WAVE \nINCOMING!") : s.ToString());
+            bool showText = s <= seconds & s >= (seconds - (isBossWave ? 4 : 1));
+            i._waveText.SetText(showText ?
+                (!isBossWave ?
+                    (_waveNumber == 1) ?
+                        "<wave>First wave \nincoming!" :
+                        "<wave>Next wave \nincoming!" :
+                    (s >= (seconds - 2) ?
+                        "<boss><wave>BOSS WAVE \nINCOMING!" :
+                        "<boss><wave>INFINITE AMMO!\n20 LIVES!")) :
+                s.ToString()
+            );
         }
         i._waveText.SetText(string.Empty);
 

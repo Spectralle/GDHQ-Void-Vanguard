@@ -16,6 +16,8 @@ public class PlayerGun : MonoBehaviour
 
     public int CurrentAmmo => _currentAmmo;
     private int _currentAmmo;
+    public void InfiniteAmmo(bool value) => _infiniteAmmo = value;
+    private bool _infiniteAmmo;
     private bool _canFire = true;
     private float _cooldownMultiplier = 1;
     private Transform _projectileContainer;
@@ -60,7 +62,7 @@ public class PlayerGun : MonoBehaviour
     {
         if (attackData.AmmoCost > 0)
         {
-            if (_currentAmmo < attackData.AmmoCost)
+            if (_currentAmmo < attackData.AmmoCost && !_infiniteAmmo)
             {
                 _audioSource.PlayOneShot(attackData.FailedAudioClip);
                 _canFire = false;
@@ -70,8 +72,11 @@ public class PlayerGun : MonoBehaviour
         }
 
         _canFire = false;
-        _currentAmmo -= attackData.AmmoCost;
-        UIManager.i.ChangeAmmo(_currentAmmo, _ammoCount);
+        if (!_infiniteAmmo)
+        {
+            _currentAmmo -= attackData.AmmoCost;
+            UIManager.i.ChangeAmmo(_currentAmmo, _ammoCount);
+        }
 
         float angleStep = attackData.Degrees / attackData.Number;
         float angle = attackData.Degrees != 360 ? -(attackData.Degrees - angleStep) / 2 : 0f;

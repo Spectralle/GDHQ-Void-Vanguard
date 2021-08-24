@@ -40,7 +40,7 @@ public class BossDefenceShieldManager : MonoBehaviour
 
     public void SentriesDestroyed() => StartCoroutine(Disable());
 
-    private IEnumerator Disable()
+    public IEnumerator Disable()
     {
         while (_sprite.color.a > 0f)
         {
