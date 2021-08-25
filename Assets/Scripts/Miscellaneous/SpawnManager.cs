@@ -198,11 +198,6 @@ public class SpawnManager : MonoBehaviour
     private static IEnumerator BetweenWaveBuffer()
     {
         bool isBossWave = i._enemiesEachWave.Evaluate(_waveNumber - 1) == -1;
-        if (isBossWave)
-        {
-            i._player.GetComponent<PlayerHealth>().OverrideLives(20);
-            UIManager.i.DisableHealthSprites();
-        }
         int seconds = (isBossWave ? i._waveRecoveryBuffer + 3 : i._waveRecoveryBuffer) / 1;
         for (int s = seconds; s >= 0; s--)
         {
@@ -220,6 +215,13 @@ public class SpawnManager : MonoBehaviour
             );
         }
         i._waveText.SetText(string.Empty);
+        if (isBossWave)
+        {
+            i._player.GetComponent<PlayerHealth>().OverrideLives(20);
+            UIManager.i.DisableHealthSprites();
+            i._player.GetComponent<PlayerGun>().InfiniteAmmo(true);
+            i._spawnPowerups = false;
+        }
 
         StartSpawningNextWave();
     }

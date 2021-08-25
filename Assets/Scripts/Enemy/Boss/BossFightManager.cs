@@ -32,7 +32,8 @@ public class BossFightManager : MonoBehaviour
     private List<Transform> rightSide = new List<Transform>();
     private int _mainFightLoopNumber = 1;
     private float _difficultyMultiplier = 1f;
-
+    public bool _isBossDead { get; private set; }
+    
 
     private void Awake()
     {
@@ -385,6 +386,12 @@ public class BossFightManager : MonoBehaviour
     #endregion
 
     #region Misc
+    public void Die()
+    {
+        StopAllCoroutines();
+        _isBossDead = true;
+    }
+
     public void IsOnLeft()
     {
         _anim.SetBool("isOnLeft", true);
