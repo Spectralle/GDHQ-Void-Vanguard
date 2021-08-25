@@ -34,6 +34,7 @@ public class BossHealth : MonoBehaviour
                     {
                         GameConclusionHandler.i.Victory();
                         transform.parent.GetComponent<Animator>().Play("Boss_Destruction_anim");
+                        transform.parent.GetComponent<BossFightManager>().Die();
                     }
                     break;
                 case partType.Sentry:

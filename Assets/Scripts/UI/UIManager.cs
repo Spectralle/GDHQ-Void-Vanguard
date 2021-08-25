@@ -51,7 +51,7 @@ public class UIManager : MonoBehaviour
 
     public void ChangeScore(int value) => _playerScore.SetText($"Score: {_score += value}");
 
-    public void ChangeWave(int value) => _waveNumber.SetText($"Wave: {(value == 0 ? "#" : value.ToString())}");
+    public void ChangeWave(int value) => _waveNumber.SetText($"Wave: {(value == 0 ? "-" : value.ToString())}");
 
     public void ChangeAmmo(float value, float max)
     {

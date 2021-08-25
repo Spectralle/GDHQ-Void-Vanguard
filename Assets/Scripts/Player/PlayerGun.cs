@@ -43,6 +43,8 @@ public class PlayerGun : MonoBehaviour
         _currentAmmo = _ammoCount;
     }
 
+    private void Start() => UIManager.i.ChangeAmmo(_currentAmmo, _ammoCount);
+
     private void Update()
     {
         if (Input.GetButtonDown("Fire1") && _canFire)
