@@ -3,7 +3,6 @@ using UnityEngine;
 public class PlayerHealth : MonoBehaviour
 {
     public int CurrentLives => _currentLives;
-    public void OverrideLives(int amount) => _currentLives = amount;
     #pragma warning disable CS0649
     [SerializeField] private int _currentLives = 3;
     [Space]
@@ -26,6 +25,12 @@ public class PlayerHealth : MonoBehaviour
 
     private void Start() => UIManager.i.ChangeLives(_currentLives);
 
+    public void OverrideLives(int amount)
+    {
+        _currentLives = amount;
+        UIManager.i.ChangeLives(_currentLives);
+    }
+
     public void Damage() => Damage(1);
 
     public void Damage(int livesLost)
@@ -42,34 +47,31 @@ public class PlayerHealth : MonoBehaviour
         if (_currentLives < 0)
             _currentLives = 0;
 
+        if (_currentLives != 0)
+            CameraShaker.StartShaking(.7f, .3f);
+        else
+            CameraShaker.StartShaking(1.5f, .6f);
+        UIManager.i.ChangeLives(_currentLives);
+
         switch (_currentLives)
         {
             case 3:
-                CameraShaker.StartShaking(.7f, .3f);
-                UIManager.i.ChangeLives(_currentLives);
                 _damage2LivesLeft.SetActive(false);
                 _damage1LifeLeft.SetActive(false);
                 break;
             case 2:
-                CameraShaker.StartShaking(.7f, .3f);
-                UIManager.i.ChangeLives(_currentLives);
                 _damage2LivesLeft.SetActive(true);
                 _damage1LifeLeft.SetActive(false);
                 break;
             case 1:
-                CameraShaker.StartShaking(.7f, .3f);
-                UIManager.i.ChangeLives(_currentLives);
                 _damage2LivesLeft.SetActive(false);
                 _damage1LifeLeft.SetActive(true);
                 break;
             case 0:
-                CameraShaker.StartShaking(1.5f, .6f);
                 Die();
                 break;
         }
     }
-
-    public void Heal() => Heal(3 - _currentLives);
 
     public void Heal(int livesToHeal)
     {

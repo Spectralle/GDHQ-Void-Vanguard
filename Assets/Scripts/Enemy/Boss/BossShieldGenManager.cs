@@ -65,10 +65,11 @@ public class BossShieldGenManager : MonoBehaviour
         if (allGeneratorsDestroyed())
         {
             complete = true;
-            BossDefenceShieldManager.i.GeneratorsDestroyed();
             BossFightManager.MoveToSentryPhase();
         }
     }
+
+    public void ShrinkShield() => BossDefenceShieldManager.i.GeneratorsDestroyed();
 
     public void GeneratorDestroyed(Transform gen)
     {

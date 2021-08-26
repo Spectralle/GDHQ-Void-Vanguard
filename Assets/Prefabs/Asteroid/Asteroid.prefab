@@ -186,8 +186,7 @@ MonoBehaviour:
   triggerAnimPlayerOnChange: 0
   effectIntensityMultiplier: 50
   appearancesContainer:
-    tags:
-    - size
+    tags: []
     values:
       defaults:
         sizeDuration: 0.3

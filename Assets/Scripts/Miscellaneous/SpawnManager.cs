@@ -12,6 +12,9 @@ public class SpawnManager : MonoBehaviour
     [HideInInspector] public bool CanSpawn = true;
     [SerializeField] private GameObject _player;
     [SerializeField, Range(1, 10)] private int _startWave = 1;
+    [Space]
+    [SerializeField, Range(1, 20)] private int _bossWaveLives = 15; 
+    [SerializeField, Range(15, 60)] private int _bossWaveAmmo = 50; 
 
     [Header("Wave Spawning:")]
     [SerializeField] private AnimationCurve _enemiesEachWave;
@@ -197,31 +200,47 @@ public class SpawnManager : MonoBehaviour
 
     private static IEnumerator BetweenWaveBuffer()
     {
+        int extraSecsOnBossWave = 6;
         bool isBossWave = i._enemiesEachWave.Evaluate(_waveNumber - 1) == -1;
-        int seconds = (isBossWave ? i._waveRecoveryBuffer + 3 : i._waveRecoveryBuffer) / 1;
-        for (int s = seconds; s >= 0; s--)
-        {
-            yield return new WaitForSeconds(1);
-            bool showText = s <= seconds & s >= (seconds - (isBossWave ? 4 : 1));
-            i._waveText.SetText(showText ?
-                (!isBossWave ?
-                    (_waveNumber == 1) ?
-                        "<wave>First wave \nincoming!" :
-                        "<wave>Next wave \nincoming!" :
-                    (s >= (seconds - 2) ?
-                        "<boss><wave>BOSS WAVE \nINCOMING!" :
-                        "<boss><wave>INFINITE AMMO!\n20 LIVES!")) :
-                s.ToString()
-            );
-        }
-        i._waveText.SetText(string.Empty);
+
         if (isBossWave)
         {
-            i._player.GetComponent<PlayerHealth>().OverrideLives(20);
+            i._player.GetComponent<PlayerHealth>().OverrideLives(i._bossWaveLives);
             UIManager.i.DisableHealthSprites();
-            i._player.GetComponent<PlayerGun>().InfiniteAmmo(true);
+
+            //i._player.GetComponent<PlayerGun>().InfiniteAmmo(true);
+            i._player.GetComponent<PlayerGun>().OverridePrimaryAmmo(i._bossWaveAmmo, i._bossWaveAmmo);
+            UIManager.i.ChangeAmmo(i._bossWaveAmmo, i._bossWaveAmmo);
+
             i._spawnPowerups = false;
         }
+
+        int seconds = (isBossWave ? i._waveRecoveryBuffer + extraSecsOnBossWave : i._waveRecoveryBuffer);
+        for (int s = seconds; s >= 0; s--)
+        {
+            bool showText = s > (seconds - (isBossWave ? 9 : 3));
+            string newText = showText ?
+                (!isBossWave ?
+                    (_waveNumber == 1) ?
+                        "<wave>First wave\nincoming!" :
+                        "<wave>Next wave\nincoming!" :
+                    (s > (seconds - 3) ?
+                        "<boss><wave>DREADNAUGHT\nINCOMING!" :
+                        (s > (seconds - 6) ?
+                            "<boss><wave><size=60>YOU GET</size>\nFIFTY AMMO\n<size=60>AND</size>\nFIFTEEN LIVES!" :
+                            "<boss><wave><size=60>1. Shield Generators\n<size=75>2. Sentries\n<size=85>3. Main Body"))) :
+                ((isBossWave ? "<boss>" : "") + ((s != 0) ? s.ToString() : "BEGIN!"));
+            
+            string current = i._waveText.text.Replace("<noparse></noparse>", string.Empty);
+            string formatted = newText.Replace("<boss>", string.Empty).Replace("<wave>", string.Empty);
+
+            if (current != formatted)
+                i._waveText.SetText(newText);
+
+            yield return new WaitForSeconds(1);
+        }
+
+        i._waveText.SetText(string.Empty);
 
         StartSpawningNextWave();
     }

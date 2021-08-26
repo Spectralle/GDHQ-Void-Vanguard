@@ -632,7 +632,7 @@ public static class AttackLibrary
         public static AttackTemplate OneForward() => new AttackTemplate(
             projectilePrefab: _missileProjectilePrefab,
             numberOfProjectiles: 1,
-            ammoCost: 1,
+            ammoCost: 0,
             projectileSpeed: 9f,
             spawnDelay: 0f,
             spawnDegreesIn360: 360,

@@ -51,6 +51,9 @@ public class BossFightManager : MonoBehaviour
             _canGensShoot = true;
             #endregion
 
+            if (_moveToSentryPhase)
+                timer = -1f;
+
             timer -= Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
@@ -72,6 +75,9 @@ public class BossFightManager : MonoBehaviour
             #region Behaviour
             _canGensShoot = true;
             #endregion
+
+            if (_moveToSentryPhase)
+                timer = -1f;
 
             timer -= Time.deltaTime;
             yield return new WaitForEndOfFrame();
@@ -147,18 +153,17 @@ public class BossFightManager : MonoBehaviour
         #endregion
 
         #region Conclusion
-        for (int s = 0; s < _sentryGuns.Count; s++)
-            StartCoroutine(MoveTransform(_sentryGuns[s].transform, beamPositions[s] + new Vector2(0, 2f)));
-
-        yield return new WaitForSeconds(2.5f);
-
         if (!_moveToMainPhase)
-            StartHorizontalSentryBeams();
-        else
         {
             for (int s = 0; s < _sentryGuns.Count; s++)
-                _sentryGuns[s].transform.position = _sentryOriginalPositions[s];
+                StartCoroutine(MoveTransform(_sentryGuns[s].transform, beamPositions[s] + new Vector2(0, 2f)));
 
+            yield return new WaitForSeconds(2.3f);
+            StartHorizontalSentryBeams();
+        }
+        else
+        {
+            yield return new WaitForSeconds(1f);
             _moveToMainPhase = false;
             _anim.SetBool("SentriesDestroyed", true);
         }
@@ -258,21 +263,20 @@ public class BossFightManager : MonoBehaviour
         #endregion
 
         #region Conclusion
-        for (int s = 0; s < leftSide.Count; s++)
-            StartCoroutine(MoveTransform(leftSide[s].transform, beamPositions[s] - new Vector2(1.5f, 0)));
-
-        for (int s = 0; s < rightSide.Count; s++)
-            StartCoroutine(MoveTransform(rightSide[s].transform, beamPositions[leftSide.Count + s] + new Vector2(2f, 0)));
-
-        yield return new WaitForSeconds(2.5f);
-
         if (!_moveToMainPhase)
+        {
+            for (int s = 0; s < leftSide.Count; s++)
+                StartCoroutine(MoveTransform(leftSide[s].transform, beamPositions[s] - new Vector2(1.5f, 0)));
+
+            for (int s = 0; s < rightSide.Count; s++)
+                StartCoroutine(MoveTransform(rightSide[s].transform, beamPositions[leftSide.Count + s] + new Vector2(2f, 0)));
+
+            yield return new WaitForSeconds(2.3f);
             StartVerticalSentryBeams();
+        }
         else
         {
-            for (int s = 0; s < _sentryGuns.Count; s++)
-                _sentryGuns[s].transform.position = _sentryOriginalPositions[s];
-
+            yield return new WaitForSeconds(1f);
             _moveToMainPhase = false;
             _anim.SetBool("SentriesDestroyed", true);
         }
@@ -281,7 +285,7 @@ public class BossFightManager : MonoBehaviour
 
     private IEnumerator MoveTransform(Transform sentry, Vector2 destination)
     {
-        while (Vector2.Distance((Vector2)sentry.transform.position, destination) > 0.01f)
+        while (sentry && Vector2.Distance((Vector2)sentry.transform.position, destination) > 0.01f)
         {
             sentry.transform.position = Vector3.Lerp(
                 sentry.transform.position,
@@ -427,6 +431,12 @@ public class BossFightManager : MonoBehaviour
         BossSentryGun sg = sentry.GetComponent<BossSentryGun>();
         if (_sentryGuns.Contains(sg))
             _sentryGuns.Remove(sg);
+
+        if (leftSide.Contains(sg.transform))
+            leftSide.Remove(sg.transform);
+
+        if (rightSide.Contains(sg.transform))
+            rightSide.Remove(sg.transform);
     }
     #endregion
 
