@@ -103,13 +103,13 @@ public class PlayerHealth : MonoBehaviour
 
     public void Die()
     {
+        GameConclusionHandler.i.Defeat();
+
         _currentLives = 0;
 
         Instantiate(_explosionPrefab, transform.position, Quaternion.identity, GameObject.Find("Game Handler/Scene").transform);
 
         GetComponent<PlayerMovement>().enabled = false;
-
-        GameConclusionHandler.i.Defeat();
 
         Destroy(gameObject, 0.5f);
     }

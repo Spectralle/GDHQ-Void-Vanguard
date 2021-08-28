@@ -12,23 +12,28 @@ public class GameSceneManager : MonoBehaviour
             QuitGame();
     }
 
+    public static void InitGame()
+    {
+        SceneManager.LoadScene(1);
+        Debug.Log("<color=orange>Game started</color>");
+
+        SpawnManager.Init();
+    }
+
     public static void ResetGame()
     {
         SceneManager.LoadScene(1);
         Debug.Log("<color=orange>Game restarted</color>");
-
-        if (SpawnManager.i)
-            SpawnManager.i.CanSpawn = true;
 
         SpawnManager.Reset();
     }
 
     public static void QuitGame()
     {
-        Application.Quit();
-
         #if UNITY_EDITOR
         EditorApplication.ExitPlaymode();
+        #else
+        Application.Quit();
         #endif
     }
 }

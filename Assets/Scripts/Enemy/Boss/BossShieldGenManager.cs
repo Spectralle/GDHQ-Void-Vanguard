@@ -79,6 +79,8 @@ public class BossShieldGenManager : MonoBehaviour
         _bfm.RemoveFromGenGunList(gen);
     }
 
+
+#if UNITY_EDITOR
     private void OnDrawGizmos()
     {
         float angleStep = 360 / _generatorsToSpawn;
@@ -107,4 +109,5 @@ public class BossShieldGenManager : MonoBehaviour
         Gizmos.color = c2;
         Gizmos.DrawWireSphere(transform.position, _spawnRadius);
     }
+#endif
 }

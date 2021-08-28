@@ -25,6 +25,7 @@ public class BossHealth : MonoBehaviour
     {
         if (other.CompareTag("Player Projectile"))
         {
+            Destroy(other.gameObject);
             switch (_type)
             {
                 case partType.MainBody:
