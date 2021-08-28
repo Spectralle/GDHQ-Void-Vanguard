@@ -12,9 +12,7 @@ public class WeaponInstanceMovement : MonoBehaviour
 
     protected virtual void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Enemy") && CompareTag("Player Projectile"))
-            Destroy(gameObject);
-        else if (other.CompareTag("Player") && CompareTag("Enemy Projectile"))
+        if (CompareTag("Enemy Projectile") && other.CompareTag("Player"))
             Destroy(gameObject);
     }
 }

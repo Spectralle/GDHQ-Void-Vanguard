@@ -33,7 +33,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 440130907862965031, guid: a328951309050b0458f1035b0c0536a8, type: 3}
       propertyPath: _sineYMoveScale
-      value: 0.5
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 3047014566842629617, guid: a328951309050b0458f1035b0c0536a8, type: 3}
       propertyPath: m_LocalPosition.x

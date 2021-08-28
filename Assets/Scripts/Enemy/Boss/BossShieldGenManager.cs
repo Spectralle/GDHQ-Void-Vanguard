@@ -65,10 +65,11 @@ public class BossShieldGenManager : MonoBehaviour
         if (allGeneratorsDestroyed())
         {
             complete = true;
-            BossDefenceShieldManager.i.GeneratorsDestroyed();
             BossFightManager.MoveToSentryPhase();
         }
     }
+
+    public void ShrinkShield() => BossDefenceShieldManager.i.GeneratorsDestroyed();
 
     public void GeneratorDestroyed(Transform gen)
     {
@@ -78,6 +79,8 @@ public class BossShieldGenManager : MonoBehaviour
         _bfm.RemoveFromGenGunList(gen);
     }
 
+
+#if UNITY_EDITOR
     private void OnDrawGizmos()
     {
         float angleStep = 360 / _generatorsToSpawn;
@@ -106,4 +109,5 @@ public class BossShieldGenManager : MonoBehaviour
         Gizmos.color = c2;
         Gizmos.DrawWireSphere(transform.position, _spawnRadius);
     }
+#endif
 }

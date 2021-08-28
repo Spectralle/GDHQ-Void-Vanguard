@@ -12,6 +12,9 @@ public class SpawnManager : MonoBehaviour
     [HideInInspector] public bool CanSpawn = true;
     [SerializeField] private GameObject _player;
     [SerializeField, Range(1, 10)] private int _startWave = 1;
+    [Space]
+    [SerializeField, Range(1, 20)] private int _bossWaveLives = 15; 
+    [SerializeField, Range(15, 60)] private int _bossWaveAmmo = 50; 
 
     [Header("Wave Spawning:")]
     [SerializeField] private AnimationCurve _enemiesEachWave;
@@ -50,8 +53,11 @@ public class SpawnManager : MonoBehaviour
     private Vector3 directionToPlayer = Vector3.zero;
     private static int _waveNumber = 1;
     public static int GetCurrentWave() => _waveNumber;
-    private static bool _allEnemiesSpawned = false;
-#pragma warning restore CS0414
+    private static bool _allEnemiesSpawned;
+
+    private bool _isBeforeStartAsteroid = true;
+    public void AsteroidDestroyed() => _isBeforeStartAsteroid = false;
+    #pragma warning restore CS0414
 
 
     private void Awake()
@@ -60,90 +66,105 @@ public class SpawnManager : MonoBehaviour
         _waveNumber = _startWave;
     }
 
+    public static void Init()
+    {
+        EnemyList.Clear();
+        ItemList.Clear();
+    }
+
+    public static void Reset()
+    {
+        i.StopAllCoroutines();
+        _waveNumber = i._startWave;
+        Init();
+    }
+
     private void Update()
     {
         if (_player == null)
             CanSpawn = false;
 
-        if (_allEnemiesSpawned && !EnemiesExist && CanSpawn)
+        if (!_isBeforeStartAsteroid && _player && _allEnemiesSpawned && !EnemiesExist && CanSpawn)
         {
-            Debug.Log($"<color=green>All wave {_waveNumber - 1} enemies defeated. Starting recovery period.</color>");
+            Debug.Log($"<color=green>All wave {_waveNumber} enemies defeated. Starting recovery period.</color>");
 
             StopAllCoroutines();
 
             _allEnemiesSpawned = false;
+
             i.StartCoroutine(BetweenWaveBuffer());
         }
     }
 
     #region Manage spawning
-    public static void Reset()
+    private void StartSpawningNextWave()
     {
-        i.StopAllCoroutines();
-        EnemyList.Clear();
-        ItemList.Clear();
-        _waveNumber = 1;
-    }
-
-    public static void StartSpawningNextWave()
-    {
-        if (i._player)
+        if (_player)
         {
-            i.CanSpawn = true;
+            if (_waveNumber <= 0)
+                _waveNumber = 1;
+
+            CanSpawn = true;
 
             UIManager.i.ChangeWave(_waveNumber);
 
-            int numberOfEnemiesThisWave = Mathf.RoundToInt(i._enemiesEachWave.Evaluate(_waveNumber - 1));
-
-            #if UNITY_EDITOR
-            string E = i._spawnEnemies ? $" {numberOfEnemiesThisWave} Enemies" : string.Empty;
-            string A = i._spawnAsteroids ? " Asteroids" : string.Empty;
-            string P = i._spawnEnemies ? " Powerups" : string.Empty;
-            string B(string pre, string post) => pre != string.Empty && post != string.Empty ? " and" : string.Empty;
-            if (E != string.Empty && A != string.Empty && P != string.Empty)
-                Debug.Log($"<color=blue>Started spawning{E}{B(E,A)}{A}{B(A,P)}{P} for Wave {_waveNumber}!</color>");
-            #endif
+            int numberOfEnemiesThisWave = Mathf.RoundToInt(_enemiesEachWave.Evaluate(_waveNumber - 1));
 
             if (numberOfEnemiesThisWave > 0)
             {
-                if (i._enemyContainer && i._enemies.HasArrayEntries())
-                    i.StartCoroutine(ManageEnemySpawning(numberOfEnemiesThisWave));
+                if (_enemyContainer && _enemies.HasArrayEntries())
+                    StartCoroutine(ManageEnemySpawning(numberOfEnemiesThisWave));
 
-                if (i._asteroidContainer && i._asteroids.HasArrayEntries())
-                    i.StartCoroutine(ManageAsteroidSpawning());
+                if (_asteroidContainer && _asteroids.HasArrayEntries())
+                    StartCoroutine(ManageAsteroidSpawning());
 
-                if (i._powerupContainer && i._powerups.HasArrayEntries() && i._refills.HasArrayEntries())
-                    i.StartCoroutine(ManagePowerupSpawning());
+                if (_powerupContainer && _powerups.HasArrayEntries() && _refills.HasArrayEntries())
+                    StartCoroutine(ManagePowerupSpawning());
             }
             else if (numberOfEnemiesThisWave == -1)
             {
-                Debug.Log("<color=orange>Boss wave!</color>");
                 SpawnBoss();
 
-                if (i._powerupContainer && i._powerups.HasArrayEntries() && i._refills.HasArrayEntries())
-                    i.StartCoroutine(ManagePowerupSpawning());
+                _spawnAsteroids = false;
+
+                if (_powerupContainer && _powerups.HasArrayEntries() && _refills.HasArrayEntries())
+                    StartCoroutine(ManagePowerupSpawning());
             }
+
+            #if UNITY_EDITOR
+            string enemies = numberOfEnemiesThisWave == -1 ?
+                " <color=orange>Boss Enemy</color>" : $" { numberOfEnemiesThisWave} Enemies";
+            string E = _spawnEnemies ?
+                enemies : string.Empty;
+            string A = _spawnAsteroids ?
+                " Asteroids" : string.Empty;
+            string P = _spawnPowerups ?
+                " Powerups" : string.Empty;
+            string B(string pre, string post) => pre != string.Empty && post != string.Empty ? " and" : string.Empty;
+            
+            Debug.Log($"<color=blue>Started spawning{E}{B(E,A)}{A}{B(A,P)}{P} for Wave {_waveNumber}!</color>");
+            #endif
         }
         else
         {
-            Debug.Log($"Missing the Player reference in the Spawn Manager. Spawning canceled!", i.gameObject);
-            i.enabled = false;
+            Debug.LogError($"Missing the Player reference in the Spawn Manager. Spawning canceled!", gameObject);
+            enabled = false;
         }    
     }
 
-    private static IEnumerator ManageEnemySpawning(int numberToSpawn)
+    private IEnumerator ManageEnemySpawning(int numberToSpawn)
     {
         yield return new WaitForSeconds(0.3f);
 
         int spawnedEnemies = 0;
-        while (i.CanSpawn && i._spawnEnemies && spawnedEnemies < numberToSpawn)
+        while (CanSpawn && _spawnEnemies && spawnedEnemies < numberToSpawn)
         {
-            GameObject toSpawn = i._enemies.GetWeightedSpawnable(i._waveEnemyDifficulty.Evaluate(_waveNumber));
-            Transform enemy = Instantiate(toSpawn, GetEnemySpawnPosition(1.5f), Quaternion.identity, i._enemyContainer).transform;
+            GameObject toSpawn = _enemies.GetWeightedSpawnable(_waveEnemyDifficulty.Evaluate(_waveNumber));
+            Transform enemy = Instantiate(toSpawn, GetEnemySpawnPosition(1.5f), Quaternion.identity, _enemyContainer).transform;
             ChangeEnemiesAlive(enemy);
             spawnedEnemies++;
 
-            yield return new WaitForSeconds(Random.Range(i._enemySpawnDelay.x, i._enemySpawnDelay.y));
+            yield return new WaitForSeconds(Random.Range(_enemySpawnDelay.x, _enemySpawnDelay.y));
         }
 
         Debug.Log($"<color=blue>Wave {_waveNumber} has finished spawning.</color>");
@@ -152,83 +173,104 @@ public class SpawnManager : MonoBehaviour
         _allEnemiesSpawned = true;
     }
 
-    private static IEnumerator ManageAsteroidSpawning()
+    private IEnumerator ManageAsteroidSpawning()
     {
-        yield return new WaitForSeconds(Random.Range(i._asteroidSpawnDelay.x, i._asteroidSpawnDelay.y));
+        yield return new WaitForSeconds(Random.Range(_asteroidSpawnDelay.x, _asteroidSpawnDelay.y));
 
-        while (i.CanSpawn && i._spawnAsteroids)
+        while (CanSpawn && _spawnAsteroids)
         {
-            GameObject toSpawn = i._asteroids.GetRandomWeightedSpawnable();
-            EnemyMovement EM = Instantiate(toSpawn, GetAsteroidSpawnPosition(), Quaternion.identity, i._asteroidContainer)
+            GameObject toSpawn = _asteroids.GetRandomWeightedSpawnable();
+            EnemyMovement EM = Instantiate(toSpawn, GetAsteroidSpawnPosition(), Quaternion.identity, _asteroidContainer)
                 .GetComponent<EnemyMovement>();
             EM.SetAsAsteroid();
             EM.SetDamageAmount(3);
-            i.directionToPlayer = (i._player.transform.position - EM.transform.position).normalized;
-            EM.SetMovementDirection(i.directionToPlayer);
-            yield return new WaitForSeconds(Random.Range(i._asteroidSpawnDelay.x, i._asteroidSpawnDelay.y));
+            directionToPlayer = (_player.transform.position - EM.transform.position).normalized;
+            EM.SetMovementDirection(directionToPlayer);
+            yield return new WaitForSeconds(Random.Range(_asteroidSpawnDelay.x, _asteroidSpawnDelay.y));
         }
     }
 
-    private static IEnumerator ManagePowerupSpawning()
+    private IEnumerator ManagePowerupSpawning()
     {
         yield return new WaitForSeconds(Random.Range(1.5f, 10f));
 
-        while (i.CanSpawn && i._spawnPowerups)
+        while (CanSpawn && _spawnPowerups)
         {
-            int total = i._powerups.ChanceForSpawn + i._refills.ChanceForSpawn + i._powerdowns.ChanceForSpawn;
+            int total = _powerups.ChanceForSpawn + _refills.ChanceForSpawn + _powerdowns.ChanceForSpawn;
             int powerupOrRefillOrPowerdown = Random.Range(0, total);
 
             GameObject toSpawn;
-            if (powerupOrRefillOrPowerdown < i._powerups.ChanceForSpawn)
-                toSpawn = i._powerups.GetRandomWeightedSpawnable();
-            else if (powerupOrRefillOrPowerdown > (i._powerups.ChanceForSpawn + i._refills.ChanceForSpawn))
-                toSpawn = i._powerdowns.GetRandomWeightedSpawnable();
+            if (powerupOrRefillOrPowerdown < _powerups.ChanceForSpawn)
+                toSpawn = _powerups.GetRandomWeightedSpawnable();
+            else if (powerupOrRefillOrPowerdown > (_powerups.ChanceForSpawn + _refills.ChanceForSpawn))
+                toSpawn = _powerdowns.GetRandomWeightedSpawnable();
             else
-                toSpawn = i._refills.GetRandomWeightedSpawnable();
+                toSpawn = _refills.GetRandomWeightedSpawnable();
 
-            Transform item = Instantiate(toSpawn, GetEnemySpawnPosition(1.5f), Quaternion.identity, i._powerupContainer).transform;
+            Transform item = Instantiate(toSpawn, GetEnemySpawnPosition(1.5f), Quaternion.identity, _powerupContainer).transform;
             ChangeItemsExist(item);
 
-            yield return new WaitForSeconds(Random.Range(i._powerupSpawnDelay.x, i._powerupSpawnDelay.y));
+            yield return new WaitForSeconds(Random.Range(_powerupSpawnDelay.x, _powerupSpawnDelay.y));
         }
     }
 
-    public static void StartWaves() => i.StartCoroutine(BetweenWaveBuffer());
+    public static void StartWaveBuffer() => i.StartCoroutine(i.BetweenWaveBuffer());
 
-    private static IEnumerator BetweenWaveBuffer()
+    private IEnumerator BetweenWaveBuffer()
     {
+        if (!_player || _isBeforeStartAsteroid)
+            yield break;
+
+        int extraSecsOnBossWave = 6;
         bool isBossWave = i._enemiesEachWave.Evaluate(_waveNumber - 1) == -1;
-        int seconds = (isBossWave ? i._waveRecoveryBuffer + 3 : i._waveRecoveryBuffer) / 1;
-        for (int s = seconds; s >= 0; s--)
-        {
-            yield return new WaitForSeconds(1);
-            bool showText = s <= seconds & s >= (seconds - (isBossWave ? 4 : 1));
-            i._waveText.SetText(showText ?
-                (!isBossWave ?
-                    (_waveNumber == 1) ?
-                        "<wave>First wave \nincoming!" :
-                        "<wave>Next wave \nincoming!" :
-                    (s >= (seconds - 2) ?
-                        "<boss><wave>BOSS WAVE \nINCOMING!" :
-                        "<boss><wave>INFINITE AMMO!\n20 LIVES!")) :
-                s.ToString()
-            );
-        }
-        i._waveText.SetText(string.Empty);
+
         if (isBossWave)
         {
-            i._player.GetComponent<PlayerHealth>().OverrideLives(20);
+            i._player.GetComponent<PlayerHealth>().OverrideLives(i._bossWaveLives);
             UIManager.i.DisableHealthSprites();
-            i._player.GetComponent<PlayerGun>().InfiniteAmmo(true);
+
+            i._player.GetComponent<PlayerGun>().OverridePrimaryAmmo(i._bossWaveAmmo, i._bossWaveAmmo);
+            UIManager.i.ChangeAmmo(i._bossWaveAmmo, i._bossWaveAmmo);
+
             i._spawnPowerups = false;
         }
+
+        int seconds = (isBossWave ? i._waveRecoveryBuffer + extraSecsOnBossWave : i._waveRecoveryBuffer);
+        for (int s = seconds; s >= 0; s--)
+        {
+            bool showText = s > (seconds - (isBossWave ? 9 : 3));
+            string newText = showText ?
+                (!isBossWave ?
+                    (_waveNumber == 1) ?
+                        "<wave>First wave\nincoming!" :
+                        "<wave>Next wave\nincoming!" :
+                    (s > (seconds - 3) ?
+                        "<boss><wave>DREADNAUGHT\nINCOMING!" :
+                        (s > (seconds - 6) ?
+                            "<boss><wave><size=60>YOU GET</size>\nFIFTY AMMO\n<size=60>AND</size>\nFIFTEEN LIVES!" :
+                            "<boss><wave><size=60>1. Shield Generators\n<size=75>2. Sentries\n<size=85>3. Main Body"))) :
+                ((isBossWave ? "<boss>" : "") + ((s != 0) ? s.ToString() : "BEGIN!"));
+            
+            string current = i._waveText.text.Replace("<noparse></noparse>", string.Empty);
+            string formatted = newText.Replace("<boss>", string.Empty).Replace("<wave>", string.Empty);
+
+            if (current != formatted)
+                i._waveText.SetText(newText);
+
+            if (!_player || _isBeforeStartAsteroid)
+                yield break;
+
+            yield return new WaitForSeconds(1);
+        }
+
+        i._waveText.SetText(string.Empty);
 
         StartSpawningNextWave();
     }
 
-    private static void SpawnBoss()
+    private void SpawnBoss()
     {
-        Transform boss = Instantiate(i._bossPrefab, new Vector3(0, 12, 0), Quaternion.identity, i._enemyContainer).transform;
+        Transform boss = Instantiate(_bossPrefab, new Vector3(0, 12, 0), Quaternion.identity, _enemyContainer).transform;
         ChangeEnemiesAlive(boss);
     }
 
@@ -250,6 +292,7 @@ public class SpawnManager : MonoBehaviour
     }
     #endregion
 
+    #region Update Lists
     public static void ChangeEnemiesAlive(Transform enemy)
     {
         if (EnemyList.Contains(enemy))
@@ -282,4 +325,5 @@ public class SpawnManager : MonoBehaviour
         }
         return closest;
     }
+    #endregion
 }

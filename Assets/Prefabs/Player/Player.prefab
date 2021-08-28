@@ -809,15 +809,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _ammoCount: 15
   _shotCooldown: 0.3
-  _pfLaser: {fileID: 7759052408972298117, guid: 35a56cba45ca7994481fab06dc589632, type: 3}
-  _pfMissile: {fileID: 4812949710762776318, guid: 83417f210883fe049ac19b8e508c818e, type: 3}
-  _laserSpeed: 20
-  _laserDirection: {x: 0, y: 1}
   _laserAudioClip: {fileID: 8300000, guid: 75676f361bdfeaf41a46623e95df3dbc, type: 3}
-  _laserFailedAudioClip: {fileID: 8300000, guid: 96f1050786f504f4684d1d2327e1921f, type: 3}
   _dynalaser: {fileID: 2075095349}
   _dynaLaserAudioClip: {fileID: 8300000, guid: 75676f361bdfeaf41a46623e95df3dbc, type: 3}
-  _missileAudioClip: {fileID: 8300000, guid: 75676f361bdfeaf41a46623e95df3dbc, type: 3}
 --- !u!114 &2207040055764492020
 MonoBehaviour:
   m_ObjectHideFlags: 0

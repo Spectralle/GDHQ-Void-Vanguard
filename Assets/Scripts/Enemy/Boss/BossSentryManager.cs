@@ -72,6 +72,8 @@ public class BossSentryManager : MonoBehaviour
         _bfm.RemoveFromSentryGunList(sentry);
     }
 
+
+#if UNITY_EDITOR
     private void OnDrawGizmos()
     {
         _angleStep = 360 / (_sentriesToSpawn + 1);
@@ -100,4 +102,5 @@ public class BossSentryManager : MonoBehaviour
         Gizmos.color = c2;
         Gizmos.DrawWireSphere(transform.position, _spawnRadius);
     }
+#endif
 }

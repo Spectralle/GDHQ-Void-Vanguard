@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class GameConclusionHandler : MonoBehaviour
 {
@@ -41,6 +38,7 @@ public class GameConclusionHandler : MonoBehaviour
 
     public void Victory()
     {
+        SpawnManager.i.StopAllCoroutines();
         _gameplayUIContainer.SetActive(false);
         _victoryText.SetActive(true);
         _defeatText.SetActive(false);
@@ -49,6 +47,7 @@ public class GameConclusionHandler : MonoBehaviour
 
     public void Defeat()
     {
+        SpawnManager.i.StopAllCoroutines();
         _gameplayUIContainer.SetActive(false);
         _victoryText.SetActive(false);
         _defeatText.SetActive(true);

@@ -152,6 +152,15 @@ public class PlayerGun : MonoBehaviour
         UIManager.i.ChangeAmmo(_currentAmmo, _ammoCount);
     }
 
+    public void OverridePrimaryAmmo(int current, int max)
+    {
+        _currentAmmo = current;
+        _ammoCount = max;
+    }
+
+    public int GetCurrentAmmo() => _currentAmmo;
+    public int GetMaxAmmo() => _ammoCount;
+
     public void ActivatePowerup(PowerupType type, int duration)
     {
         StopCoroutine(ManagePowerup(type, duration));

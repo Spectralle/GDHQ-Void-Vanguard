@@ -25,6 +25,7 @@ public class StarterAsteroid : MonoBehaviour
     {
         if (other.CompareTag("Player Projectile"))
         {
+            SpawnManager.i.AsteroidDestroyed();
             Destroy(other.gameObject);
             CameraShaker.StartShaking(1.2f, .5f);
             _text.SetActive(false);
@@ -44,10 +45,7 @@ public class StarterAsteroid : MonoBehaviour
 
         GetComponent<SpriteRenderer>().enabled = false;
 
-        //yield return new WaitForSeconds(2.6f);
-
-        //SpawnManager.StartSpawningNextWave();
-        SpawnManager.StartWaves();
+        SpawnManager.StartWaveBuffer();
 
         Destroy(gameObject);
     }

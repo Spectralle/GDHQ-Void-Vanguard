@@ -99,6 +99,9 @@ public class EnemyMovement : MonoBehaviour
 
     private void CheckForRamChance()
     {
+        if (!_player)
+            return;
+
         float distance = Vector2.Distance(transform.position, _player.position);
         if (distance < _ramRadius && distance > 0.6f)
             RamInPlayersDirection();
@@ -127,10 +130,14 @@ public class EnemyMovement : MonoBehaviour
             {
                 if (_trails)
                     _trails.SetActive(false);
-                StopCoroutine(Evade());
-                transform.position = SpawnManager.GetEnemySpawnPosition();
-                transform.rotation = Quaternion.identity;
-                SetOrigins();
+
+                StopAllCoroutines();
+
+                _originalPosition = SpawnManager.GetEnemySpawnPosition();
+                transform.position = _originalPosition;
+                _originalRotation = Quaternion.identity;
+                transform.rotation = _originalRotation;
+                
                 if (_gun.AILaserType == EnemyGun.AILType.Advanced)
                     _gun.ShootAdvAntiItemLaser();
                 if (_trails)
@@ -150,21 +157,6 @@ public class EnemyMovement : MonoBehaviour
     #region Collide
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player Projectile") && !_isShootingAsteroid)
-        {
-            int evadeChance = Random.Range(1, 10);
-            if (evadeChance <= _evadeChance)
-            {
-                _invulnerable = 0.6f;
-                StartCoroutine(Evade());
-            }
-            else
-            {
-                if (_invulnerable <= 0f)
-                    StartCoroutine(Explode());
-            }
-        }
-
         if (other.CompareTag("Player"))
         {
             other.TryGetComponent(out PlayerHealth playerHealth);
@@ -172,38 +164,45 @@ public class EnemyMovement : MonoBehaviour
                 playerHealth.Damage(_damageAmount);
             StartCoroutine(Explode());
         }
+
+        if (other.CompareTag("Player Projectile") && !_isShootingAsteroid)
+        {
+            int evadeChance = Random.Range(1, 10);
+            if (evadeChance <= _evadeChance)
+            {
+                _invulnerable = 0.5f;
+                StartCoroutine(Evade());
+            }
+            else
+            {
+                if (_invulnerable <= 0f)
+                {
+                    Destroy(other.gameObject);
+                    StartCoroutine(Explode());
+                }
+            }
+        }
     }
     #endregion
 
     #region Evade
     private IEnumerator Evade()
     {
-        float _sineX = _sineXMoveScale;
-        _sineXMoveScale = 0;
-        float _sineY = _sineYMoveScale;
-        _sineYMoveScale = 0;
-
         float X = _evadeDistance;
-        int leftOrRight = Random.Range(0, 2);
-        if (leftOrRight == 0)
+        bool goLeft = Random.Range(0, 2) == 0;
+        if (goLeft)
             X = -X;
 
-        _originalPosition.x += X;
+        Vector3 evadeDestination = _originalPosition + new Vector2(X, 0);
 
-        if (_originalPosition.x < LevelBoundary.L(2) || _originalPosition.x > LevelBoundary.R(2))
-        {
-            X = -X;
-            _originalPosition.x = transform.position.x + X;
-        }
+        if (evadeDestination.x < LevelBoundary.L(2) || evadeDestination.x > LevelBoundary.R(2))
+            evadeDestination.x = -evadeDestination.x;
 
-        while (leftOrRight == 0 ? transform.position.x > X : transform.position.x < X)
+        while (goLeft ? _originalPosition.x > evadeDestination.x : _originalPosition.x < evadeDestination.x)
         {
-            transform.position = Vector3.Lerp(transform.position, _originalPosition, Time.deltaTime * 4.5f);
+            _originalPosition = Vector3.Lerp(_originalPosition, new Vector3(evadeDestination.x, _originalPosition.y), Time.deltaTime * 4.5f);
             yield return new WaitForEndOfFrame();
         }
-
-        _sineXMoveScale = _sineX;
-        _sineYMoveScale = _sineY;
     }
     #endregion
 
@@ -215,6 +214,8 @@ public class EnemyMovement : MonoBehaviour
         if (_isDestroyed || _isShootingAsteroid)
             yield break;
 
+        SpawnManager.ChangeEnemiesAlive(transform);
+
         _isDestroyed = true;
 
         foreach (Transform child in transform.GetComponentsInChildren<Transform>())
@@ -222,8 +223,6 @@ public class EnemyMovement : MonoBehaviour
             if (child != transform)
                 child.gameObject.SetActive(false);
         }
-
-        SpawnManager.ChangeEnemiesAlive(transform);
 
         UIManager.i.ChangeKills(1);
         UIManager.i.ChangeScore(10);
@@ -242,4 +241,13 @@ public class EnemyMovement : MonoBehaviour
         Destroy(gameObject, 0.5f);
     }
     #endregion
+
+
+#if UNITY_EDITOR
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawSphere(_originalPosition, 0.08f);
+    }
+#endif
 }

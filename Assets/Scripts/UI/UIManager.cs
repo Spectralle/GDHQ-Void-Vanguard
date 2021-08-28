@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -47,15 +47,18 @@ public class UIManager : MonoBehaviour
         ChangeWave(0);
     }
 
-    public void ChangeKills(int value) => _enemiesKilled.SetText($"Kills: {_kills += value}");
+    public void ChangeKills(int value) => _enemiesKilled.SetText($"{_kills += value}");
 
-    public void ChangeScore(int value) => _playerScore.SetText($"Score: {_score += value}");
+    public void ChangeScore(int value) => _playerScore.SetText($"{_score += value}");
 
-    public void ChangeWave(int value) => _waveNumber.SetText($"Wave: {(value == 0 ? "-" : value.ToString())}");
+    public void ChangeWave(int value) => _waveNumber.SetText($"{(value == 0 ? "N/A" : value.ToString())}");
 
     public void ChangeAmmo(float value, float max)
     {
-        _playerAmmoText.SetText($"{value}/{max}");
+        if (value != -1 && max != -1)
+            _playerAmmoText.SetText($"{value}/{max}");
+        else
+            _playerAmmoText.SetText("∞ / ∞");
         foreach (RectTransform icon in i._playerAmmoIcons)
         {
             float width = (value * (64 - 23.48f) / max) + 23.48f;
@@ -78,7 +81,7 @@ public class UIManager : MonoBehaviour
 
     public void ChangeLives(int value)
     {
-        _playerLives.SetText($"Lives: {value}");
+        _playerLives.SetText($"{value}");
         _playerLivesImage.sprite = LivesSprites[Mathf.Clamp(value, 0, LivesSprites.Length - 1)];
     }
 
